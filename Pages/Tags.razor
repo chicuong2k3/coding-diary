@@ -1,0 +1,93 @@
+@page "/tags/{TagName}"
+@using Blake.Types
+@using Blake.Generated
+
+<PageTitle>Posts tagged "@TagName"</PageTitle>
+
+<div class="tags-page">
+    <div class="tags-header">
+        <h1>
+            <span class="tag-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                    <line x1="7" y1="7" x2="7.01" y2="7"/>
+                </svg>
+            </span>
+            #@TagName
+        </h1>
+        <p class="tags-count">@filteredPosts.Count() post(s)</p>
+    </div>
+
+    <div class="posts-list">
+        @if (filteredPosts.Any())
+        {
+            @foreach (var post in filteredPosts)
+            {
+                <a href="@post.Slug" class="post-card">
+                    <div class="post-card-content">
+                        <h2 class="post-title">@post.Title</h2>
+                        @if (!string.IsNullOrEmpty(post.Description))
+                        {
+                            <p class="post-description">@post.Description</p>
+                        }
+                        <div class="post-meta">
+                            <span class="post-date">@post.Date</span>
+                            @if (post.Tags.Any())
+                            {
+                                <div class="post-tags">
+                                    @foreach (var tag in post.Tags.Take(4))
+                                    {
+                                        <span class="tag-badge">#@tag</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </a>
+            }
+        }
+        else
+        {
+            <div class="no-posts">
+                <p>No posts found with tag "<strong>@TagName</strong>"</p>
+                <a href="/" class="btn-back">Back to Home</a>
+            </div>
+        }
+    </div>
+
+    <div class="all-tags">
+        <h3>All Tags</h3>
+        <div class="tag-list">
+            @foreach (var tag in allTags)
+            {
+                <a href="/tags/@tag.ToLowerInvariant()"
+                   class="tag-link @(tag.Equals(TagName, StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                    #@tag
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string TagName { get; set; } = string.Empty;
+
+    private IEnumerable<PageModel> filteredPosts = Enumerable.Empty<PageModel>();
+    private List<string> allTags = new();
+
+    protected override void OnParametersSet()
+    {
+        var allPages = GeneratedContentIndex.GetPages().Where(p => !p.Draft);
+
+        filteredPosts = allPages
+            .Where(p => p.Tags.Any(t => t.Equals(TagName, StringComparison.OrdinalIgnoreCase)))
+            .OrderByDescending(p => p.Date);
+
+        allTags = allPages
+            .SelectMany(p => p.Tags)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(t => t)
+            .ToList();
+    }
+}

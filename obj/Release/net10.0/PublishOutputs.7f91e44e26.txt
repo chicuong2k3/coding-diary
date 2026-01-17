@@ -1,0 +1,7 @@
+/home/chicuong/Desktop/code/DocumentationWeb/publish/wwwroot/index.html
+/home/chicuong/Desktop/code/DocumentationWeb/publish/publish/web.config
+/home/chicuong/Desktop/code/DocumentationWeb/publish/publish/DocumentationWeb.runtimeconfig.json
+/home/chicuong/Desktop/code/DocumentationWeb/publish/publish/DocumentationWeb.staticwebassets.endpoints.json
+/home/chicuong/Desktop/code/DocumentationWeb/publish/DocumentationWeb.runtimeconfig.json
+/home/chicuong/Desktop/code/DocumentationWeb/publish/dotnet.js
+/home/chicuong/Desktop/code/DocumentationWeb/publish/web.config

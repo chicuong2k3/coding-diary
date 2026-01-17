@@ -1,0 +1,171 @@
+@using Blake.Types
+
+<div class="search-container @(IsOpen ? "open" : "")">
+    <div class="search-overlay" @onclick="Close"></div>
+    <div class="search-modal">
+        <div class="search-header">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input @ref="_inputRef"
+                   value="@searchTerm"
+                   @oninput="OnSearchInput"
+                   @onkeydown="OnKeyDown"
+                   class="search-input"
+                   placeholder="Search posts..." />
+            <button class="search-close" @onclick="Close">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            <div class="search-results">
+                @if (searchResults.Any())
+                {
+                    @foreach (var result in searchResults.Take(10))
+                    {
+                        <a href="@result.Url" class="search-result" @onclick="Close">
+                            <div class="result-title">@result.Title</div>
+                            @if (!string.IsNullOrEmpty(result.Excerpt))
+                            {
+                                <div class="result-excerpt">@result.Excerpt</div>
+                            }
+                            @if (result.Tags.Any())
+                            {
+                                <div class="result-tags">
+                                    @foreach (var tag in result.Tags.Take(3))
+                                    {
+                                        <span class="result-tag">#@tag</span>
+                                    }
+                                </div>
+                            }
+                        </a>
+                    }
+                }
+                else
+                {
+                    <div class="no-results">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="m21 21-4.35-4.35"/>
+                        </svg>
+                        <p>No results found for "<strong>@searchTerm</strong>"</p>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="search-hint">
+                <p>Type to search posts by title, description, or tags</p>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public bool IsOpen { get; set; }
+    [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
+
+    private ElementReference _inputRef;
+    private string searchTerm = string.Empty;
+    private List<SearchResult> searchResults = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IsOpen)
+        {
+            searchTerm = string.Empty;
+            searchResults.Clear();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (IsOpen)
+        {
+            try
+            {
+                await _inputRef.FocusAsync();
+            }
+            catch { }
+        }
+    }
+
+    private void OnSearchInput(ChangeEventArgs e)
+    {
+        searchTerm = e.Value?.ToString() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            searchResults.Clear();
+            return;
+        }
+
+        searchResults = SearchPages(searchTerm);
+    }
+
+    private async Task OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape")
+        {
+            await Close();
+        }
+    }
+
+    private async Task Close()
+    {
+        searchTerm = string.Empty;
+        searchResults.Clear();
+        await IsOpenChanged.InvokeAsync(false);
+    }
+
+    private List<SearchResult> SearchPages(string term)
+    {
+        return GeneratedContentIndex.GetPages()
+            .Where(p => !p.Draft)
+            .Where(p => p.Title.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+                       p.Description.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+                       p.Tags.Any(t => t.Contains(term, StringComparison.OrdinalIgnoreCase)))
+            .Select(p => new SearchResult
+            {
+                Title = p.Title,
+                Url = p.Slug,
+                Excerpt = p.Description,
+                Tags = p.Tags.ToList()
+            })
+            .OrderByDescending(r => CalculateRelevance(r, term))
+            .ToList();
+    }
+
+    private double CalculateRelevance(SearchResult result, string term)
+    {
+        double score = 0;
+
+        if (result.Title.Contains(term, StringComparison.OrdinalIgnoreCase))
+            score += 10;
+
+        if (result.Title.Equals(term, StringComparison.OrdinalIgnoreCase))
+            score += 20;
+
+        if (result.Tags.Any(t => t.Equals(term, StringComparison.OrdinalIgnoreCase)))
+            score += 15;
+
+        if (result.Tags.Any(t => t.Contains(term, StringComparison.OrdinalIgnoreCase)))
+            score += 5;
+
+        return score;
+    }
+
+    private class SearchResult
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Url { get; set; } = string.Empty;
+        public string Excerpt { get; set; } = string.Empty;
+        public List<string> Tags { get; set; } = new();
+    }
+}

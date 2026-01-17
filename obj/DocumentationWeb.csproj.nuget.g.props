@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
+    <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
+    <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
+    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">/home/chicuong/.nuget/packages/</NuGetPackageRoot>
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">/home/chicuong/.nuget/packages/</NuGetPackageFolders>
+    <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
+    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">7.0.0</NuGetToolVersion>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <SourceRoot Include="/home/chicuong/.nuget/packages/" />
+  </ItemGroup>
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)microsoft.net.sdk.webassembly.pack/10.0.1/build/Microsoft.NET.Sdk.WebAssembly.Pack.props" Condition="Exists('$(NuGetPackageRoot)microsoft.net.sdk.webassembly.pack/10.0.1/build/Microsoft.NET.Sdk.WebAssembly.Pack.props')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.net.illink.tasks/10.0.1/build/Microsoft.NET.ILLink.Tasks.props" Condition="Exists('$(NuGetPackageRoot)microsoft.net.illink.tasks/10.0.1/build/Microsoft.NET.ILLink.Tasks.props')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.aspnetcore.components.webassembly/10.0.1/build/net10.0/Microsoft.AspNetCore.Components.WebAssembly.props" Condition="Exists('$(NuGetPackageRoot)microsoft.aspnetcore.components.webassembly/10.0.1/build/net10.0/Microsoft.AspNetCore.Components.WebAssembly.props')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.aspnetcore.app.internal.assets/10.0.1/build/Microsoft.AspNetCore.App.Internal.Assets.props" Condition="Exists('$(NuGetPackageRoot)microsoft.aspnetcore.app.internal.assets/10.0.1/build/Microsoft.AspNetCore.App.Internal.Assets.props')" />
+    <Import Project="$(NuGetPackageRoot)mathjaxblazor/2.0.1/buildTransitive/MathJaxBlazor.props" Condition="Exists('$(NuGetPackageRoot)mathjaxblazor/2.0.1/buildTransitive/MathJaxBlazor.props')" />
+    <Import Project="$(NuGetPackageRoot)blazorwasmprerendering.build/7.0.0/buildTransitive/BlazorWasmPreRendering.Build.props" Condition="Exists('$(NuGetPackageRoot)blazorwasmprerendering.build/7.0.0/buildTransitive/BlazorWasmPreRendering.Build.props')" />
+    <Import Project="$(NuGetPackageRoot)blazicons/2.2.39/buildTransitive/Blazicons.props" Condition="Exists('$(NuGetPackageRoot)blazicons/2.2.39/buildTransitive/Blazicons.props')" />
+    <Import Project="$(NuGetPackageRoot)blakeplugin.docsrenderer/1.0.15/buildTransitive/BlakePlugin.DocsRenderer.props" Condition="Exists('$(NuGetPackageRoot)blakeplugin.docsrenderer/1.0.15/buildTransitive/BlakePlugin.DocsRenderer.props')" />
+  </ImportGroup>
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <PkgMicrosoft_NET_Sdk_WebAssembly_Pack Condition=" '$(PkgMicrosoft_NET_Sdk_WebAssembly_Pack)' == '' ">/home/chicuong/.nuget/packages/microsoft.net.sdk.webassembly.pack/10.0.1</PkgMicrosoft_NET_Sdk_WebAssembly_Pack>
+    <PkgMicrosoft_NET_ILLink_Tasks Condition=" '$(PkgMicrosoft_NET_ILLink_Tasks)' == '' ">/home/chicuong/.nuget/packages/microsoft.net.illink.tasks/10.0.1</PkgMicrosoft_NET_ILLink_Tasks>
+    <PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer Condition=" '$(PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer)' == '' ">/home/chicuong/.nuget/packages/microsoft.aspnetcore.components.webassembly.devserver/10.0.1</PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer>
+    <PkgBlazorWasmPreRendering_Build Condition=" '$(PkgBlazorWasmPreRendering_Build)' == '' ">/home/chicuong/.nuget/packages/blazorwasmprerendering.build/7.0.0</PkgBlazorWasmPreRendering_Build>
+  </PropertyGroup>
+</Project>

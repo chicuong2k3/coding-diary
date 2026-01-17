@@ -1,0 +1,84 @@
+@inject IJSRuntime JS
+@implements IDisposable
+
+<div class="toc-wrapper">
+    <div class="toc-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="15" y2="18"/>
+        </svg>
+        <span>On this page</span>
+    </div>
+
+    @if (_tocItems.Any())
+    {
+        <nav class="toc-content">
+            <ul class="toc-list">
+                @foreach (var item in _tocItems)
+                {
+                    <li class="toc-item toc-level-@item.Level @(item.Id == _activeId ? "is-active" : "")">
+                        <a href="#@item.Id" @onclick="() => ScrollToHeading(item.Id)" @onclick:preventDefault>
+                            @item.Text
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <div class="toc-empty">
+            <span>No sections</span>
+        </div>
+    }
+</div>
+
+@code {
+    private List<TocItem> _tocItems = new();
+    private string? _activeId;
+    private DotNetObjectReference<TableOfContents>? _objRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _objRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("initToc", _objRef);
+        }
+    }
+
+    private async Task ScrollToHeading(string id)
+    {
+        await JS.InvokeVoidAsync("scrollToHeading", id);
+    }
+
+    [JSInvokable]
+    public void UpdateTocItems(List<TocItem> items)
+    {
+        _tocItems = items;
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void SetActiveHeading(string? id)
+    {
+        if (_activeId != id)
+        {
+            _activeId = id;
+            StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        _objRef?.Dispose();
+    }
+
+    public class TocItem
+    {
+        public string Id { get; set; } = "";
+        public string Text { get; set; } = "";
+        public int Level { get; set; }
+    }
+}

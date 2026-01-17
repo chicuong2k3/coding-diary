@@ -1,0 +1,228 @@
+@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+@code {
+    private bool IsHomePage => Navigation.ToBaseRelativePath(Navigation.Uri).Trim('/') == "";
+    private bool _isDarkTheme = true;
+    private bool _isSearchOpen = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Load saved theme from localStorage
+            var savedTheme = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
+            _isDarkTheme = savedTheme != "light";
+            await ApplyTheme();
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleTheme()
+    {
+        _isDarkTheme = !_isDarkTheme;
+        await ApplyTheme();
+        await JS.InvokeVoidAsync("localStorage.setItem", "theme", _isDarkTheme ? "dark" : "light");
+    }
+
+    private async Task ApplyTheme()
+    {
+        var theme = _isDarkTheme ? "dark" : "light";
+        await JS.InvokeVoidAsync("eval", $"document.documentElement.setAttribute('data-theme', '{theme}')");
+    }
+
+    private void OpenSearch()
+    {
+        _isSearchOpen = true;
+    }
+}
+
+<header class="sakura-header">
+    <div class="sakura-header-inner">
+        <div class="brand-wrap">
+            <a class="brand" href=""><em>Valaxy Theme Sakura</em></a>
+        </div>
+
+        <nav class="main-nav" aria-label="Primary">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/guide/installation">Guide</a></li>
+                <li><a href="/examples">Examples</a></li>
+                <li><a href="/components">Components</a></li>
+                <li><a href="/releases">Releases</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-actions">
+            <div class="icon-row">
+                <button class="icon btn-ghost" title="Language">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/>
+                    </svg>
+                </button>
+                <button class="icon btn-ghost" title="Toggle theme" @onclick="ToggleTheme">
+                    @if (_isDarkTheme)
+                    {
+                        <!-- Moon icon for dark mode -->
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    }
+                    else
+                    {
+                        <!-- Sun icon for light mode -->
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/>
+                            <line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                    }
+                </button>
+                <a class="icon btn-ghost" href="https://github.com/" target="_blank" title="GitHub">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                </a>
+                <button class="icon btn-ghost search-btn" title="Search" @onclick="OpenSearch">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+@if (IsHomePage)
+{
+    <!-- Hero section for homepage -->
+    <section class="hero">
+        <div class="hero-bg" role="img" aria-hidden="true"></div>
+        <div class="hero-inner">
+            <div class="hero-title">VALAXY THEME SAKURA</div>
+            <div class="hero-sub">An open, flexible, and feature-rich Valaxy theme</div>
+        </div>
+        <svg class="hero-wave" viewBox="0 0 1440 100" preserveAspectRatio="none" aria-hidden="true">
+            <path class="wave-path" d="M0,40 Q360,100 720,50 T1440,60 L1440,100 L0,100 Z"/>
+        </svg>
+    </section>
+
+    <!-- Description text -->
+    <section class="description-section">
+        <p class="description-text">Includes almost all features with extensive functionality and style enhancements</p>
+    </section>
+
+    <!-- Features section with 6 cards -->
+    <section class="features-section">
+        <div class="features-inner">
+            <div class="feature-card">
+                <h3>Simple & Elegant</h3>
+                <p>Inspired by the Vue community's progressive philosophy, the blog evolves with user needs. Default styles are minimal, and built-in configurations can be found in the documentation.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Modern</h3>
+                <p>More intelligent configuration. Traditional YAML configuration has been replaced by TypeScript, eliminating redundant comments.</p>
+            </div>
+            <div class="feature-card">
+                <h3>High Performance</h3>
+                <p>Faster build times compared to Hexo; better runtime performance compared to wordpress-theme-sakura.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Refined Styles</h3>
+                <p>Every style and animation has been carefully optimized, balancing accessibility design and modern aesthetics for the best user experience.</p>
+            </div>
+            <div class="feature-card">
+                <h3>MIT Open Source</h3>
+                <p>valaxy-theme-sakura is not a derivative of wordpress-theme-sakura. You can freely modify and create new works without following the GPL license.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Customizable & Flexible</h3>
+                <p>Core layout based on dynamic multi-column design. Users can freely customize components, article layouts, homepage layouts, and more with responsive support.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Logo icons section -->
+    <section class="logos-section">
+        <div class="logo-icon valaxy-logo">
+            <svg width="60" height="60" viewBox="0 0 100 100">
+                <path d="M50 10 L80 80 L50 65 L20 80 Z" fill="#8b5cf6"/>
+            </svg>
+        </div>
+        <div class="logo-icon sakura-logo">
+            <svg width="60" height="60" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="8" fill="#ec4899"/>
+                <g fill="#f472b6">
+                    <ellipse cx="50" cy="25" rx="12" ry="20"/>
+                    <ellipse cx="50" cy="75" rx="12" ry="20"/>
+                    <ellipse cx="25" cy="50" rx="20" ry="12"/>
+                    <ellipse cx="75" cy="50" rx="20" ry="12"/>
+                    <ellipse cx="32" cy="32" rx="12" ry="18" transform="rotate(-45 32 32)"/>
+                    <ellipse cx="68" cy="32" rx="12" ry="18" transform="rotate(45 68 32)"/>
+                    <ellipse cx="32" cy="68" rx="12" ry="18" transform="rotate(45 32 68)"/>
+                    <ellipse cx="68" cy="68" rx="12" ry="18" transform="rotate(-45 68 68)"/>
+                </g>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Built with Valaxy section -->
+    <section class="valaxy-section">
+        <h2>Built with Valaxy</h2>
+        <p class="valaxy-subtitle">A modern blog framework ensuring the simplest usage<br/>and best user experience</p>
+        <a href="/guide/installation" class="btn-start">Get Started</a>
+    </section>
+}
+else
+{
+    <!-- Sub-navigation for documentation pages -->
+    <nav class="sub-nav">
+        <div class="sub-nav-inner">
+            <div class="sub-nav-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                    <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                </svg>
+                <span>Guide</span>
+            </div>
+            <ul class="sub-nav-links">
+                <li><a href="/guide/installation">Installation</a></li>
+                <li><a href="/guide/update">Update</a></li>
+                <li><a href="/guide/theme-config">Theme Config</a></li>
+                <li><a href="/guide/site-config">Site Config</a></li>
+                <li><a href="/guide/frontmatter">Frontmatter</a></li>
+                <li><a href="/guide/special-pages">Special Pages</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page sakura-page">
+        <aside class="left-sidebar">
+            <div class="sidebar-tags">
+                <TagCloud/>
+            </div>
+        </aside>
+
+        <main class="doc-main">
+            <article class="content">
+                @Body
+            </article>
+        </main>
+
+        <aside class="toc-sidebar">
+            <TableOfContents />
+        </aside>
+    </div>
+}
+
+<SiteSearch @bind-IsOpen="_isSearchOpen" />
+
+  
