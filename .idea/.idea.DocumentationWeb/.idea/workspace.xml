@@ -15,8 +15,13 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_/home/chicuong/Desktop/code/DocumentationWeb" value="38LnEwhhNIYUGtV0GZJeVM8oGjS" />
+    </persistenceIdMap>
+  </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="1" />
+    <option name="cachedIndexableFilesCount" value="2" />
   </component>
   <component name="Git.Settings">
     <option name="PUSH_AUTO_UPDATE" value="true" />
@@ -146,6 +151,7 @@
       <workItem from="1768592351256" duration="15000" />
       <workItem from="1768592404004" duration="51484000" />
       <workItem from="1768677426413" duration="209000" />
+      <workItem from="1768677968711" duration="139000" />
     </task>
     <task id="LOCAL-00001" summary="update workflow">
       <option name="closed" value="true" />
@@ -267,7 +273,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768677557407</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="udpate tags">
+      <option name="closed" value="true" />
+      <created>1768678063778</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1768678063778</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -287,7 +301,8 @@
     <MESSAGE value="test" />
     <MESSAGE value="update" />
     <MESSAGE value="update url" />
-    <option name="LAST_COMMIT_MESSAGE" value="update url" />
+    <MESSAGE value="udpate tags" />
+    <option name="LAST_COMMIT_MESSAGE" value="udpate tags" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
