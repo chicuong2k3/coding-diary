@@ -81,6 +81,19 @@ jobs:
             exit 1
           fi
 
+      - name: Create SPA 404 fallback
+        # Copy the patched index.html to 404.html so GitHub Pages serves the SPA for deep links.
+        run: |
+          set -euo pipefail
+          INDEX="publish/wwwroot/index.html"
+          FALLBACK="publish/wwwroot/404.html"
+          if [ -f "$INDEX" ]; then
+            cp "$INDEX" "$FALLBACK"
+            echo "Created $FALLBACK"
+          else
+            echo "::warning::Index file not found; cannot create 404.html"
+          fi
+
       - name: Ensure .nojekyll (prevent Jekyll from ignoring _framework)
         run: |
           mkdir -p publish/wwwroot
@@ -104,71 +117,30 @@ jobs:
             exit 0
           fi
 
-          echo "Rewriting root-relative links to prefix with BASE_HREF=$BASE_HREF (Python)"
+          echo "Rewriting root-relative links to prefix with BASE_HREF=$BASE_HREF (Python script)"
 
-          python3 - <<'PY'
-import os, re, sys
-base = os.environ.get('BASE_HREF', '/')
-root = 'publish/wwwroot'
-if not os.path.isdir(root):
-    print('publish/wwwroot not found; nothing to rewrite')
-    sys.exit(0)
-
-# patterns
-pat_attr = re.compile(r'(?P<prefix>\b(?:href|src|action)\s*=\s*)(?P<q>["\'])/(?P<path>[^"\'>\s]+)(?P=q)', flags=re.IGNORECASE)
-pat_url = re.compile(r'(url\(\s*)(?P<q>["\']?)/(?P<path>[^)"\']+)(?P<q2>["\']?\s*\))', flags=re.IGNORECASE)
-
-for dirpath, dirs, files in os.walk(root):
-    for fn in files:
-        if not (fn.endswith('.html') or fn.endswith('.css') or fn.endswith('.js')):
-            continue
-        path = os.path.join(dirpath, fn)
-        try:
-            text = open(path, 'rb').read().decode('utf-8')
-        except Exception:
-            # skip non-text files
-            continue
-        # protect first <base ...> tag (if any)
-        m = re.search(r'<base\b[^>]*>', text, flags=re.IGNORECASE)
-        base_tag = None
-        placeholder = '__BASE_TAG_PLACEHOLDER__'
-        if m:
-            base_tag = m.group(0)
-            text = text.replace(base_tag, placeholder, 1)
-
-        def repl_attr(m):
-            pfx = m.group('prefix')
-            q = m.group('q')
-            path_tail = m.group('path')
-            # if already starts with base (strip leading / from base)
-            base_no_lead = base.lstrip('/')
-            if path_tail.startswith(base_no_lead):
-                return m.group(0)  # leave unchanged
-            return f"{pfx}{q}{base}{path_tail}{q}"
-
-        def repl_url(m):
-            p1 = m.group(1)
-            q = m.group('q')
-            path_tail = m.group('path')
-            base_no_lead = base.lstrip('/')
-            if path_tail.startswith(base_no_lead):
-                return m.group(0)
-            return f"{p1}{q}{base}{path_tail}{m.group('q2')}"
-
-        new = pat_attr.sub(repl_attr, text)
-        new = pat_url.sub(repl_url, new)
-
-        # restore base tag if it was protected
-        if base_tag:
-            new = new.replace(placeholder, base_tag, 1)
-
-        if new != text:
-            open(path, 'w', encoding='utf-8').write(new)
-print('Python rewrite completed')
-PY
+          # Call the extracted rewrite script which reads BASE_HREF from the environment
+          python3 scripts/rewrite_base_href.py
 
           echo "Rewrite complete. Sample changes (grep for rewritten hrefs):"
           grep -R --line-number --include='*.html' --include='*.css' --include='*.js' "${BASE_HREF#/}" publish/wwwroot || true
+
+      - name: Verify SPA fallback
+        # Ensure publish/wwwroot/404.html exists and has the <base> tag so deep links work on GitHub Pages
+        run: |
+          set -euo pipefail
+          FALLBACK="publish/wwwroot/404.html"
+          if [ ! -f "$FALLBACK" ]; then
+            echo "::error::Missing 404.html fallback"
+            ls -la publish/wwwroot | sed -n '1,200p'
+            exit 1
+          fi
+          if ! grep -qi '<base' "$FALLBACK"; then
+            echo "::error::404.html missing <base> tag"
+            sed -n '1,120p' "$FALLBACK" || true
+            exit 1
+          fi
+          echo "404.html present and contains base tag."
 
       - name: Smoke-check built assets
         run: |

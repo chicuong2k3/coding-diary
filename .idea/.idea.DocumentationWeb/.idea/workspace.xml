@@ -9,50 +9,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1b708014-c583-4fb8-acc0-ca5a6987b3e5" name="Changes" comment="initialize Blazor WebAssembly project with documentation theme, math support, and tag navigation">
-      <change beforePath="$PROJECT_DIR$/bin/Release/net10.0/DocumentationWeb.dll" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Release/net10.0/DocumentationWeb.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Release/net10.0/DocumentationWeb.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Release/net10.0/DocumentationWeb.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Release/net10.0/DocumentationWeb.staticwebassets.endpoints.json" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Release/net10.0/DocumentationWeb.staticwebassets.endpoints.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Release/net10.0/DocumentationWeb.staticwebassets.runtime.json" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Release/net10.0/DocumentationWeb.staticwebassets.runtime.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Release/net10.0/publish/DocumentationWeb.staticwebassets.endpoints.json" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Release/net10.0/publish/DocumentationWeb.staticwebassets.endpoints.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Release/net10.0/wwwroot/_framework/DocumentationWeb.evjsoznsoi.pdb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Release/net10.0/wwwroot/_framework/DocumentationWeb.evjsoznsoi.pdb.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Release/net10.0/wwwroot/_framework/DocumentationWeb.gcaqok3w4k.wasm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Release/net10.0/wwwroot/_framework/DocumentationWeb.gcaqok3w4k.wasm.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Release/net10.0/wwwroot/_framework/dotnet.uwaju2a97g.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Release/net10.0/wwwroot/_framework/dotnet.uwaju2a97g.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/DocumentationWeb.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/DocumentationWeb.AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/DocumentationWeb.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/DocumentationWeb.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/DocumentationWeb.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/DocumentationWeb.csproj.FileListAbsolute.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/DocumentationWeb.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/DocumentationWeb.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/DocumentationWeb.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/DocumentationWeb.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/DocumentationWeb.sourcelink.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/DocumentationWeb.sourcelink.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/compressed/11cqfebwyy-{0}-gcaqok3w4k-gcaqok3w4k.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/compressed/7mdjpx4kts-{0}-evjsoznsoi-evjsoznsoi.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/compressed/ar9htul8q2-{0}-xpr6idccxb-xpr6idccxb.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/compressed/xvkt4owrxk-{0}-uwaju2a97g-uwaju2a97g.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/dotnet.js" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/dotnet.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/linked/DocumentationWeb.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/linked/DocumentationWeb.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/linked/DocumentationWeb.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/linked/DocumentationWeb.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/publish.dotnet.js" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/publish.dotnet.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/rbcswa.dswa.cache.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/rbcswa.dswa.cache.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/ref/DocumentationWeb.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/ref/DocumentationWeb.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/refint/DocumentationWeb.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/refint/DocumentationWeb.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/rjimswa.dswa.cache.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/rjimswa.dswa.cache.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/rjsmcshtml.dswa.cache.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/rjsmcshtml.dswa.cache.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/rjsmrazor.dswa.cache.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/rjsmrazor.dswa.cache.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/rpswa.dswa.cache.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/rpswa.dswa.cache.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets.build.endpoints.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets.build.endpoints.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets.build.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets.build.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets.build.json.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets.build.json.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets.development.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets.development.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets.publish.endpoints.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets.publish.endpoints.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets.publish.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets.publish.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets/htmlassetplaceholders/build/fbx2gweaps.html" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets/htmlassetplaceholders/build/fbx2gweaps.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets/htmlassetplaceholders/publish/fbx2gweaps.html" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/staticwebassets/htmlassetplaceholders/publish/fbx2gweaps.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/webcil/DocumentationWeb.wasm" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/webcil/DocumentationWeb.wasm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Release/net10.0/webcil/publish/DocumentationWeb.wasm" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Release/net10.0/webcil/publish/DocumentationWeb.wasm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wwwroot/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/wwwroot/index.html" afterDir="false" />
+    <list default="true" id="1b708014-c583-4fb8-acc0-ca5a6987b3e5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.DocumentationWeb/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DocumentationWeb/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +31,7 @@
 }]]></component>
   <component name="GithubPullRequestsUISettings"><![CDATA[{
   "selectedUrlAndAccountId": {
-    "url": "https://github.com/chicuong2k3/DocumentationWebDocumentationWeb.git",
+    "url": "https://github.com/chicuong2k3/coding-diary.git",
     "accountId": "1c75edb8-2023-4a5a-ad49-4aac1e097f6b"
   }
 }]]></component>
@@ -89,6 +47,9 @@
   &quot;associatedIndex&quot;: 0
 }</component>
   <component name="ProjectId" id="38LnEwhhNIYUGtV0GZJeVM8oGjS" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -178,8 +139,17 @@
       <updated>1768587614962</updated>
       <workItem from="1768587619723" duration="1601000" />
       <workItem from="1768592351256" duration="15000" />
-      <workItem from="1768592404004" duration="17871000" />
+      <workItem from="1768592404004" duration="21087000" />
     </task>
+    <task id="LOCAL-00001" summary="update workflow">
+      <option name="closed" value="true" />
+      <created>1768631328524</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1768631328524</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -190,7 +160,8 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="initialize Blazor WebAssembly project with documentation theme, math support, and tag navigation" />
-    <option name="LAST_COMMIT_MESSAGE" value="initialize Blazor WebAssembly project with documentation theme, math support, and tag navigation" />
+    <MESSAGE value="update workflow" />
+    <option name="LAST_COMMIT_MESSAGE" value="update workflow" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
