@@ -17,6 +17,9 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0       # needed so we can push back to main
+          persist-credentials: true
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
@@ -44,14 +47,38 @@ jobs:
 
       - name: Patch index.html base href
         run: |
-          BASE_HREF="${{ steps.basehref.outputs.BASE_HREF }}"
+          set -euo pipefail
+          export BASE_HREF="${{ steps.basehref.outputs.BASE_HREF }}"
           INDEX="publish/wwwroot/index.html"
+
           if [ -f "$INDEX" ]; then
-            if grep -q "<base href=" "$INDEX"; then
-              perl -0777 -pe "s|<base href=\"[^\"]*\" */?>|<base href=\"${BASE_HREF}\" />|s" -i "$INDEX"
-            else
-              perl -0777 -pe "s|<head>|<head>\n    <base href=\"${BASE_HREF}\" />|s" -i "$INDEX"
+            echo "=== index.html before patch (head snippet) ==="
+            sed -n '1,120p' "$INDEX" || true
+
+            # Backup for safety and investigation
+            cp "$INDEX" "$INDEX.bak.$(date +%s)"
+            ls -l "$INDEX" "$INDEX.bak."* || true
+
+            # Robust perl: slurp file, remove any existing <base ...> tag (case-insensitive),
+            # then insert a single <base href="$BASE_HREF" /> immediately after the opening <head> tag.
+            perl -0777 -i -pe '
+              s{(<head\b[^>]*>)(.*?)(</head>)}{
+                my $open=$1; my $inner=$2; my $close=$3;
+                $inner =~ s{<base\b[^>]*>}{}isi;
+                $open . $inner . "\n  <base href=\"$ENV{BASE_HREF}\" />" . $close
+              }sgei' "$INDEX"
+
+            echo "=== index.html after patch (head snippet) ==="
+            sed -n '1,120p' "$INDEX" || true
+
+            # Ensure the base tag is present; fail early if not
+            if ! grep -qi '<base' "$INDEX"; then
+              echo "::error::Base tag missing after patch"
+              exit 1
             fi
+          else
+            echo "::warning::Index file not found at $INDEX"
+            exit 1
           fi
 
       - name: Ensure .nojekyll (prevent Jekyll from ignoring _framework)
@@ -68,21 +95,59 @@ jobs:
         run: |
           ls -la publish/wwwroot | sed -n '1,200p'
 
-      - name: Deploy to gh-pages branch (peaceiris/actions-gh-pages)
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          # Prefer a Personal Access Token (GH_PAGES_PAT) if you set it in repository secrets.
-          # If you don't set GH_PAGES_PAT, the action will fall back to using the GITHUB_TOKEN.
-          personal_token: ${{ secrets.GH_PAGES_PAT }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./publish/wwwroot
-          publish_branch: gh-pages
-          user_name: github-actions[bot]
-          user_email: 41898282+github-actions[bot]@users.noreply.github.com
-          allow_empty_commit: true
+      - name: Smoke-check built assets
+        run: |
+          echo "Checking key files exist in publish/wwwroot..."
+          set -euo pipefail
+          # Use wildcard presence checks because hashes can change
+          if ! ls publish/wwwroot/_framework/blazor.webassembly*.js 1>/dev/null 2>&1; then
+            echo "::error::Missing blazor.webassembly.*.js"
+            ls -la publish/wwwroot/_framework | sed -n '1,200p'
+            exit 1
+          fi
+          if ! ls publish/wwwroot/_content/Blazicons/Blazicons.*.bundle.scp.css 1>/dev/null 2>&1; then
+            echo "::error::Missing Blazicons CSS"
+            ls -la publish/wwwroot/_content/Blazicons | sed -n '1,200p'
+            exit 1
+          fi
+          echo "Smoke-check passed: key files present."
+
+      - name: Deploy to main/docs (publish folder)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          echo "Preparing docs/ for deployment on branch 'main'"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Ensure we have the latest main
+          git fetch origin main
+          git checkout main
+
+          # Replace docs/ with publish output
+          rm -rf docs || true
+          mkdir -p docs
+          cp -a publish/wwwroot/. docs/
+
+          # ensure .nojekyll exists at site root
+          touch docs/.nojekyll
+
+          # Stage and commit changes
+          git add -A docs
+
+          if git diff --cached --quiet; then
+            echo "No changes to deploy"
+          else
+            git commit -m "Deploy: update docs from CI (publish/wwwroot)"
+            git push origin main
+          fi
 
 # Notes:
-# 1) If deployment previously failed with permission/branch-protection errors, create a PAT
-#    with `repo` scope and add it as repository secret named GH_PAGES_PAT.
-# 2) After adding the secret, re-run the workflow (Actions -> Build and deploy -> Re-run jobs).
-# 3) If gh-pages branch is protected, allow GitHub Actions or use PAT with permissions to push.
+# - This workflow writes deployment output into the `docs/` folder on `main` so GitHub Pages
+#   can serve the site from main/docs (Settings → Pages → Source: main / docs).
+# - Ensure Pages in the repository settings is configured to use the `main` branch and the
+#   `/docs` folder as the publishing source after the workflow runs.
+# - If your repo has branch protection on main, you might need a PAT (GH_PAGES_PAT) with
+#   push permissions; adjust the git push command to use that token if necessary.
