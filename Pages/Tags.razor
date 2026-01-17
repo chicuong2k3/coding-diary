@@ -166,18 +166,18 @@
     private void ClearAll()
     {
         _selectedTags.Clear();
-        Navigation.NavigateTo("/tags");
+        Navigation.NavigateTo("tags");
     }
 
     private void NavigateToTags()
     {
         if (!_selectedTags.Any())
         {
-            Navigation.NavigateTo("/tags");
+            Navigation.NavigateTo("tags");
             return;
         }
 
         var query = string.Join("&", _selectedTags.Select(t => $"t={Uri.EscapeDataString(t)}"));
-        Navigation.NavigateTo($"/tags?{query}");
+        Navigation.NavigateTo($"tags?{query}");
     }
 }
