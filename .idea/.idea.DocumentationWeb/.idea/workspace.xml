@@ -9,8 +9,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1b708014-c583-4fb8-acc0-ca5a6987b3e5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.DocumentationWeb/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DocumentationWeb/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="1b708014-c583-4fb8-acc0-ca5a6987b3e5" name="Changes" comment="update">
+      <change afterPath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.sc2h57dyec.wasm.br" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.sc2h57dyec.wasm.gz" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_framework/dotnet.bum0gb8r76.js.br" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy-pages.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy-pages.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.k2txyitgaa.wasm" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.sc2h57dyec.wasm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.k2txyitgaa.wasm.br" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.k2txyitgaa.wasm.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.n1galiedg5.wasm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.n1galiedg5.wasm.br" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.n1galiedg5.wasm.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_framework/dotnet.mp413n3b6s.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_framework/dotnet.mp413n3b6s.js.br" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_framework/dotnet.mp413n3b6s.js.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_framework/dotnet.z4vdhm3etg.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_framework/dotnet.bum0gb8r76.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_framework/dotnet.z4vdhm3etg.js.br" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_framework/dotnet.z4vdhm3etg.js.gz" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_framework/dotnet.bum0gb8r76.js.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/index.html.bak.1768632387" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index.html.bak.1768637229" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +37,7 @@
     <option name="cachedIndexableFilesCount" value="2" />
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory"><![CDATA[{
@@ -139,7 +156,7 @@
       <updated>1768587614962</updated>
       <workItem from="1768587619723" duration="1601000" />
       <workItem from="1768592351256" duration="15000" />
-      <workItem from="1768592404004" duration="21087000" />
+      <workItem from="1768592404004" duration="28283000" />
     </task>
     <task id="LOCAL-00001" summary="update workflow">
       <option name="closed" value="true" />
@@ -149,7 +166,47 @@
       <option name="project" value="LOCAL" />
       <updated>1768631328524</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="update yml">
+      <option name="closed" value="true" />
+      <created>1768633438137</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1768633438137</updated>
+    </task>
+    <task id="LOCAL-00003" summary="rewrite urls">
+      <option name="closed" value="true" />
+      <created>1768633797234</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1768633797234</updated>
+    </task>
+    <task id="LOCAL-00004" summary="update workflow">
+      <option name="closed" value="true" />
+      <created>1768634451161</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1768634451161</updated>
+    </task>
+    <task id="LOCAL-00005" summary="update workflow">
+      <option name="closed" value="true" />
+      <created>1768637148160</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1768637148160</updated>
+    </task>
+    <task id="LOCAL-00006" summary="update">
+      <option name="closed" value="true" />
+      <created>1768639046998</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1768639046998</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -160,8 +217,12 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="initialize Blazor WebAssembly project with documentation theme, math support, and tag navigation" />
+    <MESSAGE value="update yml" />
+    <MESSAGE value="rewrite urls" />
     <MESSAGE value="update workflow" />
-    <option name="LAST_COMMIT_MESSAGE" value="update workflow" />
+    <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;docs/404.html&#10;#&#9;docs/blog/sample-post/index.html&#10;#&#9;docs/blog/sample-post/index.html.br&#10;#&#9;docs/blog/sample-post/index.html.gz&#10;#&#9;docs/blog/sample2/index.html&#10;#&#9;docs/blog/sample2/index.html.br&#10;#&#9;docs/blog/sample2/index.html.gz&#10;#&#9;docs/coding-diary/index.html&#10;#&#9;docs/coding-diary/index.html.br&#10;#&#9;docs/coding-diary/index.html.gz&#10;#&#9;docs/components/index.html&#10;#&#9;docs/components/index.html.br&#10;#&#9;docs/components/index.html.gz&#10;#&#9;docs/examples/index.html&#10;#&#9;docs/examples/index.html.br&#10;#&#9;docs/examples/index.html.gz&#10;#&#9;docs/guide/frontmatter/index.html&#10;#&#9;docs/guide/frontmatter/index.html.br&#10;#&#9;docs/guide/frontmatter/index.html.gz&#10;#&#9;docs/guide/installation/index.html&#10;#&#9;docs/guide/installation/index.html.br&#10;#&#9;docs/guide/installation/index.html.gz&#10;#&#9;docs/guide/site-config/index.html&#10;#&#9;docs/guide/site-config/index.html.br&#10;#&#9;docs/guide/site-config/index.html.gz&#10;#&#9;docs/guide/special-pages/index.html&#10;#&#9;docs/guide/special-pages/index.html.br&#10;#&#9;docs/guide/special-pages/index.html.gz&#10;#&#9;docs/guide/theme-config/index.html&#10;#&#9;docs/guide/theme-config/index.html.br&#10;#&#9;docs/guide/theme-config/index.html.gz&#10;#&#9;docs/guide/update/index.html&#10;#&#9;docs/guide/update/index.html.br&#10;#&#9;docs/guide/update/index.html.gz&#10;#&#9;docs/index.html&#10;#&#9;docs/index.html.br&#10;#&#9;docs/index.html.gz&#10;#&#9;docs/releases/index.html&#10;#&#9;docs/releases/index.html.br&#10;#&#9;docs/releases/index.html.gz&#10;#&#9;docs/tags/algebra/index.html&#10;#&#9;docs/tags/algebra/index.html.br&#10;#&#9;docs/tags/algebra/index.html.gz&#10;#&#9;docs/tags/career/index.html&#10;#&#9;docs/tags/career/index.html.br&#10;#&#9;docs/tags/career/index.html.gz&#10;#&#9;docs/tags/community/index.html&#10;#&#9;docs/tags/community/index.html.br&#10;#&#9;docs/tags/community/index.html.gz&#10;#&#9;docs/tags/machine-learning/index.html&#10;#&#9;docs/tags/machine-learning/index.html.br&#10;#&#9;docs/tags/machine-learning/index.html.gz&#10;#&#9;docs/tags/non-technical/index.html&#10;#&#9;docs/tags/non-technical/index.html.br&#10;#&#9;docs/tags/non-technical/index.html.gz&#10;#&#9;docs/tags/personal/index.html&#10;#&#9;docs/tags/personal/index.html.br&#10;#&#9;docs/tags/personal/index.html.gz" />
+    <MESSAGE value="update" />
+    <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

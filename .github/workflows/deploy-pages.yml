@@ -108,23 +108,6 @@ jobs:
         run: |
           ls -la publish/wwwroot | sed -n '1,200p'
 
-      - name: Rewrite root-relative links to include BASE_HREF
-        run: |
-          set -euo pipefail
-          export BASE_HREF="${{ steps.basehref.outputs.BASE_HREF }}"
-          if [ "$BASE_HREF" = "/" ]; then
-            echo "BASE_HREF is '/'; no rewrite needed"
-            exit 0
-          fi
-
-          echo "Rewriting root-relative links to prefix with BASE_HREF=$BASE_HREF (Python script)"
-
-          # Call the extracted rewrite script which reads BASE_HREF from the environment
-          python3 scripts/rewrite_base_href.py
-
-          echo "Rewrite complete. Sample changes (grep for rewritten hrefs):"
-          grep -R --line-number --include='*.html' --include='*.css' --include='*.js' "${BASE_HREF#/}" publish/wwwroot || true
-
       - name: Verify SPA fallback
         # Ensure publish/wwwroot/404.html exists and has the <base> tag so deep links work on GitHub Pages
         run: |
