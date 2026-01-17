@@ -11,7 +11,7 @@
     <div class="tag-cloud">
         @foreach (var tag in GetWeightedTags())
         {
-            <a href="/tags/@tag.Name.ToLowerInvariant()"
+            <a href="tags/@tag.Name.ToLowerInvariant()"
                class="tag-cloud-item"
                style="--tag-weight: @tag.Weight.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);">
                 <span class="tag-name">#@tag.Name</span>

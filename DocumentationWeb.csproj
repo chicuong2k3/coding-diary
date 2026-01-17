@@ -32,6 +32,7 @@
     <Content Remove="**/cascading-template.razor" />
     <Compile Remove="**/cascading-template.razor" />
     <None Include="**/cascading-template.razor" />
+    <None Remove="scripts\rewrite_base_href.py" />
   </ItemGroup>
 
 

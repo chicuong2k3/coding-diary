@@ -23,7 +23,7 @@
         {
             @foreach (var post in filteredPosts)
             {
-                <a href="@post.Slug" class="post-card">
+                <a href="@post.Slug.TrimStart('/')" class="post-card">
                     <div class="post-card-content">
                         <h2 class="post-title">@post.Title</h2>
                         @if (!string.IsNullOrEmpty(post.Description))
@@ -50,7 +50,7 @@
         {
             <div class="no-posts">
                 <p>No posts found with tag "<strong>@TagName</strong>"</p>
-                <a href="/" class="btn-back">Back to Home</a>
+                <a href="" class="btn-back">Back to Home</a>
             </div>
         }
     </div>
@@ -60,7 +60,7 @@
         <div class="tag-list">
             @foreach (var tag in allTags)
             {
-                <a href="/tags/@tag.ToLowerInvariant()"
+                <a href="tags/@tag.ToLowerInvariant()"
                    class="tag-link @(tag.Equals(TagName, StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                     #@tag
                 </a>

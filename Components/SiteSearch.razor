@@ -134,7 +134,7 @@
             .Select(p => new SearchResult
             {
                 Title = p.Title,
-                Url = p.Slug,
+                Url = p.Slug.TrimStart('/'),
                 Excerpt = p.Description,
                 Tags = p.Tags.ToList()
             })
