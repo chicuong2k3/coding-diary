@@ -1,4 +1,0 @@
-/home/chicuong/Desktop/code/DocumentationWeb/bin/Release/net10.0/publish/wwwroot/index.html
-/home/chicuong/Desktop/code/DocumentationWeb/bin/Release/net10.0/publish/DocumentationWeb.runtimeconfig.json
-/home/chicuong/Desktop/code/DocumentationWeb/bin/Release/net10.0/publish/dotnet.js
-/home/chicuong/Desktop/code/DocumentationWeb/bin/Release/net10.0/publish/web.config
