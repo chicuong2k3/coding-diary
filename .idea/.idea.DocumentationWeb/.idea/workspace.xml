@@ -9,47 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1b708014-c583-4fb8-acc0-ca5a6987b3e5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Components/MermaidContainer.razor" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wwwroot/favicon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wwwroot/images/Felix_Argyle_Scared_By_JavaScript_The_Good_Parts.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wwwroot/images/Kaguya_Shinomiya_Exceptional_C.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wwwroot/images/Kobayashi_Holds_9_Algorithms_That_Changed_The_World.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wwwroot/images/Minori_Hanasato_Programming_Rust.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wwwroot/images/Professor_Shinonome_Finds_SICP.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.generated/GeneratedContentIndex.cs" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/GeneratedContentIndex.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan1.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan1.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan2.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan2.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan3.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan3.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan4.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan4.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.generated/pages/blog/LapTrinhMangPhan1.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/LapTrinhMangPhan1.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.generated/pages/blog/Sample2.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/Sample2.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.generated/pages/blog/SamplePost.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/SamplePost.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.generated/pages/blog/Webhook.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/Webhook.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.DocumentationWeb/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DocumentationWeb/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Components/SiteSearch.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Components/SiteSearch.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Components/TableOfContents.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Components/TableOfContents.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Components/TagCloud.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Components/TagCloud.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DocumentationWeb.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/DocumentationWeb.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Layout/MainLayout.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Layout/MainLayout.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Layout/MainLayout.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Layout/MainLayout.razor.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pages/About.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/About.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-1.md" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-1.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-2.md" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-2.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-3.md" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-3.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-4.md" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-4.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pages/Blog/sample-post.md" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Blog/math-for-machine-learning.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pages/Blog/sample2.md" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Blog/sample2.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pages/Blog/template.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Blog/template.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pages/Home.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Home.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pages/Sitemap.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Sitemap.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pages/Tags.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Tags.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/css/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/docs/css/app.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wwwroot/css/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/wwwroot/css/app.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wwwroot/favicon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wwwroot/icon-192.png" beforeDir="false" afterPath="$PROJECT_DIR$/wwwroot/icon-192.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wwwroot/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/wwwroot/index.html" afterDir="false" />
-    </list>
+    <list default="true" id="1b708014-c583-4fb8-acc0-ca5a6987b3e5" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -62,18 +22,18 @@
     <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "chicuong2k3"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;chicuong2k3&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/chicuong2k3/coding-diary.git",
-    "accountId": "1c75edb8-2023-4a5a-ad49-4aac1e097f6b"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/chicuong2k3/coding-diary.git&quot;,
+    &quot;accountId&quot;: &quot;1c75edb8-2023-4a5a-ad49-4aac1e097f6b&quot;
   }
-}]]></component>
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Components/MermaidContainer.razor" root0="FORCE_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Pages/About.razor" root0="FORCE_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
@@ -99,27 +59,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/home/chicuong/Desktop/code/DocumentationWeb",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/chicuong/Desktop/code/DocumentationWeb&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.DocumentationWeb: http">
     <configuration name="DocumentationWeb" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -184,7 +144,7 @@
       <updated>1768587614962</updated>
       <workItem from="1768587619723" duration="1601000" />
       <workItem from="1768592351256" duration="15000" />
-      <workItem from="1768592404004" duration="51226000" />
+      <workItem from="1768592404004" duration="51484000" />
     </task>
     <task id="LOCAL-00001" summary="update workflow">
       <option name="closed" value="true" />
@@ -282,7 +242,23 @@
       <option name="project" value="LOCAL" />
       <updated>1768649288944</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="update">
+      <option name="closed" value="true" />
+      <created>1768677002234</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1768677002234</updated>
+    </task>
+    <task id="LOCAL-00014" summary="update">
+      <option name="closed" value="true" />
+      <created>1768677029969</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1768677029969</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -299,9 +275,9 @@
     <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;docs/404.html&#10;#&#9;docs/blog/sample-post/index.html&#10;#&#9;docs/blog/sample-post/index.html.br&#10;#&#9;docs/blog/sample-post/index.html.gz&#10;#&#9;docs/blog/sample2/index.html&#10;#&#9;docs/blog/sample2/index.html.br&#10;#&#9;docs/blog/sample2/index.html.gz&#10;#&#9;docs/coding-diary/index.html&#10;#&#9;docs/coding-diary/index.html.br&#10;#&#9;docs/coding-diary/index.html.gz&#10;#&#9;docs/components/index.html&#10;#&#9;docs/components/index.html.br&#10;#&#9;docs/components/index.html.gz&#10;#&#9;docs/examples/index.html&#10;#&#9;docs/examples/index.html.br&#10;#&#9;docs/examples/index.html.gz&#10;#&#9;docs/guide/frontmatter/index.html&#10;#&#9;docs/guide/frontmatter/index.html.br&#10;#&#9;docs/guide/frontmatter/index.html.gz&#10;#&#9;docs/guide/installation/index.html&#10;#&#9;docs/guide/installation/index.html.br&#10;#&#9;docs/guide/installation/index.html.gz&#10;#&#9;docs/guide/site-config/index.html&#10;#&#9;docs/guide/site-config/index.html.br&#10;#&#9;docs/guide/site-config/index.html.gz&#10;#&#9;docs/guide/special-pages/index.html&#10;#&#9;docs/guide/special-pages/index.html.br&#10;#&#9;docs/guide/special-pages/index.html.gz&#10;#&#9;docs/guide/theme-config/index.html&#10;#&#9;docs/guide/theme-config/index.html.br&#10;#&#9;docs/guide/theme-config/index.html.gz&#10;#&#9;docs/guide/update/index.html&#10;#&#9;docs/guide/update/index.html.br&#10;#&#9;docs/guide/update/index.html.gz&#10;#&#9;docs/index.html&#10;#&#9;docs/index.html.br&#10;#&#9;docs/index.html.gz&#10;#&#9;docs/releases/index.html&#10;#&#9;docs/releases/index.html.br&#10;#&#9;docs/releases/index.html.gz&#10;#&#9;docs/tags/algebra/index.html&#10;#&#9;docs/tags/algebra/index.html.br&#10;#&#9;docs/tags/algebra/index.html.gz&#10;#&#9;docs/tags/career/index.html&#10;#&#9;docs/tags/career/index.html.br&#10;#&#9;docs/tags/career/index.html.gz&#10;#&#9;docs/tags/community/index.html&#10;#&#9;docs/tags/community/index.html.br&#10;#&#9;docs/tags/community/index.html.gz&#10;#&#9;docs/tags/machine-learning/index.html&#10;#&#9;docs/tags/machine-learning/index.html.br&#10;#&#9;docs/tags/machine-learning/index.html.gz&#10;#&#9;docs/tags/non-technical/index.html&#10;#&#9;docs/tags/non-technical/index.html.br&#10;#&#9;docs/tags/non-technical/index.html.gz&#10;#&#9;docs/tags/personal/index.html&#10;#&#9;docs/tags/personal/index.html.br&#10;#&#9;docs/tags/personal/index.html.gz" />
     <MESSAGE value="remove simd" />
     <MESSAGE value="install wasmtools" />
-    <MESSAGE value="update" />
     <MESSAGE value="test" />
-    <option name="LAST_COMMIT_MESSAGE" value="test" />
+    <MESSAGE value="update" />
+    <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
