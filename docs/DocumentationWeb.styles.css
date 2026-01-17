@@ -6,11 +6,123 @@
     --content-max-width: 900px;
     --max-site-width: 1400px;
     --header-height: 52px;
+    /* extra hero height so background extends below viewport; tweak this value to move background down/up */
+    --hero-extra: 180px;
+    /* hero background slideshow duration (lower = faster) */
+    --hero-bg-duration: 6s;
+    /* peak opacity for each image */
+    --hero-bg-peak: 0.55;
+    /* hero background visible height (use px or vh). Default: 50vh (half viewport) */
+    --hero-bg-height: 80vh;
 }
 
 body[b-qjr5eoji3o], .page[b-qjr5eoji3o], article.content[b-qjr5eoji3o], .features-section[b-qjr5eoji3o], .hero-inner[b-qjr5eoji3o] {
     font-family: var(--sakura-font), sans-serif;
 }
+
+/* Hero-only background slideshow */
+.hero-bg[b-qjr5eoji3o] {
+    /* limit the background layers to the top portion of the hero */
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: var(--hero-bg-height);
+    overflow: hidden;
+    z-index: 0; /* behind hero content */
+}
+
+.hero-bg[b-qjr5eoji3o]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.02); /* very light overlay */
+    z-index: 0 !important; /* push overlay behind bg layers so images are visible */
+    pointer-events: none;
+}
+
+.hero-bg .bg-layer[b-qjr5eoji3o] {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transform: scale(1.02);
+    z-index: 2 !important; /* ensure bg-layers sit above overlay */
+    animation: heroBgFade-b-qjr5eoji3o var(--hero-bg-duration) infinite ease-in-out;
+    animation-fill-mode: both;
+    animation-play-state: running;
+    will-change: opacity, transform;
+    pointer-events: none;
+    filter: brightness(0.98) saturate(1.02);
+}
+
+/* DEBUG: temporary visuals to confirm bg-layer position and size. Remove after verification. */
+.hero-bg .bg-layer[b-qjr5eoji3o] {
+    outline: 2px solid rgba(0,255,0,0.6) !important;
+    background-color: rgba(255,0,0,0.04) !important; /* subtle tint behind image */
+}
+
+/* DEBUG: force layer 1 visible to verify image rendering */
+.hero-bg .bg-layer:nth-child(1)[b-qjr5eoji3o] {
+    opacity: 1 !important;
+    transform: none !important;
+    outline: 3px solid rgba(0,0,255,0.6) !important;
+}
+
+/* TEMP DEBUG: force first bg-layer to fixed top so we can visually verify the image is present and not being hidden by stacking/context issues. Remove after confirmation. */
+.hero-bg .bg-layer:nth-child(1)[b-qjr5eoji3o] {
+    position: fixed !important;
+    top: var(--header-height);
+    left: 0 !important;
+    width: 100% !important;
+    height: 80vh !important;
+    z-index: 99999 !important;
+    opacity: 1 !important;
+    background-size: cover !important;
+    background-position: center !important;
+    transform: none !important;
+}
+
+/* stagger so images cycle with overlap (duration controlled by --hero-bg-duration) */
+.hero-bg .bg-layer:nth-child(1)[b-qjr5eoji3o] { animation-delay: 0s; }
+.hero-bg .bg-layer:nth-child(2)[b-qjr5eoji3o] { animation-delay: 1s; }
+.hero-bg .bg-layer:nth-child(3)[b-qjr5eoji3o] { animation-delay: 2s; }
+.hero-bg .bg-layer:nth-child(4)[b-qjr5eoji3o] { animation-delay: 3s; }
+.hero-bg .bg-layer:nth-child(5)[b-qjr5eoji3o] { animation-delay: 4s; }
+
+@keyframes heroBgFade-b-qjr5eoji3o {
+    0% { opacity: 0; }
+    8% { opacity: 0; }
+    12% { opacity: 0.7; }
+    36% { opacity: 0.7; }
+    44% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+/* Ensure hero inner content sits above overlay/background */
+.hero-inner[b-qjr5eoji3o] { position: relative; z-index: 3; }
+
+/* Restore other areas to normal backgrounds */
+.page[b-qjr5eoji3o] { background: var(--bg-secondary); }
+.doc-main[b-qjr5eoji3o] { background: var(--content-bg); }
+.posts-section[b-qjr5eoji3o] { background: transparent; }
+
+/* Ensure page content renders above background */
+.site-content[b-qjr5eoji3o] {
+    position: relative;
+    z-index: 2;
+    /* preserve existing layout behavior */
+}
+
+/* remove any previous body slideshow animation to avoid conflicts */
+body[b-qjr5eoji3o] {
+    background: transparent;
+}
+
+/* Place site background above the root background but below content */
+html[b-qjr5eoji3o] { background: var(--bg-primary); }
 
 /* Header */
 .sakura-header[b-qjr5eoji3o] {
@@ -166,9 +278,10 @@ body[b-qjr5eoji3o], .page[b-qjr5eoji3o], article.content[b-qjr5eoji3o], .feature
 /* Hero section */
 .hero[b-qjr5eoji3o] {
     position: relative;
-    background: var(--bg-primary);
+    /* make transparent so hero-bg layers are visible */
+    background: transparent !important;
     color: var(--text-primary);
-    min-height: calc(100vh - var(--header-height));
+    min-height: calc(100vh - var(--header-height) + var(--hero-extra));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -176,35 +289,100 @@ body[b-qjr5eoji3o], .page[b-qjr5eoji3o], article.content[b-qjr5eoji3o], .feature
 }
 
 .hero.hero-compact[b-qjr5eoji3o] {
-    min-height: 50vh;
+    /* Ensure the compact hero is at least as tall as the visible background plus some room for the wave and title */
+    min-height: 380px;
+}
+
+/* On small screens keep hero reasonable */
+@media (max-width: 768px) {
+    .hero[b-qjr5eoji3o], .hero.hero-compact[b-qjr5eoji3o] {
+        min-height: 60vh;
+    }
 }
 
 .hero-bg[b-qjr5eoji3o] {
+    /* limit the background layers to the top portion of the hero */
     position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        135deg,
-        #fce4ec 0%,
-        #f8bbd9 20%,
-        #f48fb1 40%,
-        #f8bbd9 60%,
-        #fce4ec 80%,
-        #fff5f8 100%
-    );
-    background-size: 200% 200%;
-    animation: gradientShift-b-qjr5eoji3o 15s ease infinite;
-    opacity: 0.85;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: var(--hero-bg-height);
+    overflow: hidden;
+    z-index: 0; /* behind hero content */
 }
 
-@keyframes gradientShift-b-qjr5eoji3o {
-    0% { background-position: 0 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0 50%; }
+.hero-bg[b-qjr5eoji3o]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.02); /* very light overlay */
+    z-index: 0 !important; /* push overlay behind bg layers so images are visible */
+    pointer-events: none;
+}
+
+.hero-bg .bg-layer[b-qjr5eoji3o] {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transform: scale(1.02);
+    z-index: 2 !important; /* ensure bg-layers sit above overlay */
+    animation: heroBgFade-b-qjr5eoji3o var(--hero-bg-duration) infinite ease-in-out;
+    animation-fill-mode: both;
+    animation-play-state: running;
+    will-change: opacity, transform;
+    pointer-events: none;
+    filter: brightness(0.98) saturate(1.02);
+}
+
+/* DEBUG: temporary visuals to confirm bg-layer position and size. Remove after verification. */
+.hero-bg .bg-layer[b-qjr5eoji3o] {
+    outline: 2px solid rgba(0,255,0,0.6) !important;
+    background-color: rgba(255,0,0,0.04) !important; /* subtle tint behind image */
+}
+
+/* DEBUG: force layer 1 visible to verify image rendering */
+.hero-bg .bg-layer:nth-child(1)[b-qjr5eoji3o] {
+    opacity: 1 !important;
+    transform: none !important;
+    outline: 3px solid rgba(0,0,255,0.6) !important;
+}
+
+/* TEMP DEBUG: force first bg-layer to fixed top so we can visually verify the image is present and not being hidden by stacking/context issues. Remove after confirmation. */
+.hero-bg .bg-layer:nth-child(1)[b-qjr5eoji3o] {
+    position: fixed !important;
+    top: var(--header-height);
+    left: 0 !important;
+    width: 100% !important;
+    height: 80vh !important;
+    z-index: 99999 !important;
+    opacity: 1 !important;
+    background-size: cover !important;
+    background-position: center !important;
+    transform: none !important;
+}
+
+/* stagger so images cycle with overlap (duration controlled by --hero-bg-duration) */
+.hero-bg .bg-layer:nth-child(1)[b-qjr5eoji3o] { animation-delay: 0s; }
+.hero-bg .bg-layer:nth-child(2)[b-qjr5eoji3o] { animation-delay: 1s; }
+.hero-bg .bg-layer:nth-child(3)[b-qjr5eoji3o] { animation-delay: 2s; }
+.hero-bg .bg-layer:nth-child(4)[b-qjr5eoji3o] { animation-delay: 3s; }
+.hero-bg .bg-layer:nth-child(5)[b-qjr5eoji3o] { animation-delay: 4s; }
+
+@keyframes heroBgFade-b-qjr5eoji3o {
+    0% { opacity: 0; }
+    8% { opacity: 0; }
+    12% { opacity: 0.7; }
+    36% { opacity: 0.7; }
+    44% { opacity: 0; }
+    100% { opacity: 0; }
 }
 
 .hero-inner[b-qjr5eoji3o] {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     text-align: center;
     padding: 2rem;
 }
@@ -235,6 +413,15 @@ body[b-qjr5eoji3o], .page[b-qjr5eoji3o], article.content[b-qjr5eoji3o], .feature
 
 .wave-path[b-qjr5eoji3o] {
     fill: var(--bg-primary);
+}
+
+/* Make main sections transparent so the background slideshow is visible through them */
+.hero[b-qjr5eoji3o],
+.posts-section[b-qjr5eoji3o],
+.features-section[b-qjr5eoji3o],
+.description-section[b-qjr5eoji3o],
+.valaxy-section[b-qjr5eoji3o] {
+    background: transparent !important;
 }
 
 /* Description section */
@@ -518,54 +705,66 @@ body[b-qjr5eoji3o], .page[b-qjr5eoji3o], article.content[b-qjr5eoji3o], .feature
 
 /* Footer */
 .site-footer[b-qjr5eoji3o] {
-    background: var(--bg-secondary);
+    background: var(--bg-tertiary);
     border-top: 1px solid var(--border-color);
-    padding: 3rem 1.5rem;
+    padding: 1.25rem 1.5rem;
+    color: var(--text-secondary);
 }
 
 .footer-inner[b-qjr5eoji3o] {
     max-width: var(--max-site-width);
     margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
 }
 
-.footer-column h4[b-qjr5eoji3o] {
-    color: var(--text-primary);
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin: 0 0 1rem 0;
-}
-
-.footer-column ul[b-qjr5eoji3o] {
-    list-style: none;
+.footer-left p[b-qjr5eoji3o] {
     margin: 0;
-    padding: 0;
-}
-
-.footer-column li[b-qjr5eoji3o] {
-    margin-bottom: 0.5rem;
-}
-
-.footer-column a[b-qjr5eoji3o] {
-    color: var(--text-muted);
-    text-decoration: none;
-    font-size: 0.85rem;
-    transition: color 0.2s;
-}
-
-.footer-column a:hover[b-qjr5eoji3o] {
-    color: var(--text-secondary);
-}
-
-.footer-text[b-qjr5eoji3o] {
-    color: var(--text-tertiary);
     font-size: 0.9rem;
-    text-align: center;
+    color: var(--text-tertiary);
 }
+
+.footer-right .footer-nav[b-qjr5eoji3o] {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.footer-nav a[b-qjr5eoji3o] {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.footer-nav a:hover[b-qjr5eoji3o] {
+    color: var(--text-primary);
+}
+
+.dot[b-qjr5eoji3o] {
+    color: var(--text-muted);
+    margin: 0 0.5rem;
+}
+
+@media (max-width: 640px) {
+    .footer-inner[b-qjr5eoji3o] {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-right[b-qjr5eoji3o] {
+        margin-top: 0.5rem;
+    }
+}
+
+/* End Footer */
 
 /* Page layout for documentation */
 .page[b-qjr5eoji3o] {
     display: flex;
-    background: var(--bg-secondary);
+    background: transparent !important;
     min-height: calc(100vh - var(--header-height) - 45px);
 }
 
@@ -661,7 +860,7 @@ body[b-qjr5eoji3o], .page[b-qjr5eoji3o], article.content[b-qjr5eoji3o], .feature
     padding: 2rem 3rem;
     margin-left: 280px;
     margin-right: 280px;
-    background: var(--content-bg);
+    background: transparent !important;
     min-height: calc(100vh - var(--header-height));
 }
 
@@ -841,6 +1040,21 @@ td[b-qjr5eoji3o] {
     margin-bottom: 0.5rem;
 }
 
+/* Layout adjustments when sidebars are hidden */
+.sakura-page.no-left-sidebar .doc-main[b-qjr5eoji3o] {
+    margin-left: 1.5rem;
+}
+
+.sakura-page.no-right-sidebar .doc-main[b-qjr5eoji3o] {
+    margin-right: 1.5rem;
+}
+
+.sakura-page.no-left-sidebar.no-right-sidebar .doc-main[b-qjr5eoji3o] {
+    max-width: var(--content-max-width);
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
     .toc-sidebar[b-qjr5eoji3o] {
@@ -890,6 +1104,11 @@ td[b-qjr5eoji3o] {
     .main-nav a[b-qjr5eoji3o] {
         font-size: 0.85rem;
     }
+
+    /* Make the hero shorter on small screens */
+    .hero[b-qjr5eoji3o], .hero.hero-compact[b-qjr5eoji3o] {
+        min-height: 60vh;
+    }
 }
 
 /* Focus states */
@@ -915,6 +1134,82 @@ td[b-qjr5eoji3o] {
 
 [b-qjr5eoji3o]::-webkit-scrollbar-thumb:hover {
     background: var(--text-muted);
+}
+
+/* Overrides for generated scoped CSS that may set a gradient on .hero-bg and prevent our layers from showing.
+   Use a more specific selector and !important to ensure our slideshow layers remain visible. */
+.site-content .hero-bg[b-qjr5eoji3o] {
+    inset: auto !important; /* cancel inset:0 from generated scoped css */
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: var(--hero-bg-height) !important;
+    background: none !important; /* remove gradient background set elsewhere */
+    opacity: 1 !important;
+    animation: none !important; /* stop any gradient animation on the container */
+}
+
+.site-content .hero-bg .bg-layer[b-qjr5eoji3o] {
+    /* ensure our layers animate and appear above the removed background */
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    animation: heroBgFade-b-qjr5eoji3o var(--hero-bg-duration) infinite ease-in-out !important;
+    z-index: 1 !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+/* Extra high-specificity overrides to beat generated scoped CSS and any order issues */
+.hero.hero-compact .hero-bg[b-qjr5eoji3o] {
+    inset: auto !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: var(--hero-bg-height) !important;
+    background: none !important;
+    opacity: 1 !important;
+    animation: none !important;
+}
+
+.hero.hero-compact .hero-bg[b-qjr5eoji3o]::after {
+    /* keep a light overlay but ensure it's below the layers so images show more clearly */
+    z-index: 0 !important;
+    background: rgba(0,0,0,0.02) !important;
+}
+ 
+ .hero.hero-compact .hero-bg .bg-layer[b-qjr5eoji3o] {
+     position: absolute !important;
+     inset: 0 !important;
+     width: 100% !important;
+     height: 100% !important;
+     animation: heroBgFade-b-qjr5eoji3o var(--hero-bg-duration) infinite ease-in-out !important;
+     animation-fill-mode: both !important;
+     z-index: 2 !important; /* ensure layers are above overlay */
+     background-size: cover !important;
+     background-position: center !important;
+     background-repeat: no-repeat !important;
+ }
+
+/* push hero content above overlay */
+.hero.hero-compact .hero-inner[b-qjr5eoji3o] { z-index: 4 !important; }
+
+/* TEMP DEBUG OVERLAY: force a visible image via html::after to check rendering and stylesheet loading */
+html[b-qjr5eoji3o]::after {
+    content: "" !important;
+    position: fixed !important;
+    top: var(--header-height) !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 80vh !important;
+    background-image: url('/images/Felix_Argyle_Scared_By_JavaScript_The_Good_Parts.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    z-index: 2147483647 !important;
+    pointer-events: none !important;
+    opacity: 1 !important;
 }
 /* /Layout/NavMenu.razor.rz.scp.css */
 .sidebar-nav-container[b-y9urno0ec9] {
