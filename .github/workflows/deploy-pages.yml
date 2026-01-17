@@ -95,6 +95,29 @@ jobs:
         run: |
           ls -la publish/wwwroot | sed -n '1,200p'
 
+      - name: Rewrite root-relative links to include BASE_HREF
+        run: |
+          set -euo pipefail
+          BASE_HREF="${{ steps.basehref.outputs.BASE_HREF }}"
+          if [ "$BASE_HREF" = "/" ]; then
+            echo "BASE_HREF is '/'; no rewrite needed"
+            exit 0
+          fi
+
+          echo "Rewriting root-relative links to prefix with BASE_HREF=$BASE_HREF"
+
+          # Find HTML/CSS/JS files and rewrite attributes that start with a single leading '/'
+          # We avoid touching protocol-absolute or external URLs (http:, https:) and anchors (#).
+          find publish/wwwroot -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' \) -print0 |
+            xargs -0 -n1 perl -0777 -i -pe '
+              s{(\b(?:href|src|action)\s*=\s*)(["\'])/([^"'""'">\s]+)\2}{$1.$2.$ENV{BASE_HREF}.$3.$2}gise;
+              # Also handle url(...) in CSS: url('/path') -> url('/BASE/path')
+              s{(url\(\s*)(["\']?)/([^\)"\']+)(["\']?\s*\))}{$1.$2.$ENV{BASE_HREF}.$3.$4}gise;
+            '
+
+          echo "Rewrite complete. Sample changes (grep for rewritten hrefs):"
+          grep -R --line-number --include='*.html' --include='*.css' --include='*.js' "${BASE_HREF#/}" publish/wwwroot || true
+
       - name: Smoke-check built assets
         run: |
           echo "Checking key files exist in publish/wwwroot..."
