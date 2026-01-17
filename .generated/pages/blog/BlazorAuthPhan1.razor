@@ -1,0 +1,153 @@
+@page "/blog/blazor-auth-phan-1"
+
+
+<PageTitle>My first test page 3</PageTitle>
+
+<div class="content">
+    <h1>My first test page 3</h1>
+
+    <p>Authentication là tính năng mà gần như project nào cũng có.
+Mà thật ra hầu hết chúng ta chỉ cần login chạy được là xong.
+Template có sẵn, copy vài dòng code, thấy form đăng nhập hiện lên, login thành công thế
+là xong phần auth, chuyển qua làm mấy tính năng &quot;xịn&quot; hơn.</p>
+<p>Và mọi thứ vẫn ổn... cho đến khi không còn ổn nữa.</p>
+<p>Một buổi tối, team tôi phải vội vàng reset access token
+sau khi phát hiện token nội bộ bị lộ ra ngoài
+chỉ vì lưu chúng trong <code>localStorage</code> cho đơn giản.
+Hacker chỉ cần cầm token đó là có thể truy cập thẳng vào hệ thống.</p>
+<p>Nếu bạn từng làm app thuần SPA với React, Angular hay Blazor WebAssembly
+thì bạn đang đối mặt với cùng một vấn đề: token nằm ở phía client mà client thì không an toàn.</p>
+<p>Authentication là cả một hệ thống phối hợp giữa frontend, backend, cookie, token và browser.
+Chỉ cần xử lý sai một bước thôi là đủ để toang cả hệ thống.</p>
+<h1 id="authentication-trong-ung-dung-server-side-rendering-ssr">Authentication trong ứng dụng Server-Side Rendering (SSR)</h1>
+<p>Cái thời mà Razor Pages, Laravel hay Ruby on Rails còn thống trị thì mọi thứ thật đơn giản.
+Cả quá trình đăng nhập gói gọn trong vài bước:</p>
+<ol>
+<li>Người dùng bấm &quot;Đăng nhập&quot;, gửi username/password tới server.</li>
+<li>Server kiểm tra nếu thông tin hợp lệ thì
+tạo session và gửi lại cookie cho browser. Cookie này có flag <code>HttpOnly</code> để
+JavaScript không đọc được (chặn XSS).</li>
+<li>Mọi request tiếp theo browser đều tự động gửi cookie đó theo, server chỉ việc kiểm tra session là xong.</li>
+</ol>
+<div class="mermaid">
+sequenceDiagram
+    participant User as Browser
+    participant Server as SSR Server
+<pre><code>User-&gt;&gt;Server: Gửi credentials (username/password)
+Server--&gt;&gt;User: Tạo session, gửi HttpOnly cookie
+Note right of User: Cookie HttpOnly, JS không thể đọc
+User-&gt;&gt;Server: Gửi request tiếp theo (tự động kèm cookie)
+Server--&gt;&gt;Server: Kiểm tra session
+Server--&gt;&gt;User: Trả HTML/data tương ứng
+</code></pre>
+</div>
+<p>Authentication kiểu này rất an toàn vì mọi thông tin quan trọng đều nằm ở server
+và cookie do browser nắm giữ cũng không thể truy cập bằng Javascript.</p>
+<p>Tuy nhiên ứng dụng SSR đem lại trải nghiệm người dùng (UX) không tốt. Cứ mỗi lần chuyển trang
+là reload phải chờ lâu, lại còn mất hết state. Form đang điền dở thì lỡ có sự cố phải reload lại
+là dữ liệu đã điền mất sạch thì người dùng chỉ muốn... đóng tab và thề không quay lại nữa 😆</p>
+<p>Cái UX tệ hại đó chính là lý do SPA ra đời.</p>
+<blockquote class="blockquote">
+<p>✨ Thực ra, thời đó các website cũng đã có AJAX cho phép cập nhật dữ liệu mà không reload
+toàn trang. Nhưng AJAX chỉ là một miếng vá giúp vài phần trên trang mượt hơn, còn kiến trúc
+tổng thể vẫn là server render, mỗi lần chuyển trang vẫn phải tải lại HTML mới.</p>
+</blockquote>
+<h1 id="thoi-ai-thong-tri-cua-single-page-application-spa">Thời đại thống trị của Single Page Application (SPA)</h1>
+<p>Rồi React, Vue, Angular xuất hiện, mọi thứ đều chạy trong trình duyệt.
+Không cần reload, không phải chờ đợi, chỉ render lại những phần cần thiết.
+Frontend giờ không chỉ render HTML mà còn lưu state.</p>
+<p>Đây là luồng đăng nhập của ứng dụng SPA:</p>
+<div class="mermaid">
+sequenceDiagram
+    participant User as Browser
+    participant Api as API Server
+<pre><code>User-&gt;&gt;Api: Gửi credentials (username/password) tới login endpoint
+Api--&gt;&gt;User: Trả về access token
+Note right of User: Lưu access token trong localStorage
+User-&gt;&gt;Api: Gọi API protected với Header Authorization: Bearer access_token
+Api--&gt;&gt;User: Trả dữ liệu
+</code></pre>
+</div>
+<p>Nhưng để gọi API protected thì ứng dụng SPA cần một thứ: <strong>access token</strong>. Và vì browser nằm
+ở phía người dùng nên <strong>access token</strong> không thể được lưu ở một chỗ nào đó kín đáo không ai truy
+cập được. Và token thường được lưu ở <code>localStorage</code> hoặc <code>sessionStorage</code>.</p>
+<p>Vì <code>localStorage</code> và <code>sessionStorage</code> có thể độc được bằng Javascript nên nếu
+trang bị chèn script độc thì token có thể bị đánh cắp.</p>
+<blockquote class="blockquote">
+<p>⚠️ Vấn đề cốt lõi của SPA Authentication<br />
+Token nằm ở phía client, nơi bạn không thể tin tưởng tuyệt đối.</p>
+</blockquote>
+<p><strong>Nhưng các framework bây giờ đều sanitize HTML rồi mà, sao vẫn sợ XSS?</strong></p>
+<p>Đúng là các framework ngày nay như React, Vue hay Angular đều sanitize HTML nên
+bạn không thể dễ dàng vào ô comment rồi chèn đoạn script độc được nữa. Tuy nhiên ứng dụng vẫn
+có thể bị tấn công XSS nếu:</p>
+<ul>
+<li>Các thư viện hoặc plugin của bên thứ ba có thể <strong>&quot;vô tình một cách cố ý&quot;</strong> chèn script độc.</li>
+<li>Dev vô tình render <strong>HTML không kiểm soát</strong> như dùng <code>dangerouslySetInnerHTML</code> trong React (khả năng
+này rất thấp tuy nhiên không phải là 0%).</li>
+</ul>
+<p><strong>Thế thì lưu token trong cookie thay vì lưu trong storage có được không?</strong></p>
+<p>Hoàn toàn có thể, nhưng nếu bạn lưu access token trong cookie
+và gọi API trực tiếp từ browser thì trình duyệt sẽ <strong>tự động gửi cookie kèm theo mỗi request</strong>,
+kể cả request đó đến từ <strong>trang giả mạo</strong> vì cookie được gắn theo domain, chứ không theo origin của trang gọi.
+Điều này sẽ dẫn tới lỗ hổng bảo mật khác là <strong>CSRF (Cross-Site Request Forgery)</strong>.</p>
+<p>Ví dụ:
+Bạn đang đăng nhập <code>mybank.com</code>, cookie session vẫn còn hạn.
+Bạn truy cập một trang là <code>evil.com</code> có thẻ <code>&lt;img src=&quot;https://mybank.com/api/transfer?to=attacker&quot;&gt;</code>.
+Trình duyệt không phân biệt được mà gửi request với cookie xác thực của <code>mybank.com</code>
+và thế là số dư của bạn không cánh mà bay.</p>
+<blockquote class="blockquote">
+<p>Bạn có thể đọc thêm về CSRF tại <a href="/post/sop-cors-va-csrf-khi-long-tin-bi-loi-dung">bài viết này</a></p>
+</blockquote>
+<p><strong>SSR cũng dùng cookie, sao không bị CSRF?</strong></p>
+<p>Đúng, SSR truyền thống (Razor Pages, Laravel, Rails,...)
+cũng dùng cookie để giữ session nên vẫn có nguy cơ bị CSRF. Nhưng khác ở chỗ SSR
+kiểm soát toàn bộ UI và form render ra nên có thể thêm anti-forgery token vào form, còn SPA thì
+không thể nên không thể chống CSRF (*) nếu chỉ dựa vào cookie mà không có một tầng trung gian hay
+còn gọi là Backend for Frontend (BFF) để xử lý xác thực an toàn thay cho browser.</p>
+<blockquote class="blockquote">
+<p>(*) Việc thêm anti-forgery token vào form trong SPA là vô nghĩa vì token được tạo
+trên client nên không thể kiểm tra tính hợp lệ tại server.</p>
+</blockquote>
+<h2 id="roi-en-hybrid-next.js-remix-va-blazor">Rồi đến Hybrid: Next.js, Remix và Blazor</h2>
+<p>Nhìn lại, SSR thì an toàn nhưng đem lại trải nghiệm tệ, SPA thì mượt mà nhưng bảo mật kém.
+Các framework mới như Next.js, Remix và gần đây là Blazor Web App
+ra đời kết hợp điểm mạnh của cả hai:</p>
+<ul>
+<li>Trải nghiệm tuyệt vời như SPA.</li>
+<li>Bảo mật an toàn như SSR.</li>
+</ul>
+<p>Và đó chính là lúc mô hình BFF (Backend for Frontend) xuất hiện như một người trung gian
+đáng tin cậy giữa frontend và API. Lúc này, Frontend không còn giữ token nữa mà
+mọi thứ nhạy cảm đều nằm ở backend.</p>
+<div class="mermaid">
+sequenceDiagram
+    participant Browser as Browser
+    participant BFF as BFF Server
+    participant API as API Server
+<pre><code>Browser-&gt;&gt;BFF: Login → gửi credentials (username/password)
+BFF-&gt;&gt;BFF: Xác thực credentials, tạo access token
+Note right of BFF: Token chỉ nằm ở BFF, không gửi ra Browser
+BFF--&gt;&gt;Browser: Trả HttpOnly cookie
+Browser-&gt;&gt;BFF: Gửi request API tiếp theo (tự động kèm cookie)
+BFF-&gt;&gt;API: Gọi API bằng token thật
+API--&gt;&gt;BFF: Response
+BFF--&gt;&gt;Browser: Trả HTML/data
+Note right of BFF: BFF đóng vai trò proxy giữa Browser và API
+</code></pre>
+</div>
+<p>Ông này mới là người thật sự cầm token và nói chuyện với API. Nhờ đó mà:</p>
+<ul>
+<li>Không còn chứa token trong <code>localStorage</code> nên không lo bị XSS nữa.</li>
+<li>Không sợ CSRF khi cookie có flag <code>SameSite</code> (**) và <code>HttpOnly</code>.</li>
+<li>Người dùng vẫn có trải nghiệm như SPA.</li>
+</ul>
+<blockquote class="blockquote">
+<p>(**) Cookie có thể được cấu hình với flag <code>SameSite=Lax</code> hoặc <code>Strict</code> để ngăn việc tự động gửi
+khi request từ trang khác.</p>
+</blockquote>
+<p>Tóm lại, BFF giúp cân bằng giữa bảo mật và trải nghiệm người dùng — điều mà SSR hay SPA thuần túy đều không làm trọn vẹn.
+Ở <a href="/post/authentication-va-authorization-trong-blazor-phan-2-trien-khai-authentication-trong-blazor">phần tiếp theo</a>,
+ta sẽ đi sâu vào cách Blazor Web App triển khai mô hình này.</p>
+
+</div>

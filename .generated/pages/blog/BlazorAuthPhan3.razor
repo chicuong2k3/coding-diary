@@ -1,0 +1,329 @@
+@page "/blog/blazor-auth-phan-3"
+
+
+<PageTitle>My first test page 3</PageTitle>
+
+<div class="content">
+    <h1>My first test page 3</h1>
+
+    <p>Sau khi người dùng đăng nhập thành công, bước tiếp theo là xác định họ được phép làm gì.
+Phần này sẽ tập trung vào hai nội dung quan trọng:</p>
+<ul>
+<li>Authorization trong Blazor bao gồm Role-based, Policy-based và Resource-based Authorization.</li>
+<li>Cách Blazor Web App gọi các API nội bộ và bên ngoài một cách an toàn.</li>
+</ul>
+<h1 id="tong-quan-ve-authorization-trong-blazor">Tổng quan về Authorization trong Blazor</h1>
+<p>Blazor sử dụng cơ chế <strong>Authorization của ASP.NET Core</strong>, dựa trên mô hình <strong>Claims-based Identity</strong>.<br />
+Mỗi người dùng được biểu diễn bởi một <code>ClaimsPrincipal</code>, chứa các <code>Claim</code> (như email, vai trò, hoặc quyền hạn cụ thể).</p>
+<blockquote class="blockquote">
+<p>💡 Để hiểu rõ hơn về mô hình Claims-based Identity trong .NET hãy
+đọc <a href="/post/authentication-va-authorization-trong-net">bài viết này</a>.</p>
+</blockquote>
+<p>Các claim này được lưu trong <code>ClaimsPrincipal</code> và có thể truy cập thông
+qua <code>AuthenticationStateProvider</code> như sau:</p>
+<pre><code class="language-markup">&amp;#64;page &quot;/me&quot;
+&amp;#64;inject AuthenticationStateProvider AuthStateProvider
+
+&lt;h3&gt;Thông tin người dùng&lt;/h3&gt;
+
+&amp;#64;code {
+    private string? userName;
+    private string? email;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            userName = user.Identity.Name;
+            email = user.FindFirst(c =&gt; c.Type == &quot;email&quot;)?.Value;
+        }
+    }
+}
+</code></pre>
+<p>Hoặc có thể inject trực tiếp qua Cascading Parameter:</p>
+<pre><code class="language-markup">&amp;#64;attribute [Authorize]
+&amp;#64;page &quot;/dashboard&quot;
+
+&lt;CascadingAuthenticationState&gt;
+    &lt;AuthorizeView&gt;
+        &lt;Authorized&gt;
+            &lt;h3&gt;Chào &amp;#64;context.User.Identity?.Name!&lt;/h3&gt;
+        &lt;/Authorized&gt;
+        &lt;NotAuthorized&gt;
+            &lt;p&gt;Bạn cần đăng nhập để xem trang này.&lt;/p&gt;
+        &lt;/NotAuthorized&gt;
+    &lt;/AuthorizeView&gt;
+&lt;/CascadingAuthenticationState&gt;
+</code></pre>
+<p>Nhờ mô hình này, mọi component trong Blazor đều có thể dễ dàng truy cập thông tin người dùng
+để hiển thị UI phù hợp và phân quyền.</p>
+<h1 id="cac-co-che-authorization">Các cơ chế Authorization</h1>
+<h2 id="role-based-authorization">Role-based Authorization</h2>
+<p>Phân quyền dựa trên <strong>Role</strong> là cách phổ biến nhất, sử dụng khi
+Identity Provider (Azure AD, IdentityServer, Keycloak...) trả về claim <code>role</code> hoặc <code>roles</code>.</p>
+<p>Sử dụng <code>AuthorizeView</code>:</p>
+<pre><code class="language-markup">&lt;AuthorizeView Roles=&quot;Administrator&quot;&gt;
+    &lt;Authorized&gt;
+        &lt;h3&gt;Khu vực quản trị&lt;/h3&gt;
+        &lt;p&gt;Chỉ quản trị viên mới thấy được phần này.&lt;/p&gt;
+    &lt;/Authorized&gt;
+    &lt;NotAuthorized&gt;
+        &lt;p&gt;Bạn không có quyền truy cập.&lt;/p&gt;
+    &lt;/NotAuthorized&gt;
+&lt;/AuthorizeView&gt;
+</code></pre>
+<p>Hoặc route được bảo vệ bằng attribute:</p>
+<pre><code class="language-markup">&amp;#64;page &quot;/admin&quot;
+
+&amp;#64;attribute [Authorize(Roles = &quot;Administrator&quot;)]
+
+&lt;h3&gt;Admin Dashboard&lt;/h3&gt;
+
+&amp;#64;code {
+
+}
+</code></pre>
+<h2 id="policy-based-authorization">Policy-based Authorization</h2>
+<p>Policy-based cho phép bạn định nghĩa quy tắc phức tạp hơn Role.</p>
+<p>Định nghĩa Policy trong <code>Program.cs</code>:</p>
+<pre><code class="language-csharp">builder.Services.AddAuthorization(options =&gt;
+{
+    options.AddPolicy(&quot;RequireEmail&quot;, policy =&gt;
+        policy.RequireClaim(&quot;email&quot;));
+});
+</code></pre>
+<p>Sử dụng <code>AuthorizeView</code>:</p>
+<pre><code class="language-markup">&lt;AuthorizeView Policy=&quot;RequireEmail&quot;&gt;
+    &lt;Authorized&gt;
+        &lt;p&gt;Cấu hình tài khoản&lt;/p&gt;
+    &lt;/Authorized&gt;
+    &lt;NotAuthorized&gt;
+        &lt;p&gt;Bạn không có quyền truy cập nội dung này.&lt;/p&gt;
+    &lt;/NotAuthorized&gt;
+&lt;/AuthorizeView&gt;
+</code></pre>
+<p>Hoặc route được bảo vệ bằng attribute:</p>
+<pre><code class="language-markup">&amp;#64;page &quot;/settings&quot;
+
+&amp;#64;attribute [Authorize(Policy = &quot;RequireEmail&quot;)]
+
+&lt;h3&gt;Cấu hình tài khoản&lt;/h3&gt;
+
+&amp;#64;code {
+
+}
+</code></pre>
+<h2 id="resource-based-authorization">Resource-based Authorization</h2>
+<p>Resource-based cho phép kiểm tra quyền động (dynamic), tùy vào từng đối tượng cụ thể.
+Ví dụ: User chỉ được sửa bài viết của chính mình hoặc xóa tài nguyên mà họ sở hữu.</p>
+<p>Tạo Handler Resource:</p>
+<pre><code class="language-csharp">using Microsoft.AspNetCore.Authorization;
+
+public class Document
+{
+    public string OwnerId { get; set; } = default!;
+}
+
+public class DocumentAuthorizationHandler : AuthorizationHandler&lt;OperationAuthorizationRequirement, Document&gt;
+{
+    protected override Task HandleRequirementAsync(
+        AuthorizationHandlerContext context,
+        OperationAuthorizationRequirement requirement,
+        Document resource)
+    {
+        if (requirement.Name == &quot;Edit&quot; &amp;&amp; 
+            context.User.Identity?.Name == resource.OwnerId)
+        {
+            context.Succeed(requirement);
+        }
+        return Task.CompletedTask;
+    }
+}
+</code></pre>
+<p>Đăng ký handler trong <code>Program.cs</code>:</p>
+<pre><code class="language-csharp">builder.Services.AddSingleton&lt;IAuthorizationHandler, DocumentAuthorizationHandler&gt;();
+builder.Services.AddAuthorization(options =&gt;
+{
+    options.AddPolicy(&quot;CanEdit&quot;, policy =&gt;
+        policy.AddRequirements(new OperationAuthorizationRequirement { Name = &quot;Edit&quot; }));
+});
+</code></pre>
+<p>Dùng trong Component</p>
+<pre><code class="language-markup">&amp;#64;page &quot;/document/{Id}&quot;
+&amp;#64;inject IAuthorizationService AuthorizationService
+&amp;#64;inject AuthenticationStateProvider AuthProvider
+
+&amp;#64;if (canEdit)
+{
+    &lt;button&gt;Sửa tài liệu&lt;/button&gt;
+}
+else
+{
+    &lt;p&gt;Bạn không có quyền chỉnh sửa tài liệu này.&lt;/p&gt;
+}
+
+&amp;#64;code {
+    Document doc = new() { OwnerId = &quot;alice@example.com&quot; };
+
+    bool canEdit = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var result = await AuthorizationService.AuthorizeAsync(user, doc, &quot;CanEdit&quot;);
+        canEdit = result.Succeeded;
+    }
+}
+</code></pre>
+<blockquote class="blockquote">
+<p>Xem thêm về Authorization trong .NET <a href="/post/authentication-va-authorization-trong-net">tại đây</a></p>
+</blockquote>
+<h1 id="goi-protected-api">Gọi Protected API</h1>
+<p>Trong Blazor Web App với mô hình BFF (Backend for Frontend),
+ứng dụng không giữ token ở client mà token nằm ở phía server. Điều này có nghĩa là:</p>
+<ul>
+<li>Browser chỉ giữ cookie xác thực.</li>
+<li>Khi gọi API, cookie đó sẽ được gửi tự động đến BFF.</li>
+<li>BFF lấy lại Access Token đã được lưu trong cookie (nhờ <code>SaveTokens = true</code>) và sử dụng
+token đó để gọi API backend.</li>
+</ul>
+<h2 id="internal-api">Internal API</h2>
+<p>Internal API là các endpoint chạy trực tiếp trong cùng ứng dụng Blazor Server (BFF).
+Người dùng đã đăng nhập, nên cookie xác thực được gửi kèm trong mọi request.
+Server đọc cookie, xác định danh tính qua <code>HttpContext.User</code>.</p>
+<p><strong>Luồng hoạt động:</strong></p>
+<div class="mermaid">
+sequenceDiagram
+    participant User as Browser
+    participant BFF as Blazor Server
+    participant API as Internal API
+<pre><code>User-&gt;&gt;BFF: GET /api/profile (cookie tự động gửi)
+BFF-&gt;&gt;API: Xử lý request, đọc HttpContext.User
+API--&gt;&gt;BFF: Dữ liệu người dùng
+BFF--&gt;&gt;User: JSON response
+</code></pre>
+</div>
+<p>Ví dụ: API lấy thông tin người dùng</p>
+<pre><code class="language-csharp">app.MapGet(&quot;/api/profile&quot;, (HttpContext ctx) =&gt;
+{
+    var user = ctx.User;
+    if (user?.Identity?.IsAuthenticated != true)
+        return Results.Unauthorized();
+
+    return Results.Ok(new
+    {
+        Name = user.Identity!.Name,
+        Email = user.FindFirst(ClaimTypes.Email)?.Value
+    });
+}).RequireAuthorization();
+</code></pre>
+<p>Client gọi:</p>
+<pre><code class="language-csharp">&amp;#64;inject HttpClient Http
+
+&amp;#64;code {
+    private object? profile;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cookie tự động gửi kèm
+        profile = await Http.GetFromJsonAsync&lt;object&gt;(&quot;api/profile&quot;);
+    }
+}
+</code></pre>
+<h2 id="external-api">External API</h2>
+<p>Khi BFF cần gọi API bên ngoài thay mặt người dùng (ví dụ GitHub API),
+ta không thể dùng cookie vì cookie chỉ có giá trị nội bộ.
+Thay vào đó, server sẽ lấy Access Token đã lưu khi đăng nhập (OIDC) rồi
+đính kèm token vào header <code>Authorization: Bearer &lt;token&gt;</code>, rồi proxy request ra ngoài.</p>
+<p><strong>Luồng hoạt động:</strong></p>
+<div class="mermaid">
+sequenceDiagram
+    participant User as Browser/Blazor Client
+    participant BFF as BFF Server
+    participant API as External API
+<pre><code>User-&gt;&gt;BFF: Gọi /api/github-repos
+BFF-&gt;&gt;BFF: Lấy access_token từ cookie (GetTokenAsync)
+BFF-&gt;&gt;API: Gửi request với Authorization: Bearer token
+API--&gt;&gt;BFF: Trả dữ liệu JSON
+BFF--&gt;&gt;User: JSON response
+</code></pre>
+</div>
+<h3 id="tokenhandler">TokenHandler</h3>
+<p>Ta tạo một <code>DelegatingHandler</code> để tự động gắn Access Token cho các request ra ngoài.</p>
+<pre><code class="language-csharp">using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Authentication;
+
+public class TokenHandler(IHttpContextAccessor httpContextAccessor) : 
+    DelegatingHandler
+{
+    protected override async Task&lt;HttpResponseMessage&gt; SendAsync(
+        HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        if (httpContextAccessor.HttpContext is null)
+        {
+            throw new Exception(&quot;HttpContext not available&quot;);
+        }
+
+        var accessToken = await httpContextAccessor.HttpContext.GetTokenAsync(&quot;access_token&quot;);
+
+        if (accessToken is null)
+        {
+            throw new Exception(&quot;No access token&quot;);
+        }
+
+        request.Headers.Authorization =
+            new AuthenticationHeaderValue(&quot;Bearer&quot;, accessToken);
+
+        return await base.SendAsync(request, cancellationToken);
+    }
+}
+</code></pre>
+<h3 id="cau-hinh-trong-program.cs">Cấu hình trong Program.cs:</h3>
+<pre><code class="language-csharp">builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient&lt;TokenHandler&gt;();
+
+builder.Services.AddHttpClient(&quot;ExternalApi&quot;, client =&gt;
+{
+    client.BaseAddress = new Uri(&quot;https://api.github.com/&quot;);
+    client.DefaultRequestHeaders.UserAgent.ParseAdd(&quot;BlazorBFF&quot;);
+}).AddHttpMessageHandler&lt;TokenHandler&gt;();
+</code></pre>
+<blockquote class="blockquote">
+<p>Khi gọi ExternalApi, .NET sẽ tự động thêm Access Token từ <code>HttpContext</code>.</p>
+</blockquote>
+<h3 id="endpoint-proxy-server">Endpoint proxy server</h3>
+<pre><code class="language-csharp">app.MapGet(&quot;/api/github-repos&quot;, async (IHttpClientFactory factory) =&gt;
+{
+    var client = factory.CreateClient(&quot;ExternalApi&quot;);
+    var repos = await client.GetFromJsonAsync&lt;List&lt;GithubRepo&gt;&gt;(&quot;user/repos&quot;);
+    return Results.Ok(repos);
+}).RequireAuthorization();
+</code></pre>
+<h3 id="client-se-goi-toi-server-endpoint">Client sẽ gọi tới server endpoint</h3>
+<pre><code class="language-markup">&amp;#64;inject HttpClient Http
+
+&amp;#64;code {
+    private List&lt;GithubRepo&gt;? repos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        repos = await Http.GetFromJsonAsync&lt;List&lt;GithubRepo&gt;&gt;(&quot;api/github-repos&quot;);
+    }
+}
+</code></pre>
+<h1 id="ket-luan">Kết luận</h1>
+<p>Trong phần này, chúng ta đã tìm hiểu chi tiết về Authorization trong Blazor, bao gồm các cơ chế<br />
+Role-based, Policy-based cho đến Resource-based Authorization, giúp kiểm soát quyền truy
+cập của người dùng một cách linh hoạt. Bên cạnh đó, bạn cũng đã nắm được cách Blazor Web App
+gọi Internal API và External API một cách an toàn sử dụng Cookie Authentication và
+Access Token được lưu trữ trên server.</p>
+<p>Ở <a href="/post/authentication-va-authorization-trong-blazor-phan-4-authentication-voi-nhieu-identity-provider">phần tiếp theo</a>, chúng ta sẽ xây dựng một cơ chế đăng nhập linh hoạt hơn cho phép người dùng
+sử dụng nhiều Identity Provider (IdP) như Google, Facebook hoặc Microsoft Entra ID
+nhưng vẫn được ánh xạ về một tài khoản duy nhất trong ứng dụng. Điều này sẽ giúp hệ thống
+hỗ trợ đăng nhập đa kênh mà vẫn duy trì tính thống nhất và bảo mật trong quản lý danh tính.</p>
+
+</div>

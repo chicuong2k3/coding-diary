@@ -1,0 +1,289 @@
+@page "/blog/webhook"
+
+
+<PageTitle>My first test page 3</PageTitle>
+
+<div class="content">
+    <h1>My first test page 3</h1>
+
+    <p>﻿WebHook đã thay đổi hoàn toàn cách các ứng dụng giao tiếp, cung cấp một giải pháp thay thế
+cho cơ chế polling truyền thống.
+Trong bài viết này, chúng ta sẽ cùng tìm hiểu chi tiết về WebHook và cách triển khai hệ thống<br />
+WebHook bằng .NET.</p>
+<h1 id="webhook-la-gi">WebHook là gì?</h1>
+<p>WebHook là một cơ chế callback dựa trên giao thức HTTP, cho phép một ứng dụng tự động gửi thông báo
+đến ứng dụng khác khi một sự kiện (event) cụ thể xảy ra. Khác với API truyền thống
+yêu cầu client phải liên tục gửi request tới server để kiểm tra xem có sự kiện mới không
+(cơ chế polling), webhook hoạt động theo mô hình &quot;server chủ động thông báo cho client&quot; (server-push).</p>
+<p><strong>Ưu điểm nổi bật của WebHook:</strong></p>
+<ul>
+<li>Không cần client liên tục gọi API giúp giảm tải tài nguyên và băng thông.</li>
+<li>Gửi thông báo tức thì khi có event.</li>
+<li>Giúp các hệ thống rời rạc có thể giao tiếp dễ dàng mà không cần biết chi tiết implementation của nhau.</li>
+</ul>
+<h1 id="cach-hoat-ong-cua-webhook">Cách hoạt động của WebHook</h1>
+<p>WebHook hoạt động dựa trên hai thành phần chính là <strong>sender</strong> và <strong>receiver</strong>. Sender là
+ứng dụng chịu trách nhiệm gửi thông báo cho các bên quan tâm khi có event xảy ra.
+Trong khi đó, receiver là ứng dụng tiếp nhận thông báo và thực hiện hành động tương ứng.</p>
+<img src="/how-webhook-works.webp" loading="lazy"  alt=""/>
+<br>
+<p>Vòng đời của một WebHook:</p>
+<ol>
+<li>Một event xảy ra trong hệ thống của sender ví dụ như người dùng hoàn tất thanh toán.</li>
+<li>Sender gửi một POST request đến URL được đăng ký trước (endpoint của receiver).
+Payload thường ở dạng JSON, có thể kèm chữ ký (signature) hoặc secret để xác thực.</li>
+<li>Receiver nhận request, xác minh tính hợp lệ, xử lý dữ liệu và phản hồi
+(thường trả về mã HTTP 200 OK).</li>
+<li>Nếu receiver không phản hồi đúng (timeout hoặc lỗi), sender có thể retry với
+chiến lược exponential backoff.</li>
+</ol>
+<h1 id="ung-dung-cua-webhook">Ứng dụng của WebHook</h1>
+<p>WebHook đã trở thành nền tảng trong hầu hết các hệ thống hiện đại:</p>
+<ul>
+<li>Shopify gửi thông báo cho merchant khi đơn hàng được tạo hoặc bị hủy.</li>
+<li>Stripe và PayPal dùng WebHook để cập nhật trạng thái thanh toán theo thời gian thực.</li>
+<li>GitHub sử dụng WebHook để kích hoạt CI/CD pipelines mỗi khi có push mới.</li>
+<li>Slack dùng WebHook để tích hợp tin nhắn tự động từ các ứng dụng bên ngoài.</li>
+<li>Trong các mô hình microservices, WebHook giúp các dịch vụ giao tiếp với nhau
+mà không cần message queue phức tạp.</li>
+</ul>
+<h1 id="trien-khai-webhook-voi.net">Triển khai WebHook với .NET</h1>
+<p>Trước khi bắt tay vào code, hãy xác định rõ ứng dụng của bạn thuộc loại nào trong
+mô hình WebHook, là Receiver hay Sender:</p>
+<ul>
+<li>Nếu bạn gửi thông báo khi có sự kiện xảy ra (ví dụ thanh toán thành công),
+bạn cần xây WebHook Sender.</li>
+<li>Nếu bạn nhận thông báo từ hệ thống khác (ví dụ khi tích hợp với GitHub, Stripe
+hay ZaloPay), bạn cần xây WebHook Receiver.</li>
+</ul>
+<p>Hãy tưởng tượng bạn đang xây dựng một nền tảng thanh toán. Khi giao dịch hoàn tất,
+bạn muốn thông báo cho bên thứ ba, ví dụ như hệ thống kế toán hoặc ứng dụng quản lý
+đơn hàng. Trong kịch bản này thì:</p>
+<ul>
+<li>Ứng dụng của bạn là WebHook Sender, nó gửi thông báo ra ngoài.</li>
+<li>Ứng dụng của bên thứ ba là WebHook Receiver, nó chờ nhận thông báo để thực hiện hành động.</li>
+</ul>
+<h2 id="khi-ban-la-webhook-receiver">Khi bạn là WebHook Receiver</h2>
+<p>Ứng dụng của bạn nhận thông báo từ một hệ thống khác, ví dụ ứng dụng của bạn tích hợp
+với Stripe, GitHub hoặc ZaloPay. Hệ thống kia sẽ gọi endpoint của bạn khi có sự kiện xảy ra.
+Bạn cần tạo một endpoint (URL) để nhận thông báo:</p>
+<pre><code class="language-csharp">public record PaymentEvent(string TransactionId, string Status, decimal Amount);
+
+[ApiController]
+[Route(&quot;api/[controller]&quot;)]
+public class PaymentWebHookController : ControllerBase
+{
+    [HttpPost]
+    public async Task&lt;IActionResult&gt; Receive([FromBody] PaymentEvent payload)
+    {
+        if (payload == null)
+            return BadRequest(&quot;Invalid payload&quot;);
+
+        // Xác thực chữ ký để đảm bảo tính toàn vẹn
+        // (Chi tiết sẽ bàn ở phần bảo mật bên dưới)
+
+        switch (payload.Status)
+        {
+            case &quot;payment_success&quot;:
+                await ProcessPaymentSuccess(payload);
+                break;
+
+            case &quot;subscription_updated&quot;:
+                await ProcessSubscriptionUpdate(payload);
+                break;
+
+            default:
+                return BadRequest(&quot;Unknown event type&quot;);
+        }
+
+        return Ok();
+    }
+
+    private Task ProcessPaymentSuccess(PaymentEvent payload)
+    {
+        Console.WriteLine($&quot;Payment success for {payload.TransactionId}&quot;);
+        return Task.CompletedTask;
+    }
+
+    private Task ProcessSubscriptionUpdate(PaymentEvent payload)
+    {
+        Console.WriteLine($&quot;Subscription updated for {payload.TransactionId}&quot;);
+        return Task.CompletedTask;
+    }
+}
+</code></pre>
+<p>Receiver phải phản hồi nhanh (trả về 200 OK trong vài giây). Nếu cần xử lý phức tạp,
+hãy đưa payload vào queue để xử lý bất đồng bộ.</p>
+<h2 id="khi-ban-la-webhook-sender">Khi bạn là WebHook Sender</h2>
+<p>Ứng dụng của bạn gửi thông báo khi có event. Người dùng sẽ đăng ký (subscribe) một
+URL để nhận thông tin.</p>
+<h3 id="quan-ly-subscription">Quản lý Subscription</h3>
+<p>Trong thực tế, mỗi receiver có thể chỉ quan tâm đến một số loại event cụ thể.
+Bạn cần xây dựng hệ thống đăng ký (registry) để quản lý:</p>
+<pre><code class="language-csharp">public class WebHookSubscription
+{
+    public int Id { get; set; }
+    public string ReceiverUrl { get; set; } = string.Empty;
+    public string EventType { get; set; } = string.Empty;
+    public string? FilterCriteria { get; set; } // Ví dụ: &quot;orderTotal &gt; 100&quot;
+    public string Secret { get; set; } = string.Empty; // Secret để tạo chữ ký
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public bool IsActive { get; set; } = true;
+}
+</code></pre>
+<p><strong>API quản lý subscription:</strong></p>
+<pre><code class="language-csharp">[ApiController]
+[Route(&quot;api/[controller]&quot;)]
+public class WebHookSubscriptionController : ControllerBase
+{
+    private readonly AppDbContext _dbContext;
+
+    public WebHookSubscriptionController(AppDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
+    [HttpPost]
+    public async Task&lt;IActionResult&gt; Subscribe([FromBody] SubscribeRequest request)
+    {
+        var subscription = new WebHookSubscription
+        {
+            ReceiverUrl = request.Url,
+            EventType = request.EventType,
+            FilterCriteria = request.FilterCriteria,
+            Secret = GenerateSecret(),
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
+        };
+
+        _dbContext.WebHookSubscriptions.Add(subscription);
+        await _dbContext.SaveChangesAsync();
+
+        return Ok(new { subscription.Id, subscription.Secret });
+    }
+
+    [HttpDelete(&quot;{id}&quot;)]
+    public async Task&lt;IActionResult&gt; Unsubscribe(int id)
+    {
+        var subscription = await _dbContext.WebHookSubscriptions.FindAsync(id);
+        if (subscription == null)
+            return NotFound();
+
+        subscription.IsActive = false;
+        await _dbContext.SaveChangesAsync();
+
+        return Ok();
+    }
+
+    private static string GenerateSecret()
+    {
+        var randomBytes = new byte[32];
+        RandomNumberGenerator.Fill(randomBytes);
+        return Convert.ToBase64String(randomBytes);
+    }
+}
+
+public record SubscribeRequest(string Url, string EventType, string? FilterCriteria);
+</code></pre>
+<p>Sau khi cho phép các bên đăng ký nhận thông báo, bước tiếp theo là triển khai cơ chế
+gửi dữ liệu đến các subscriber tương ứng.</p>
+<h3 id="gui-thong-bao-en-cac-subscribers">Gửi thông báo đến các subscribers</h3>
+<p>Khi có event xảy ra, chỉ gửi thông báo đến các receiver đã đăng ký với tiêu chí cụ thể:</p>
+<pre><code class="language-csharp">public class WebHookSender
+{
+    private readonly HttpClient _httpClient;
+    private readonly AppDbContext _dbContext;
+
+    public WebHookSender(HttpClient httpClient, AppDbContext dbContext)
+    {
+        _httpClient = httpClient;
+        _dbContext = dbContext;
+    }
+
+    public async Task SendToSubscribersAsync(string eventType, object data)
+    {
+        // Lấy danh sách subscription phù hợp
+        var subscriptions = await _dbContext.WebHookSubscriptions
+            .Where(s =&gt; s.EventType == eventType &amp;&amp; s.IsActive)
+            .ToListAsync();
+
+        var tasks = subscriptions.Select(async subscription =&gt;
+        {
+            // Kiểm tra điều kiện lọc nếu có
+            if (!string.IsNullOrEmpty(subscription.FilterCriteria) &amp;&amp; 
+                !MeetsFilterCriteria(subscription.FilterCriteria, data))
+            {
+                return;
+            }
+
+            await SendWithRetryAsync(subscription.ReceiverUrl, data, subscription.Secret);
+        });
+
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task SendWithRetryAsync(string url, object payload, string secret)
+    {
+        // Implementation với retry logic
+    }
+}
+</code></pre>
+<h1 id="bao-mat-webhook">Bảo mật WebHook</h1>
+<p>Bảo mật đóng vai trò cực kì quan trọng để tránh bị giả mạo hoặc spam request.</p>
+<h2 id="xac-minh-chu-ky-hmac">Xác minh chữ ký (HMAC)</h2>
+<p>Khi bạn là Receiver, bạn cần kiểm tra xem request thực sự đến từ hệ thống tin cậy.
+Các nền tảng như Stripe hoặc GitHub ký payload bằng secret key, bạn có thể xác minh
+như sau:</p>
+<pre><code class="language-csharp">[HttpPost]
+public async Task&lt;IActionResult&gt; HandleWebHook()
+{
+    if (!Request.Headers.TryGetValue(&quot;X-Signature&quot;, out var signatureHeader))
+        return Unauthorized(&quot;Missing signature&quot;);
+
+    var payload = await new StreamReader(Request.Body).ReadToEndAsync();
+    var secret = Environment.GetEnvironmentVariable(&quot;WEBHOOK_SECRET&quot;);
+
+    var expectedSignature = ComputeHmacSha256(payload, secret);
+
+    if (signatureHeader != expectedSignature)
+        return Unauthorized(&quot;Invalid signature&quot;);
+
+    return Ok();
+}
+</code></pre>
+<h2 id="kiem-soat-truy-cap">Kiểm soát truy cập</h2>
+<p>Bạn cũng có thể giới hạn nguồn gửi bằng IP whitelist:</p>
+<pre><code class="language-csharp">app.Use(async (context, next) =&gt;
+{
+    var allowedIPs = new[] { &quot;192.168.1.100&quot;, &quot;203.0.113.10&quot; };
+    var remoteIp = context.Connection.RemoteIpAddress?.ToString();
+
+    if (!allowedIPs.Contains(remoteIp))
+    {
+        context.Response.StatusCode = 403;
+        await context.Response.WriteAsync(&quot;Forbidden&quot;);
+        return;
+    }
+
+    await next();
+});
+</code></pre>
+<p>Hoặc sử dụng API key:</p>
+<pre><code class="language-csharp">[HttpPost]
+public IActionResult HandleWebHook()
+{
+    if (!Request.Headers.TryGetValue(&quot;X-API-Key&quot;, out var apiKey) || !IsValidApiKey(apiKey))
+        return Unauthorized(&quot;Invalid or missing API key&quot;);
+
+    return Ok();
+}
+</code></pre>
+<h1 id="ket-luan">Kết luận</h1>
+<p>Vậy là chúng ta đã hiểu sơ bộ về WebHook, từ nguyên lý hoạt động cho đến cách
+triển khai trong hệ thống thực tế.</p>
+<p>Trong bài viết tiếp theo, chúng ta sẽ tìm hiểu về WebRTC, công nghệ nền tảng cho phép các
+ứng dụng kết nối trực tiếp với nhau để trao đổi âm thanh, hình ảnh
+và dữ liệu trực tiếp mà không cần server trung gian, mở ra khả năng xây dựng những
+ứng dụng như video call, chia sẻ màn hình hay truyền dữ liệu tức thời ngay trong trình duyệt.</p>
+
+</div>

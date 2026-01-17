@@ -1,0 +1,535 @@
+@page "/blog/blazor-auth-phan-2"
+
+
+<PageTitle>My first test page 3</PageTitle>
+
+<div class="content">
+    <h1>My first test page 3</h1>
+
+    <p>Ở <a href="authentication-va-authorization-trong-blazor-phan-1-nen-tang">phần 1</a> chúng ta đã tìm hiểu các khái niệm,
+các mô hình (SSR/SPA/BFF) và lý do Microsoft khuyến nghị BFF cho Blazor Web App. Ở phần 2 này,
+chúng ta đi sâu vào việc triển khai từ các thành phần cốt lõi và cách hoạt động
+của chúng.</p>
+<h1 id="cac-thanh-phan-chinh-va-vai-tro-cua-chung">Các thành phần chính và vai trò của chúng</h1>
+<p>Dưới đây là danh sách thành phần bạn sẽ gặp khi triển khai BFF-based authentication
+trong Blazor Web App.</p>
+<div class="mermaid">
+graph TD
+    subgraph Browser["Blazor Client (WebAssembly)"]
+        ASP[AuthenticationStateProvider]
+        AV[AuthorizeView/ClaimsPrincipal]
+        ASP --> AV
+    end
+<pre><code>subgraph Server[&quot;Blazor Server (BFF)&quot;]
+    COR[CookieOidcRefresher]
+    OIDC[OpenIdConnect Middleware]
+    COOKIE[Cookie Authentication]
+    COR --&gt; COOKIE
+    COOKIE --&gt; OIDC
+end
+
+subgraph IdP[&quot;Identity Provider (Google, Azure AD, ...)&quot;]
+    TOKEN[OIDC Token Endpoint]
+end
+
+AV --&gt;|Gửi request| COOKIE
+COOKIE --&gt;|Refresh Token/Access Token| TOKEN
+TOKEN --&gt;|Token Response| COR
+COR --&gt;|Lưu token trong cookie| ASP
+</code></pre>
+</div>
+<h2 id="authenticationstateprovider">AuthenticationStateProvider</h2>
+<p><code>AuthenticationStateProvider</code> là abstraction của Blazor để cung cấp trạng thái xác thực
+(<code>AuthenticationState</code>) cho component. Microsoft có hai implementation quan trọng phục vụ
+cho cơ chế prerendering + hydrate của Blazor Web App:</p>
+<ul>
+<li><code>PersistingAuthenticationStateProvider</code> (nằm trong Server project): Trong lúc prerendering, nó tạo <code>AuthenticationState</code>
+trên server và lưu lại <code>UserInfo</code> vào <code>PersistentComponentState</code> để client có thể deserialize khi hydrate. Được dùng
+trong <code>InteractiveWebAssembly</code> hoặc <code>Auto</code> render mode.</li>
+<li><code>PersistentAuthenticationStateProvider</code> (nằm trong Client project): Khi client hydrate, đọc lại <code>UserInfo</code><br />
+(từ <code>PersistentComponentState</code>) và khởi tạo <code>ClaimsPrincipal</code> giúp UI hiển thị đúng trạng thái đăng nhập.</li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>Vì sao cần có 2 Provider?</strong><br />
+Khi ứng dụng được prerender trên server, Blazor chưa có runtime WebAssembly nên phải lưu
+<code>UserInfo</code> vào <code>PersistentComponentState</code>. Sau khi hydrate, client (wasm) đọc lại để đồng bộ
+trạng thái đăng nhập.</p>
+</blockquote>
+<pre><code class="language-csharp">internal sealed class PersistingAuthenticationStateProvider
+    : AuthenticationStateProvider, IHostEnvironmentAuthenticationStateProvider, IDisposable
+{
+    private readonly PersistentComponentState _persistentComponentState;
+    private readonly PersistingComponentStateSubscription _subscription;
+    private Task&lt;AuthenticationState&gt;? _authenticationStateTask;
+
+    public PersistingAuthenticationStateProvider(PersistentComponentState state)
+    {
+        _persistentComponentState = state;
+        _subscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
+    }
+
+    public override Task&lt;AuthenticationState&gt; GetAuthenticationStateAsync()
+        =&gt; _authenticationStateTask ??
+            throw new InvalidOperationException($&quot;Do not call {nameof(GetAuthenticationStateAsync)} outside of the DI scope for a Razor component. Typically, this means you can call it only within a Razor component or inside another DI service that is resolved for a Razor component.&quot;);
+
+    public void SetAuthenticationState(Task&lt;AuthenticationState&gt; task)
+    {
+        _authenticationStateTask = task;
+    }
+
+    private async Task OnPersistingAsync()
+    {
+        var authenticationState = await GetAuthenticationStateAsync();
+        var principal = authenticationState.User;
+
+        if (principal.Identity?.IsAuthenticated == true)
+        {
+            _persistentComponentState.PersistAsJson(nameof(UserInfo), UserInfo.FromClaimsPrincipal(principal));
+        }
+    }
+
+    public void Dispose()
+    {
+        _subscription.Dispose();
+    }
+}
+</code></pre>
+<pre><code class="language-csharp">internal sealed class PersistentAuthenticationStateProvider : AuthenticationStateProvider
+{
+    private static readonly Task&lt;AuthenticationState&gt; _defaultUnauthenticatedTask =
+        Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
+
+    private readonly Task&lt;AuthenticationState&gt; _authenticationStateTask = _defaultUnauthenticatedTask;
+
+    public PersistentAuthenticationStateProvider(PersistentComponentState state)
+    {
+        if (!state.TryTakeFromJson&lt;UserInfo&gt;(nameof(UserInfo), out var userInfo) || userInfo is null)
+        {
+            return;
+        }
+
+        _authenticationStateTask = Task.FromResult(new AuthenticationState(userInfo.ToClaimsPrincipal()));
+    }
+
+    public override Task&lt;AuthenticationState&gt; GetAuthenticationStateAsync() =&gt; _authenticationStateTask;
+}
+</code></pre>
+<blockquote class="blockquote">
+<p>Client không là nguồn truth cho xác thực, nó chỉ hiển thị UI dựa trên dữ liệu đã được
+server serialize.</p>
+</blockquote>
+<h2 id="cookieoidcrefresher-token-refresh-orchestration">CookieOidcRefresher (Token refresh orchestration)</h2>
+<p>Dùng để kiểm tra <code>expires_at</code> trong cookie properties, nếu token gần hết hạn thì tự động gửi<br />
+refresh token để lấy access token mới từ IdP và cập nhật cookie.</p>
+<pre><code class="language-csharp">public class CookieOidcRefresher
+{
+    public CookieOidcRefresher(IOptionsMonitor&lt;OpenIdConnectOptions&gt; oidcOptionsMonitor)
+    {
+        _oidcOptionsMonitor = oidcOptionsMonitor;
+    }
+
+    private readonly OpenIdConnectProtocolValidator _oidcTokenValidator = new()
+    {
+        // We no longer have the original nonce cookie which is deleted at the end of the authorization code flow having served its purpose.
+        // Even if we had the nonce, it's likely expired. It's not intended for refresh requests. Otherwise, we'd use oidcOptions.ProtocolValidator.
+        RequireNonce = false,
+    };
+    private readonly IOptionsMonitor&lt;OpenIdConnectOptions&gt; _oidcOptionsMonitor;
+
+    public async Task ValidateOrRefreshCookieAsync(CookieValidatePrincipalContext validateContext, string oidcScheme)
+    {
+        var accessTokenExpirationText = validateContext.Properties.GetTokenValue(&quot;expires_at&quot;);
+        if (!DateTimeOffset.TryParse(accessTokenExpirationText, out var accessTokenExpiration))
+        {
+            return;
+        }
+
+        var oidcOptions = _oidcOptionsMonitor.Get(oidcScheme);
+        var now = oidcOptions.TimeProvider!.GetUtcNow();
+        if (now + TimeSpan.FromMinutes(5) &lt; accessTokenExpiration)
+        {
+            return;
+        }
+
+        var oidcConfiguration = await oidcOptions.ConfigurationManager!.GetConfigurationAsync(validateContext.HttpContext.RequestAborted);
+        var tokenEndpoint = oidcConfiguration.TokenEndpoint ?? throw new InvalidOperationException(&quot;Cannot refresh cookie. TokenEndpoint missing!&quot;);
+
+        using var refreshResponse = await oidcOptions.Backchannel.PostAsync(tokenEndpoint,
+            new FormUrlEncodedContent(new Dictionary&lt;string, string?&gt;()
+            {
+                [&quot;grant_type&quot;] = &quot;refresh_token&quot;,
+                [&quot;client_id&quot;] = oidcOptions.ClientId,
+                [&quot;client_secret&quot;] = oidcOptions.ClientSecret,
+                [&quot;scope&quot;] = string.Join(&quot; &quot;, oidcOptions.Scope),
+                [&quot;refresh_token&quot;] = validateContext.Properties.GetTokenValue(&quot;refresh_token&quot;),
+            }));
+
+        if (!refreshResponse.IsSuccessStatusCode)
+        {
+            validateContext.RejectPrincipal();
+            return;
+        }
+
+        var refreshJson = await refreshResponse.Content.ReadAsStringAsync();
+        var message = new OpenIdConnectMessage(refreshJson);
+
+        var validationParameters = oidcOptions.TokenValidationParameters.Clone();
+        if (oidcOptions.ConfigurationManager is BaseConfigurationManager baseConfigurationManager)
+        {
+            validationParameters.ConfigurationManager = baseConfigurationManager;
+        }
+        else
+        {
+            validationParameters.ValidIssuer = oidcConfiguration.Issuer;
+            validationParameters.IssuerSigningKeys = oidcConfiguration.SigningKeys;
+        }
+
+        var validationResult = await oidcOptions.TokenHandler.ValidateTokenAsync(message.IdToken, validationParameters);
+
+        if (!validationResult.IsValid)
+        {
+            validateContext.RejectPrincipal();
+            return;
+        }
+
+        var validatedIdToken = JwtSecurityTokenConverter.Convert(validationResult.SecurityToken as JsonWebToken);
+        validatedIdToken.Payload[&quot;nonce&quot;] = null;
+        _oidcTokenValidator.ValidateTokenResponse(new()
+        {
+            ProtocolMessage = message,
+            ClientId = oidcOptions.ClientId,
+            ValidatedIdToken = validatedIdToken,
+        });
+
+        validateContext.ShouldRenew = true;
+        validateContext.ReplacePrincipal(new ClaimsPrincipal(validationResult.ClaimsIdentity));
+
+        var expiresIn = int.Parse(message.ExpiresIn, NumberStyles.Integer, CultureInfo.InvariantCulture);
+        var expiresAt = now + TimeSpan.FromSeconds(expiresIn);
+        validateContext.Properties.StoreTokens(new[]
+        {
+            new AuthenticationToken { Name = &quot;access_token&quot;, Value = message.AccessToken },
+            new AuthenticationToken { Name = &quot;id_token&quot;, Value = message.IdToken },
+            new AuthenticationToken { Name = &quot;refresh_token&quot;, Value = message.RefreshToken },
+            new AuthenticationToken { Name = &quot;token_type&quot;, Value = message.TokenType },
+            new AuthenticationToken { Name = &quot;expires_at&quot;, Value = expiresAt.ToString(&quot;o&quot;, CultureInfo.InvariantCulture) },
+        });
+    }
+}
+</code></pre>
+<p>Extension method để đăng ký <code>CookieOidcRefresher</code> và hook <code>OnValidatePrincipal</code>:</p>
+<pre><code class="language-csharp">internal static class CookieOidcServiceCollectionExtensions
+{
+    public static IServiceCollection ConfigureCookieOidcRefresh(this IServiceCollection services, string cookieScheme, string oidcScheme)
+    {
+        services.AddSingleton&lt;CookieOidcRefresher&gt;();
+        services.AddOptions&lt;CookieAuthenticationOptions&gt;(cookieScheme).Configure&lt;CookieOidcRefresher&gt;((cookieOptions, refresher) =&gt;
+        {
+            cookieOptions.Events.OnValidatePrincipal = context =&gt; refresher.ValidateOrRefreshCookieAsync(context, oidcScheme);
+        });
+        
+        services.AddOptions&lt;OpenIdConnectOptions&gt;(oidcScheme).Configure(oidcOptions =&gt;
+        {
+            var provider = oidcOptions.Authority ?? &quot;&quot;;
+
+            // Chỉ thêm offline_access nếu không phải Google
+            if (!provider.Contains(&quot;accounts.google.com&quot;, StringComparison.OrdinalIgnoreCase))
+            {
+                oidcOptions.Scope.Add(OpenIdConnectScope.OfflineAccess);
+            }
+
+            oidcOptions.SaveTokens = true;
+        });
+
+        return services;
+    }
+}
+</code></pre>
+<h2 id="tokenhandler-delegatinghandler-cho-http-client">TokenHandler (DelegatingHandler cho HTTP client)</h2>
+<p>Dùng khi server cần gọi external API thay mặt user, handler này sẽ lấy access token
+từ <code>HttpContext</code> và thêm header <code>Authorization: Bearer &lt;token&gt;</code> vào request.</p>
+<pre><code class="language-csharp">public class TokenHandler : DelegatingHandler
+{
+	private readonly IHttpContextAccessor _httpContextAccessor;
+
+	public TokenHandler(IHttpContextAccessor httpContextAccessor)
+	{
+		_httpContextAccessor = httpContextAccessor;
+	}
+
+	protected override async Task&lt;HttpResponseMessage&gt; SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+	{
+		var ctx = _httpContextAccessor.HttpContext;
+		if (ctx != null)
+		{
+			var token = await ctx.GetTokenAsync(&quot;access_token&quot;);
+			if (!string.IsNullOrEmpty(token))
+			{
+				request.Headers.Authorization = new AuthenticationHeaderValue(&quot;Bearer&quot;, token);
+			}
+		}
+
+		return await base.SendAsync(request, cancellationToken);
+	}
+}
+</code></pre>
+<h2 id="userinfo-va-claimmapper">UserInfo và ClaimMapper</h2>
+<p>Dùng để chuẩn hóa <code>ClaimsPrincipal</code> lấy từ nhiều IdP (Google, Github...) về một model
+thống nhất vì mỗi IdP trả về claim khác nhau.</p>
+<pre><code class="language-csharp">public class UserInfo
+{
+	public string Sub { get; set; } = default!;
+	public string? Email { get; set; }
+	public string? Name { get; set; }
+	public string? Picture { get; set; }
+
+	public static UserInfo FromClaimsPrincipal(ClaimsPrincipal principal)
+	{
+		var id = principal.FindFirst(&quot;sub&quot;)?.Value
+			?? principal.FindFirst(&quot;oid&quot;)?.Value
+			?? principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+
+		var email = principal.FindFirst(ClaimTypes.Email)?.Value
+			?? principal.FindFirst(&quot;email&quot;)?.Value;
+
+		var name = principal.FindFirst(&quot;name&quot;)?.Value
+		?? principal.FindFirst(ClaimTypes.GivenName)?.Value
+		?? principal.FindFirst(ClaimTypes.Surname)?.Value;
+
+		var picture = principal.FindFirst(&quot;picture&quot;)?.Value;
+
+
+		return new UserInfo { Sub = id ?? &quot;&quot;, Email = email, Name = name, Picture = picture };
+	}
+
+
+	public ClaimsPrincipal ToClaimsPrincipal()
+	{
+		var claims = new List&lt;Claim&gt;();
+		claims.Add(new Claim(&quot;sub&quot;, Sub));
+		if (!string.IsNullOrEmpty(Email)) 
+			claims.Add(new Claim(ClaimTypes.Email, Email));
+		if (!string.IsNullOrEmpty(Name)) 
+			claims.Add(new Claim(ClaimTypes.Name, Name));
+		if (!string.IsNullOrEmpty(Picture)) 
+			claims.Add(new Claim(&quot;picture&quot;, Picture));
+
+		var identity = new ClaimsIdentity(claims, &quot;oidc&quot;);
+		return new ClaimsPrincipal(identity);
+	}
+}
+</code></pre>
+<h1 id="trien-khai">Triển khai</h1>
+<h2 id="cau-hinh-server-project">Cấu hình Server Project</h2>
+<h3 id="packages-can-thiet">Packages cần thiết</h3>
+<pre><code class="language-bash">dotnet add package Microsoft.AspNetCore.Authentication.OpenIdConnect
+dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore
+</code></pre>
+<h3 id="appsettings.json">appsettings.json</h3>
+<p>Ví dụ với Google:</p>
+<pre><code class="language-javascript">{
+  &quot;Oidc&quot;: {
+    &quot;Authority&quot;: &quot;https://accounts.google.com&quot;,
+    &quot;ClientId&quot;: &quot;YOUR_GOOGLE_CLIENT_ID&quot;,
+    &quot;ClientSecret&quot;: &quot;YOUR_GOOGLE_CLIENT_SECRET&quot;,
+    &quot;CallbackPath&quot;: &quot;/signin-oidc&quot;,
+    &quot;ResponseType&quot;: &quot;code&quot;
+  }
+}
+</code></pre>
+<blockquote class="blockquote">
+<p>Lưu client secret trong enviroment variables, không lưu trong appsettings.json
+(sử dụng user-secrets nếu là môi trường development).</p>
+</blockquote>
+<h3 id="program.cs">Program.cs</h3>
+<pre><code class="language-csharp">var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddRazorComponents()
+    .AddInteractiveWebAssemblyComponents();
+
+// Persistent state (prerender -&gt; wasm)
+builder.Services.AddSingleton&lt;PersistentComponentState&gt;();
+
+builder.Services.AddScoped&lt;AuthenticationStateProvider, PersistingAuthenticationStateProvider&gt;();
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddAuthorization();
+
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+builder.Services.AddAuthentication(options =&gt;
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+})
+.AddCookie(options =&gt;
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.ExpireTimeSpan = TimeSpan.FromHours(8);
+    options.SlidingExpiration = true;
+})
+.AddOpenIdConnect(options =&gt;
+{
+    builder.Configuration.Bind(&quot;Oidc&quot;, options);
+    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.SaveTokens = true; // Lưu token ở server để gọi API
+    options.GetClaimsFromUserInfoEndpoint = true;
+    options.Scope.Add(&quot;openid&quot;);
+    options.Scope.Add(&quot;profile&quot;);
+    options.Scope.Add(&quot;email&quot;);
+
+    options.ClaimActions.MapJsonKey(&quot;sub&quot;, &quot;sub&quot;);
+    options.ClaimActions.MapUniqueJsonKey(ClaimTypes.NameIdentifier, &quot;sub&quot;);
+    options.ClaimActions.MapUniqueJsonKey(ClaimTypes.Email, &quot;email&quot;);
+    options.ClaimActions.MapUniqueJsonKey(&quot;picture&quot;, &quot;picture&quot;);
+
+    options.TokenValidationParameters.NameClaimType = ClaimTypes.Email;
+});
+
+// Cookie refresh helper
+builder.Services.ConfigureCookieOidcRefresh(
+    CookieAuthenticationDefaults.AuthenticationScheme,
+    OpenIdConnectDefaults.AuthenticationScheme);
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseWebAssemblyDebugging();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseAntiforgery();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapRazorComponents&lt;App&gt;()
+    .AddInteractiveWebAssemblyRenderMode()
+    .AddAdditionalAssemblies(typeof(Blogtify.Client._Imports).Assembly);
+
+app.MapLoginAndLogout();
+app.Run();
+</code></pre>
+<h3 id="endpoints-loginlogout">Endpoints login/logout</h3>
+<p>Định nghĩa route để trigger SignIn/SignOut:</p>
+<pre><code class="language-csharp">internal static class LoginLogoutEndpointRouteBuilderExtensions
+{
+    internal static IEndpointConventionBuilder MapLoginAndLogout(this IEndpointRouteBuilder endpoints)
+    {
+        var group = endpoints.MapGroup(&quot;authentication&quot;);
+
+        group.MapGet(&quot;/login&quot;, (string? returnUrl) =&gt; TypedResults.Challenge(GetAuthProperties(returnUrl)))
+            .AllowAnonymous();
+
+        group.MapPost(&quot;/logout&quot;, async (HttpContext context, [FromQuery] string? returnUrl) =&gt;
+        {
+            var props = GetAuthProperties(returnUrl);
+
+            var oidcOptionsMonitor = context.RequestServices.GetRequiredService&lt;
+                Microsoft.Extensions.Options.IOptionsMonitor&lt;OpenIdConnectOptions&gt;&gt;();
+            var oidcOptions = oidcOptionsMonitor.Get(OpenIdConnectDefaults.AuthenticationScheme);
+
+            if (oidcOptions.Configuration?.EndSessionEndpoint != null)
+            {
+                await context.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme, props);
+            }
+
+            await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme, props);
+        });
+
+        return group;
+    }
+
+    private static AuthenticationProperties GetAuthProperties(string? returnUrl)
+    {
+        // TODO: Use HttpContext.Request.PathBase instead.
+        const string pathBase = &quot;/&quot;;
+
+        // Prevent open redirects.
+        if (string.IsNullOrEmpty(returnUrl))
+        {
+            returnUrl = pathBase;
+        }
+        else if (!Uri.IsWellFormedUriString(returnUrl, UriKind.Relative))
+        {
+            returnUrl = new Uri(returnUrl, UriKind.Absolute).PathAndQuery;
+        }
+        else if (returnUrl[0] != '/')
+        {
+            returnUrl = $&quot;{pathBase}{returnUrl}&quot;;
+        }
+
+        return new AuthenticationProperties { RedirectUri = returnUrl };
+    }
+}
+</code></pre>
+<blockquote class="blockquote">
+<p>Lưu ý: Trước khi redirect, kiểm tra returnUrl là relative path, không phải full URL từ bên ngoài
+để tránh lỗ hổng bảo mật Open Redirect.</p>
+</blockquote>
+<h2 id="cau-hinh-client-project">Cấu hình Client Project</h2>
+<h3 id="program.cs-1">Program.cs</h3>
+<pre><code class="language-csharp">var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add&lt;App&gt;(&quot;#app&quot;);
+
+builder.Services.AddScoped&lt;AuthenticationStateProvider, PersistentAuthenticationStateProvider&gt;();
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddAuthorizationCore();
+
+await builder.Build().RunAsync();
+</code></pre>
+<h3 id="routes.razor">Routes.razor</h3>
+<pre><code class="language-markup">&lt;CascadingAuthenticationState&gt;
+    &lt;Router AppAssembly=&quot;@@typeof(Blogtify.Client.Program).Assembly&quot;&gt;
+        &lt;Found Context=&quot;routeData&quot;&gt;
+            &lt;AuthorizeRouteView RouteData=&quot;@@routeData&quot; DefaultLayout=&quot;@@typeof(MainLayout)&quot;&gt;
+                &lt;NotAuthorized&gt;
+                    &lt;p&gt;Bạn cần đăng nhập để truy cập trang này.&lt;/p&gt;
+                &lt;/NotAuthorized&gt;
+            &lt;/AuthorizeRouteView&gt;
+        &lt;/Found&gt;
+        &lt;NotFound&gt;
+            &lt;PageTitle&gt;Not found&lt;/PageTitle&gt;
+            &lt;LayoutView Layout=&quot;@@typeof(MainLayout)&quot;&gt;
+                &lt;p role=&quot;alert&quot;&gt;Sorry, there's nothing at this address.&lt;/p&gt;
+            &lt;/LayoutView&gt;
+        &lt;/NotFound&gt;
+    &lt;/Router&gt;
+&lt;/CascadingAuthenticationState&gt;
+</code></pre>
+<h3 id="loginlogout-ui">Login/Logout UI</h3>
+<pre><code class="language-markup">@@inject NavigationManager NavigationManager
+
+&lt;AuthorizeView&gt;
+    &lt;Authorized&gt;
+        &lt;span&gt;Xin chào, @@context.User.Identity?.Name!&lt;/span&gt;
+        &lt;form action=&quot;authentication/logout&quot; method=&quot;post&quot;&gt;
+            &lt;AntiforgeryToken /&gt;
+            &lt;input type=&quot;hidden&quot; name=&quot;returnUrl&quot; value=&quot;@@NavigationManager.Uri&quot; /&gt;
+            &lt;button type=&quot;submit&quot;&gt;Đăng xuất&lt;/button&gt;
+        &lt;/form&gt;
+    &lt;/Authorized&gt;
+    &lt;NotAuthorized&gt;
+        &lt;button @@onclick=&quot;@@Login&quot;&gt;Đăng nhập&lt;/button&gt;
+    &lt;/NotAuthorized&gt;
+&lt;/AuthorizeView&gt;
+
+@@code {
+    private void Login()
+    {
+        var returnUrl = Uri.EscapeDataString(NavigationManager.Uri);
+        NavigationManager.NavigateTo($&quot;authentication/login?returnUrl={returnUrl}&quot;, forceLoad: true);
+    }
+}
+</code></pre>
+<h1 id="ket-luan">Kết luận</h1>
+<p>Trong phần này, chúng ta đã đi sâu vào cách Blazor triển khai cơ chế Authentication dựa trên BFF,
+bao gồm các thành phần quan trọng như <code>AuthenticationStateProvider</code>, <code>CookieOidcRefresher</code>,
+<code>TokenHandler</code> và <code>UserInfo</code>. Qua đó, bạn có thể thấy rõ luồng xác thực trong Blazor Web App.</p>
+<p>Ở <a href="/post/authentication-va-authorization-trong-blazor-phan-3-authorization-va-api-call">phần tiếp theo</a>, chúng ta sẽ tìm hiểu Authorization và API Call trong Blazor, cách kiểm soát
+quyền truy cập và cách Blazor BFF gọi các API nội bộ hoặc bên ngoài một cách bảo mật.</p>
+
+</div>

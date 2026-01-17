@@ -1,17 +1,23 @@
 @inherits LayoutComponentBase
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+@using Blake.Generated
+@using Blake.Types
 
 @code {
     private bool IsHomePage => Navigation.ToBaseRelativePath(Navigation.Uri).Trim('/') == "";
     private bool _isDarkTheme = true;
     private bool _isSearchOpen = false;
 
+    private IEnumerable<PageModel> RecentPosts => GeneratedContentIndex.GetPages()
+        .Where(p => !p.Draft)
+        .OrderByDescending(p => p.Date)
+        .Take(6);
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            // Load saved theme from localStorage
             var savedTheme = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
             _isDarkTheme = savedTheme != "light";
             await ApplyTheme();
@@ -41,26 +47,20 @@
 <header class="sakura-header">
     <div class="sakura-header-inner">
         <div class="brand-wrap">
-            <a class="brand" href=""><em>Valaxy Theme Sakura</em></a>
+            <a class="brand" href="">Coding Diary</a>
         </div>
 
         <nav class="main-nav" aria-label="Primary">
             <ul>
-                <li><a href="">Home</a></li>
-                <li><a href="guide/installation">Guide</a></li>
-                <li><a href="examples">Examples</a></li>
-                <li><a href="components">Components</a></li>
-                <li><a href="releases">Releases</a></li>
+                <li><a href="">Trang chủ</a></li>
+                <li><a href="blog">Bài viết</a></li>
+                <li><a href="about">Giới thiệu</a></li>
+                <li><a href="sitemap">Sitemap</a></li>
             </ul>
         </nav>
 
         <div class="header-actions">
             <div class="icon-row">
-                <button class="icon btn-ghost" title="Language">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/>
-                    </svg>
-                </button>
                 <button class="icon btn-ghost" title="Toggle theme" @onclick="ToggleTheme">
                     @if (_isDarkTheme)
                     {
@@ -103,107 +103,59 @@
 
 @if (IsHomePage)
 {
-    <!-- Hero section for homepage -->
-    <section class="hero">
+    <!-- Hero section -->
+    <section class="hero hero-compact">
         <div class="hero-bg" role="img" aria-hidden="true"></div>
         <div class="hero-inner">
-            <div class="hero-title">VALAXY THEME SAKURA</div>
-            <div class="hero-sub">An open, flexible, and feature-rich Valaxy theme</div>
+            <div class="hero-title">Coding Diary</div>
+            <div class="hero-sub">Notes, thoughts, and learnings from my coding journey</div>
         </div>
         <svg class="hero-wave" viewBox="0 0 1440 100" preserveAspectRatio="none" aria-hidden="true">
             <path class="wave-path" d="M0,40 Q360,100 720,50 T1440,60 L1440,100 L0,100 Z"/>
         </svg>
     </section>
 
-    <!-- Description text -->
-    <section class="description-section">
-        <p class="description-text">Includes almost all features with extensive functionality and style enhancements</p>
+    <!-- Quote section -->
+    <section class="quote-section">
+        <blockquote class="featured-quote">
+            <p>"The only way to learn a new programming language is by writing programs in it."</p>
+            <cite>- Dennis Ritchie</cite>
+        </blockquote>
     </section>
 
-    <!-- Features section with 6 cards -->
-    <section class="features-section">
-        <div class="features-inner">
-            <div class="feature-card">
-                <h3>Simple & Elegant</h3>
-                <p>Inspired by the Vue community's progressive philosophy, the blog evolves with user needs. Default styles are minimal, and built-in configurations can be found in the documentation.</p>
-            </div>
-            <div class="feature-card">
-                <h3>Modern</h3>
-                <p>More intelligent configuration. Traditional YAML configuration has been replaced by TypeScript, eliminating redundant comments.</p>
-            </div>
-            <div class="feature-card">
-                <h3>High Performance</h3>
-                <p>Faster build times compared to Hexo; better runtime performance compared to wordpress-theme-sakura.</p>
-            </div>
-            <div class="feature-card">
-                <h3>Refined Styles</h3>
-                <p>Every style and animation has been carefully optimized, balancing accessibility design and modern aesthetics for the best user experience.</p>
-            </div>
-            <div class="feature-card">
-                <h3>MIT Open Source</h3>
-                <p>valaxy-theme-sakura is not a derivative of wordpress-theme-sakura. You can freely modify and create new works without following the GPL license.</p>
-            </div>
-            <div class="feature-card">
-                <h3>Customizable & Flexible</h3>
-                <p>Core layout based on dynamic multi-column design. Users can freely customize components, article layouts, homepage layouts, and more with responsive support.</p>
-            </div>
+    <!-- Recent Posts section -->
+    <section class="posts-section">
+        <div class="posts-header">
+            <h2>Bài viết gần đây</h2>
+            <p>Latest articles and thoughts</p>
         </div>
-    </section>
-
-    <!-- Logo icons section -->
-    <section class="logos-section">
-        <div class="logo-icon valaxy-logo">
-            <svg width="60" height="60" viewBox="0 0 100 100">
-                <path d="M50 10 L80 80 L50 65 L20 80 Z" fill="#8b5cf6"/>
-            </svg>
+        <div class="posts-grid">
+            @foreach (var post in RecentPosts)
+            {
+                <a href="@post.Slug.TrimStart('/')" class="post-card-home">
+                    <div class="post-card-inner">
+                        <div class="post-card-date">
+                            <span class="date-day">@(((DateTime)post.Date!).Day)</span>
+                            <span class="date-month">@(((DateTime)post.Date).ToString("MMM"))</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h3>@post.Title</h3>
+                            <p>@post.Description</p>
+                            <div class="post-card-tags">
+                                @foreach (var tag in post.Tags.Take(3))
+                                {
+                                    <span class="tag-sm">#@tag</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            }
         </div>
-        <div class="logo-icon sakura-logo">
-            <svg width="60" height="60" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="8" fill="#ec4899"/>
-                <g fill="#f472b6">
-                    <ellipse cx="50" cy="25" rx="12" ry="20"/>
-                    <ellipse cx="50" cy="75" rx="12" ry="20"/>
-                    <ellipse cx="25" cy="50" rx="20" ry="12"/>
-                    <ellipse cx="75" cy="50" rx="20" ry="12"/>
-                    <ellipse cx="32" cy="32" rx="12" ry="18" transform="rotate(-45 32 32)"/>
-                    <ellipse cx="68" cy="32" rx="12" ry="18" transform="rotate(45 68 32)"/>
-                    <ellipse cx="32" cy="68" rx="12" ry="18" transform="rotate(45 32 68)"/>
-                    <ellipse cx="68" cy="68" rx="12" ry="18" transform="rotate(-45 68 68)"/>
-                </g>
-            </svg>
-        </div>
-    </section>
-
-    <!-- Built with Valaxy section -->
-    <section class="valaxy-section">
-        <h2>Built with Valaxy</h2>
-        <p class="valaxy-subtitle">A modern blog framework ensuring the simplest usage<br/>and best user experience</p>
-        <a href="guide/installation" class="btn-start">Get Started</a>
     </section>
 }
 else
 {
-    <!-- Sub-navigation for documentation pages -->
-    <nav class="sub-nav">
-        <div class="sub-nav-inner">
-            <div class="sub-nav-title">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                    <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-                </svg>
-                <span>Guide</span>
-            </div>
-            <ul class="sub-nav-links">
-                <li><a href="guide/installation">Installation</a></li>
-                <li><a href="guide/update">Update</a></li>
-                <li><a href="guide/theme-config">Theme Config</a></li>
-                <li><a href="guide/site-config">Site Config</a></li>
-                <li><a href="guide/frontmatter">Frontmatter</a></li>
-                <li><a href="guide/special-pages">Special Pages</a></li>
-            </ul>
-        </div>
-    </nav>
-
     <div class="page sakura-page">
         <aside class="left-sidebar">
             <div class="sidebar-tags">
@@ -222,6 +174,13 @@ else
         </aside>
     </div>
 }
+
+
+
+<!-- Footer section -->
+<section class="home-footer">
+    <p></p>
+</section>
 
 <SiteSearch @bind-IsOpen="_isSearchOpen" />
 

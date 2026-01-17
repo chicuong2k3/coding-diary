@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Valaxy Theme Sakura</title>
-    <base href="/coding-diary/" />
+    <base href="/" />
     <link rel="preload" id="webassembly" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,8 +52,26 @@
     <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>
 
     <script>
+        // Smooth scroll to heading
+        window.scrollToHeading = function(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                const headerOffset = 100;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        };
+
         // Table of Contents functionality
         window.initToc = function(dotNetRef) {
+            let currentObserver = null;
+            let scrollHandler = null;
+
             const updateToc = () => {
                 const content = document.querySelector('.content');
                 if (!content) return;
@@ -79,35 +97,58 @@
             // Initial update
             setTimeout(updateToc, 100);
 
-            // Update on navigation
-            const observer = new MutationObserver(() => {
+            // Update on navigation/content changes
+            currentObserver = new MutationObserver(() => {
                 setTimeout(updateToc, 100);
             });
-            observer.observe(document.body, { childList: true, subtree: true });
+            currentObserver.observe(document.body, { childList: true, subtree: true });
 
-            // Track active heading on scroll
+            // Track active heading on scroll with improved detection
             let ticking = false;
-            const onScroll = () => {
+            scrollHandler = () => {
                 if (!ticking) {
                     window.requestAnimationFrame(() => {
                         const headings = document.querySelectorAll('.content h1, .content h2, .content h3');
                         let activeId = null;
+                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        const viewportHeight = window.innerHeight;
 
+                        // Find the heading that's currently in view
                         for (const heading of headings) {
                             const rect = heading.getBoundingClientRect();
-                            if (rect.top <= 120) {
+                            const headingTop = rect.top + scrollTop;
+
+                            // Consider a heading active if it's within the top portion of viewport
+                            if (rect.top <= 150) {
                                 activeId = heading.id;
                             }
                         }
 
-                        dotNetRef.invokeMethodAsync('SetActiveHeading', activeId);
+                        // If at the very top, select first heading
+                        if (scrollTop < 100 && headings.length > 0) {
+                            activeId = headings[0].id;
+                        }
+
+                        // If at the very bottom, select last heading
+                        if ((window.innerHeight + scrollTop) >= document.body.offsetHeight - 50) {
+                            if (headings.length > 0) {
+                                activeId = headings[headings.length - 1].id;
+                            }
+                        }
+
+                        if (activeId) {
+                            dotNetRef.invokeMethodAsync('SetActiveHeading', activeId);
+                        }
                         ticking = false;
                     });
                     ticking = true;
                 }
             };
 
-            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('scroll', scrollHandler, { passive: true });
+
+            // Trigger initial scroll check
+            setTimeout(scrollHandler, 200);
         };
     </script>
 </body>

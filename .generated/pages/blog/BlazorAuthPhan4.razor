@@ -1,0 +1,369 @@
+@page "/blog/blazor-auth-phan-4"
+
+
+<PageTitle>My first test page 3</PageTitle>
+
+<div class="content">
+    <h1>My first test page 3</h1>
+
+    <p>Ở <a href="/post/authentication-va-authorization-trong-blazor-phan-2-trien-khai-authentication-trong-blazor">phần 2</a>,
+chúng ta đã triển khai Authentication cho ứng dụng Blazor nhưng chỉ hỗ trợ một
+Identity Provider (IdP) duy nhất.</p>
+<p>Tuy nhiên trong thực tế nhiều ứng dụng thường có yêu cầu cao hơn:</p>
+<ul>
+<li>Cho phép người dùng đăng nhập bằng nhiều IdP khác nhau. Ví dụ như Google, Facebook, GitHub, TikTok...</li>
+<li>Dù sử dụng nhiều IdP, ứng dụng vẫn ánh xạ tất cả các danh tính đó
+về một user account duy nhất trong cơ sở dữ liệu để việc quản lý được nhất quán.</li>
+</ul>
+<p>Trong phần này, chúng ta sẽ mở rộng triển khai từ phần 2:</p>
+<ol>
+<li>Đăng nhập với nhiều Identity Provider (IdP) như Google, Facebook, GitHub, TikTok,...</li>
+<li>Ánh xạ tất cả IdP về một user account duy nhất trong cơ sở dữ liệu.</li>
+</ol>
+<h1 id="tong-quan-ve-authentication-a-idp">Tổng quan về Authentication đa IdP</h1>
+<p>Đăng nhập đa IdP (Multiple Identity Provider Authentication) là việc cho phép người dùng
+xác thực bằng nhiều Identity Provider
+nhưng kết quả cuối cùng được ánh xạ vào một user account duy nhất trong cơ sở dữ liệu
+của ứng dụng.</p>
+<p>Trước khi đi vào chi tiết, hãy cùng xem sơ đồ tổng quan luồng đăng nhập đa IdP trong
+ứng dụng Blazor Web App (với WebAssembly Render Mode) sử dụng mô hình BFF.</p>
+<div class="mermaid"> 
+sequenceDiagram 
+    participant User as Browser 
+    participant Client as Blazor Client 
+    participant BFF as Server BFF 
+    participant IdP as Identity Provider 
+    participant DB as Internal Database
+<pre><code>Client-&gt;&gt;BFF: Chọn đăng nhập với Google/Facebook/Tiktok
+BFF-&gt;&gt;IdP: Redirect tới OIDC endpoint của IdP
+IdP--&gt;&gt;BFF: Trả về authorization code và id_token
+BFF-&gt;&gt;DB: Map token IdP về user account nội bộ
+DB--&gt;&gt;BFF: User account
+BFF-&gt;&gt;Client: Lưu cookie xác thực Identity
+Client-&gt;&gt;BFF: Gọi API 
+BFF-&gt;&gt;DB/External API: Xác thực bằng cookie hoặc token tùy vào internal hay external API
+BFF--&gt;&gt;Client: Trả dữ liệu
+</code></pre>
+</div>
+<h1 id="trien-khai">Triển khai</h1>
+<h2 id="cau-hinh-identity">Cấu hình Identity</h2>
+<p>Tạo lớp <code>ApplicationUser</code> kế thừa từ <code>IdentityUser</code>:</p>
+<pre><code class="language-csharp">public class ApplicationUser : IdentityUser
+{
+    public string? Picture { get; set; }
+
+    public virtual ICollection&lt;IdentityUserLogin&lt;string&gt;&gt; UserLogins { get; set; } = new List&lt;IdentityUserLogin&lt;string&gt;&gt;();
+}
+</code></pre>
+<p>Cấu hình <code>ApplicationDbContext</code>:</p>
+<pre><code class="language-csharp">public class ApplicationDbContext : IdentityDbContext&lt;ApplicationUser&gt;
+{
+    public ApplicationDbContext(DbContextOptions&lt;ApplicationDbContext&gt; options)
+        : base(options)
+    {
+
+    }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        builder.Entity&lt;ApplicationUser&gt;().ToTable(&quot;Users&quot;);
+        builder.Entity&lt;IdentityRole&gt;().ToTable(&quot;Roles&quot;);
+        builder.Entity&lt;IdentityUserRole&lt;string&gt;&gt;().ToTable(&quot;UserRoles&quot;);
+        builder.Entity&lt;IdentityUserClaim&lt;string&gt;&gt;().ToTable(&quot;UserClaims&quot;);
+        builder.Entity&lt;IdentityUserLogin&lt;string&gt;&gt;().ToTable(&quot;UserLogins&quot;);
+        builder.Entity&lt;IdentityUserToken&lt;string&gt;&gt;().ToTable(&quot;UserTokens&quot;);
+        builder.Entity&lt;IdentityRoleClaim&lt;string&gt;&gt;().ToTable(&quot;RoleClaims&quot;);
+    }
+}
+</code></pre>
+<p>Trước khi cấu hình các IdP, bạn cần thêm Identity vào <code>Program.cs</code> (Server project):</p>
+<pre><code class="language-csharp">builder.Services.AddDbContext&lt;ApplicationDbContext&gt;(options =&gt;
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString(&quot;DefaultConnection&quot;));
+});
+
+builder.Services.AddDefaultIdentity&lt;ApplicationUser&gt;(options =&gt;
+{
+    options.SignIn.RequireConfirmedAccount = false;
+})
+.AddEntityFrameworkStores&lt;ApplicationDbContext&gt;()
+.AddDefaultTokenProviders();
+
+// Cấu hình cookie Identity
+builder.Services.ConfigureApplicationCookie(options =&gt;
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+</code></pre>
+<blockquote class="blockquote">
+<p>Điều này đảm bảo <code>UserManager</code>, <code>SignInManager</code> được đăng ký và cookie của Identity sẽ được tạo.</p>
+</blockquote>
+<h2 id="cau-hinh-external-authentication-trong-program.cs-server-project">Cấu hình External Authentication trong Program.cs (Server project)</h2>
+<p>Thêm <code>AddOpenIdConnect</code> cho các IdP muốn sử dụng:</p>
+<pre><code class="language-csharp">var oidcSection = builder.Configuration.GetSection(&quot;Oidc&quot;);
+
+JsonWebTokenHandler.DefaultInboundClaimTypeMap.Clear();
+builder.Services.AddAuthentication(options =&gt;
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+})
+.AddCookie(options =&gt;
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+})
+.AddOpenIdConnect(&quot;Google&quot;, options =&gt;
+{
+    oidcSection.GetSection(&quot;Google&quot;).Bind(options);
+    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.SaveTokens = true;
+    options.GetClaimsFromUserInfoEndpoint = true;
+
+    options.Scope.Add(&quot;openid&quot;);
+    options.Scope.Add(&quot;profile&quot;);
+    options.Scope.Add(&quot;email&quot;);
+
+    options.ClaimActions.MapJsonKey(&quot;sub&quot;, &quot;sub&quot;);
+    options.ClaimActions.MapUniqueJsonKey(ClaimTypes.NameIdentifier, &quot;sub&quot;);
+    options.ClaimActions.MapUniqueJsonKey(ClaimTypes.Email, &quot;email&quot;);
+    options.ClaimActions.MapUniqueJsonKey(&quot;picture&quot;, &quot;picture&quot;);
+
+    options.TokenValidationParameters.NameClaimType = ClaimTypes.Email;
+
+    // Xử lý ánh xạ user nội bộ
+    options.Events.OnTicketReceived = async context =&gt;
+    {
+        if (context == null || context.Principal == null) 
+            return;
+
+        var userManager = context.HttpContext.RequestServices.GetRequiredService&lt;UserManager&lt;ApplicationUser&gt;&gt;();
+
+        var user = await MapUserToInternalAccount(userManager, context.Principal, &quot;Google&quot;);
+        if (user is null)
+            return;
+
+        var signInManager = context.HttpContext.RequestServices.GetRequiredService&lt;SignInManager&lt;ApplicationUser&gt;&gt;();
+        await signInManager.SignInAsync(user, isPersistent: false);
+    };
+})
+.AddFacebook(options =&gt;
+{
+    oidcSection.GetSection(&quot;Facebook&quot;).Bind(options);
+    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.SaveTokens = true;
+
+    options.Scope.Add(&quot;public_profile&quot;);
+    options.Scope.Add(&quot;email&quot;);
+
+    options.Fields.Add(&quot;email&quot;);
+    options.Fields.Add(&quot;name&quot;);
+    options.Fields.Add(&quot;picture&quot;);
+
+    options.ClaimActions.MapUniqueJsonKey(ClaimTypes.Email, &quot;email&quot;);
+    options.ClaimActions.MapUniqueJsonKey(&quot;picture&quot;, &quot;picture.data.url&quot;);
+    options.ClaimActions.MapJsonKey(ClaimTypes.Name, &quot;name&quot;);
+
+    options.Events.OnCreatingTicket = async context =&gt;
+    {
+        if (context == null || context.Principal == null)
+            return;
+
+        var userManager = context.HttpContext.RequestServices.GetRequiredService&lt;UserManager&lt;ApplicationUser&gt;&gt;();
+
+        var user = await MapUserToInternalAccount(userManager, context.Principal, &quot;Facebook&quot;);
+        if (user is null)
+            return;
+
+        var signInManager = context.HttpContext.RequestServices.GetRequiredService&lt;SignInManager&lt;ApplicationUser&gt;&gt;();
+        await signInManager.SignInAsync(user, isPersistent: false);
+    };
+});
+
+// ...
+
+var app = builder.Build();
+
+/// ...
+
+app.MapLoginAndLogout();
+
+app.Run();
+
+static async Task&lt;ApplicationUser?&gt; MapUserToInternalAccount(
+        UserManager&lt;ApplicationUser&gt; userManager,
+        ClaimsPrincipal principal,
+        string provider)
+{
+    var providerKey = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+    var email = principal.FindFirstValue(ClaimTypes.Email);
+    var picture = principal.FindFirstValue(&quot;picture&quot;);
+    if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(providerKey))
+    {
+        return null;
+    }
+
+    // Kiểm tra IdP đã liên kết với user nào chưa
+    var user = await userManager.Users
+        .Include(u =&gt; u.UserLogins)
+        .FirstOrDefaultAsync(u =&gt; u.UserLogins.Any(l =&gt; l.LoginProvider == provider &amp;&amp; l.ProviderKey == providerKey));
+
+    // Nếu IdP đã liên kết thì dùng user hiện tại
+    if (user != null)
+        return user;
+
+    // Nếu email đã tồn tại nhưng IdP khác thì liên kết thêm IdP
+    user = await userManager.FindByEmailAsync(email);
+    if (user != null)
+    {
+        await userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerKey, provider));
+        return user;
+    }
+
+    // Nếu chưa có user thì tạo mới
+    user = new ApplicationUser
+    {
+        UserName = email,
+        Email = email,
+        Picture = picture
+    };
+
+    await userManager.CreateAsync(user);
+    await userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerKey, provider));
+    return user;
+}
+</code></pre>
+<p>Hàm <code>MapUserToInternalAccount</code> thực hiện việc liên kết IdP với user account.</p>
+<p>Để thêm các <code>Claims</code> vào cookie ta cần thêm <code>AppClaimsPrincipalFactory</code>, ở đây chúng ta
+thêm <code>picture</code> claim:</p>
+<pre><code class="language-csharp">public class AppClaimsPrincipalFactory
+    : UserClaimsPrincipalFactory&lt;ApplicationUser, IdentityRole&gt;
+{
+    public AppClaimsPrincipalFactory(
+        UserManager&lt;ApplicationUser&gt; userManager,
+        RoleManager&lt;IdentityRole&gt; roleManager,
+        IOptions&lt;IdentityOptions&gt; optionsAccessor)
+        : base(userManager, roleManager, optionsAccessor)
+    {
+    }
+
+    protected override async Task&lt;ClaimsIdentity&gt; GenerateClaimsAsync(ApplicationUser user)
+    {
+        var identity = await base.GenerateClaimsAsync(user);
+
+        if (!string.IsNullOrEmpty(user.Picture))
+        {
+            identity.AddClaim(new Claim(&quot;picture&quot;, user.Picture));
+        }
+
+        return identity;
+    }
+}
+</code></pre>
+<p>Và đăng ký nó trong <code>Program.cs</code>:</p>
+<pre><code class="language-csharp">builder.Services.AddScoped&lt;IUserClaimsPrincipalFactory&lt;ApplicationUser&gt;, AppClaimsPrincipalFactory&gt;();
+</code></pre>
+<p>Trong <code>appsettings.json</code>:</p>
+<pre><code class="language-javascript">{
+  &quot;Oidc&quot;: {
+    &quot;Google&quot;: {
+      &quot;Authority&quot;: &quot;https://accounts.google.com&quot;,
+      &quot;ClientId&quot;: &quot;717065824517-rn6kcibgapocld3uis01itnosfdefjd5.apps.googleusercontent.com&quot;,
+      &quot;ClientSecret&quot;: &quot;&quot;,
+      &quot;CallbackPath&quot;: &quot;/signin-callback/google&quot;,
+      &quot;ResponseType&quot;: &quot;code&quot;
+    },
+    &quot;Facebook&quot;: {
+      &quot;AppId&quot;: &quot;828675846194375&quot;,
+      &quot;AppSecret&quot;: &quot;&quot;,
+      &quot;CallbackPath&quot;: &quot;/signin-callback/facebook&quot;
+    }
+  }
+}
+</code></pre>
+<blockquote class="blockquote">
+<p>❌ Không thể dùng <code>.AddOpenIdConnect()</code> cho Facebook
+vì Facebook không hỗ trợ chuẩn OpenID Connect (OIDC).
+Bạn bắt buộc phải dùng <code>.AddFacebook()</code> (package <strong>Microsoft.AspNetCore.Authentication.Facebook</strong>) nếu muốn login qua Facebook.</p>
+</blockquote>
+<h2 id="giao-dien-ang-nhap">Giao diện đăng nhập</h2>
+<p>Trong phần 2, giao diện chỉ có một nút login cho Google. Ở đây, chúng ta thêm component<br />
+<code>ExternalLogin.razor</code> để hiển thị các nút Login cho các IdP khác (bạn có thể tùy chỉnh tùy theo nhu cầu):</p>
+<pre><code class="language-markup">@@inject NavigationManager NavigationManager
+
+&lt;div class=&quot;external-login-buttons&quot;&gt;
+    @@foreach (var provider in availableProviders)
+    {
+        &lt;button @@onclick=&quot;() =&gt; Login(provider)&quot;&gt;
+            @@provider
+        &lt;/button&gt;
+    }
+&lt;/div&gt;
+
+@@code {
+    // danh sách các IdP
+    private List&lt;string&gt; availableProviders = new() { &quot;Google&quot;, &quot;Facebook&quot; };
+
+    // redirect client tới server endpoint tương ứng với IdP
+    private void Login(string provider)
+    {
+        var returnUrl = Uri.EscapeDataString(NavigationManager.Uri);
+        NavigationManager.NavigateTo($&quot;/authentication/signin-{provider.ToLower()}?returnUrl={returnUrl}&quot;, forceLoad: true);
+    }
+}
+</code></pre>
+<h2 id="endpoint-cho-moi-idp">Endpoint cho mỗi IdP</h2>
+<p>Phần 2 chỉ có <code>/authentication/login</code>. Ở đây, chúng ta thêm endpoint cho từng IdP.</p>
+<pre><code class="language-csharp">internal static class LoginLogoutEndpointRouteBuilderExtensions
+{
+    internal static IEndpointConventionBuilder MapLoginAndLogout(this IEndpointRouteBuilder endpoints)
+    {
+        var group = endpoints.MapGroup(&quot;authentication&quot;);
+
+        var idps = new[] { &quot;Google&quot;, &quot;Facebook&quot; };
+        foreach (var provider in idps)
+        {
+            group.MapGet($&quot;/signin-{provider.ToLower()}&quot;, (HttpContext context, string? returnUrl) =&gt;
+            {
+                
+                var props = GetAuthProperties(returnUrl);
+                return Results.Challenge(props, new[] { provider });
+            });
+        }
+            
+        group.MapPost(&quot;/logout&quot;, async (HttpContext context, [FromQuery] string? returnUrl) =&gt;
+        {
+            var props = GetAuthProperties(returnUrl);
+
+            var oidcOptionsMonitor = context.RequestServices.GetRequiredService&lt;
+                Microsoft.Extensions.Options.IOptionsMonitor&lt;OpenIdConnectOptions&gt;&gt;();
+            var oidcOptions = oidcOptionsMonitor.Get(OpenIdConnectDefaults.AuthenticationScheme);
+
+            if (oidcOptions.Configuration?.EndSessionEndpoint != null)
+            {
+                await context.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme, props);
+            }
+
+            await context.SignOutAsync(IdentityConstants.ApplicationScheme, props);
+        });
+
+        return group;
+    }
+
+    // Giữ nguyên method khác
+}
+</code></pre>
+<p>Logout endpoint sử dụng <code>IdentityConstants.ApplicationScheme</code> thay cho <code>CookieAuthenticationDefaults.AuthenticationScheme</code>
+vì dùng Identity.</p>
+<p>Vậy là chúng ta đã hoàn tất series về Authentication và Authorization trong Blazor.
+Từ việc đăng nhập cơ bản, quản lý quyền truy cập đến triển khai đa Identity Provider và
+ánh xạ người dùng.</p>
+<p>Hy vọng series này giúp bạn tự tin hơn khi triển khai xác thực và phân quyền
+trong các dự án thực tế.</p>
+
+</div>

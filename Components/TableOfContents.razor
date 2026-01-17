@@ -2,35 +2,19 @@
 @implements IDisposable
 
 <div class="toc-wrapper">
-    <div class="toc-header">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="18" x2="15" y2="18"/>
-        </svg>
-        <span>On this page</span>
-    </div>
+    <h4 class="toc-title">Mục Lục</h4>
 
     @if (_tocItems.Any())
     {
-        <nav class="toc-content">
-            <ul class="toc-list">
-                @foreach (var item in _tocItems)
-                {
-                    <li class="toc-item toc-level-@item.Level @(item.Id == _activeId ? "is-active" : "")">
-                        <a href="#@item.Id" @onclick="() => ScrollToHeading(item.Id)" @onclick:preventDefault>
-                            @item.Text
-                        </a>
-                    </li>
-                }
-            </ul>
+        <nav class="toc-nav">
+            @foreach (var item in _tocItems)
+            {
+                <a href="#@item.Id"
+                   class="toc-link @(item.Id == _activeId ? "active" : "")"
+                   @onclick="() => ScrollToHeading(item.Id)"
+                   @onclick:preventDefault>@item.Text</a>
+            }
         </nav>
-    }
-    else
-    {
-        <div class="toc-empty">
-            <span>No sections</span>
-        </div>
     }
 </div>
 
@@ -51,12 +35,18 @@
     private async Task ScrollToHeading(string id)
     {
         await JS.InvokeVoidAsync("scrollToHeading", id);
+        _activeId = id;
+        StateHasChanged();
     }
 
     [JSInvokable]
     public void UpdateTocItems(List<TocItem> items)
     {
         _tocItems = items;
+        if (_tocItems.Any() && string.IsNullOrEmpty(_activeId))
+        {
+            _activeId = _tocItems.First().Id;
+        }
         StateHasChanged();
     }
 

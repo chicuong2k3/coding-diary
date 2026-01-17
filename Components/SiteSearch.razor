@@ -1,10 +1,11 @@
 @using Blake.Types
+@using Blake.Generated
 
 <div class="search-container @(IsOpen ? "open" : "")">
     <div class="search-overlay" @onclick="Close"></div>
     <div class="search-modal">
         <div class="search-header">
-            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"/>
                 <path d="m21 21-4.35-4.35"/>
             </svg>
@@ -13,57 +14,88 @@
                    @oninput="OnSearchInput"
                    @onkeydown="OnKeyDown"
                    class="search-input"
-                   placeholder="Search posts..." />
+                   placeholder="Search articles..." />
+            <div class="search-kbd">
+                <kbd>ESC</kbd>
+            </div>
             <button class="search-close" @onclick="Close">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M18 6L6 18M6 6l12 12"/>
                 </svg>
             </button>
         </div>
 
-        @if (!string.IsNullOrWhiteSpace(searchTerm))
-        {
-            <div class="search-results">
+        <div class="search-body">
+            @if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
                 @if (searchResults.Any())
                 {
-                    @foreach (var result in searchResults.Take(10))
-                    {
-                        <a href="@result.Url" class="search-result" @onclick="Close">
-                            <div class="result-title">@result.Title</div>
-                            @if (!string.IsNullOrEmpty(result.Excerpt))
-                            {
-                                <div class="result-excerpt">@result.Excerpt</div>
-                            }
-                            @if (result.Tags.Any())
-                            {
-                                <div class="result-tags">
-                                    @foreach (var tag in result.Tags.Take(3))
+                    <div class="search-results">
+                        <div class="results-label">Results</div>
+                        @foreach (var result in searchResults.Take(8))
+                        {
+                            <a href="@result.Url" class="search-result" @onclick="Close">
+                                <div class="result-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                        <line x1="16" y1="13" x2="8" y2="13"/>
+                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                    </svg>
+                                </div>
+                                <div class="result-content">
+                                    <div class="result-title">@result.Title</div>
+                                    @if (!string.IsNullOrEmpty(result.Excerpt))
                                     {
-                                        <span class="result-tag">#@tag</span>
+                                        <div class="result-excerpt">@result.Excerpt</div>
                                     }
                                 </div>
-                            }
-                        </a>
-                    }
+                                <div class="result-arrow">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="9 18 15 12 9 6"/>
+                                    </svg>
+                                </div>
+                            </a>
+                        }
+                    </div>
                 }
                 else
                 {
                     <div class="no-results">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <circle cx="11" cy="11" r="8"/>
-                            <path d="m21 21-4.35-4.35"/>
-                        </svg>
-                        <p>No results found for "<strong>@searchTerm</strong>"</p>
+                        <div class="no-results-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="m21 21-4.35-4.35"/>
+                                <line x1="8" y1="11" x2="14" y2="11"/>
+                            </svg>
+                        </div>
+                        <p>No results for "<strong>@searchTerm</strong>"</p>
+                        <span>Try different keywords</span>
                     </div>
                 }
+            }
+            else
+            {
+                <div class="search-suggestions">
+                    <div class="suggestions-label">Popular tags</div>
+                    <div class="tag-suggestions">
+                        @foreach (var tag in PopularTags.Take(6))
+                        {
+                            <button class="tag-suggestion" @onclick="() => SearchByTag(tag)">
+                                #@tag
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="search-footer">
+            <div class="search-tips">
+                <span><kbd>Enter</kbd> to select</span>
+                <span><kbd>ESC</kbd> to close</span>
             </div>
-        }
-        else
-        {
-            <div class="search-hint">
-                <p>Type to search posts by title, description, or tags</p>
-            </div>
-        }
+        </div>
     </div>
 </div>
 
@@ -74,6 +106,13 @@
     private ElementReference _inputRef;
     private string searchTerm = string.Empty;
     private List<SearchResult> searchResults = new();
+
+    private IEnumerable<string> PopularTags => GeneratedContentIndex.GetPages()
+        .Where(p => !p.Draft)
+        .SelectMany(p => p.Tags)
+        .GroupBy(t => t, StringComparer.OrdinalIgnoreCase)
+        .OrderByDescending(g => g.Count())
+        .Select(g => g.Key);
 
     protected override async Task OnParametersSetAsync()
     {
@@ -107,6 +146,12 @@
         }
 
         searchResults = SearchPages(searchTerm);
+    }
+
+    private void SearchByTag(string tag)
+    {
+        searchTerm = tag;
+        searchResults = SearchPages(tag);
     }
 
     private async Task OnKeyDown(KeyboardEventArgs e)

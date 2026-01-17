@@ -6,10 +6,635 @@
 <div class="content">
     <h1>My first test page 2</h1>
 
-    <h2 id="hello-world">Hello world!</h2>
-<LatexContainer title="Euler's Identity">
-<p><span class="math">\(e^{i\pi} + 1 = 0\)</span></p>
-<p>This is considered the most beautiful equation in mathematics.</p>
-</LatexContainer>
+    <p>Trong các ứng dụng web và API ngày nay, bảo mật là một phần không thể thiếu. Dù bạn
+xây dựng hệ thống quản lý nội bộ, thương mại điện tử hay ứng dụng SaaS thì việc đảm bảo
+người dùng <strong>được xác thực chính xác</strong> và <strong>chỉ truy cập được tài nguyên họ được phép</strong>
+là hết sức quan trong. Bài viết này sẽ giúp bạn nắm rõ:</p>
+<ul>
+<li><a href="/post/authentication-va-authorization-trong-net#authentication-va-authorization-la-gi">Phân biệt Authentication và Authorization</a></li>
+<li><a href="/post/authentication-va-authorization-trong-net#kien-truc-authentication-trong.net">Hiểu kiến trúc Authentication trong .NET</a></li>
+<li><a href="/post/authentication-va-authorization-trong-net#kien-truc-authorization-trong.net">Hiểu kiến trúc Authorization trong .NET</a></li>
+<li><a href="/post/authentication-va-authorization-trong-net#cookie-authentication-thuong-dung-cho-web-app-nhu.net-mvc-va-razor-pages">Triển khai Cookie Authentication</a></li>
+<li><a href="/post/authentication-va-authorization-trong-net#jwt-bearer-authentication-thuong-dung-cho-api">Triển khai JWT Bearer Authentication</a></li>
+<li><a href="/post/authentication-va-authorization-trong-net#authorization-kiem-soat-quyen-truy-cap">Khám phá các cơ chế Authorization</a></li>
+</ul>
+<h1 id="authentication-va-authorization-la-gi">Authentication và Authorization là gì?</h1>
+<p>Chúng ta cần phân biệt rõ hai khái niệm quan trọng
+mà mọi lập trình viên đều phải nắm vững là Authentication (xác thực) và Authorization (phân quyền).
+Dù nghe có vẻ quen thuộc nhưng rất nhiều người vẫn nhầm lẫn giữa chúng.</p>
+<ul>
+<li>Authentication (Xác thực): Là quá trình xác minh danh tính của một người, tức là kiểm
+tra xem bạn thật sự là ai. Ví dụ như khi bạn đến sân bay, nhân viên an ninh yêu cầu bạn
+xuất trình căn cước công dân hoặc hộ chiếu và vé máy bay. Họ kiểm tra ảnh, tên và mã vé để
+chắc chắn rằng bạn chính là người đã đặt vé. Đó chính là xác thực.</li>
+<li>Authorization (Phân quyền): Là quá trình kiểm tra quyền hạn truy cập hoặc hành động
+mà bạn được phép thực hiện sau khi đã xác thực danh tính. Ví dụ như sau khi bạn đã qua cửa
+an ninh và lên máy bay, vé hạng phổ thông (Economy) chỉ cho phép bạn ngồi ở khoang phổ thông,
+trong khi vé hạng thương gia (Business Class) được phép ngồi ở khoang riêng và sử dụng phòng chờ VIP.
+Dù cả hai hành khách đều đã được xác thực, quyền truy cập của họ khác nhau dựa trên &quot;vai trò&quot; (class).
+Đây chính là phân quyền.</li>
+</ul>
+<div class="mermaid"> 
+flowchart LR
+    A[Hành khách đến sân bay] --> B[Xác thực danh tính - kiểm tra CCCD hoặc hộ chiếu và vé]
+    B --> C{Đã xác thực hợp lệ?}
+    C -- Không --> D[Không cho phép lên máy bay]
+    C -- Có --> E[Phân quyền theo loại vé]
+    E --> F[Vé Economy - Khoang phổ thông]
+    E --> G[Vé Business - Phòng chờ VIP + khoang thương gia]
+</div>
+<p>Tóm lại thì:</p>
+<blockquote class="blockquote">
+<p><strong>Authentication</strong> trả lời cho câu hỏi <strong>Bạn là ai</strong><br />
+<strong>Authorization</strong> trả lời cho câu hỏi <strong>Bạn được phép làm gì</strong></p>
+</blockquote>
+<h1 id="kien-truc-authentication-trong.net">Kiến trúc Authentication trong .NET</h1>
+<p>Hệ thống Authentication trong .NET được tổ chức dựa trên 5 thành phần chính:</p>
+<h2 id="authentication-middleware">Authentication Middleware</h2>
+<p>Middleware này được thêm vào pipeline bằng dòng sau:</p>
+<pre><code class="language-csharp">app.UseAuthentication();
+
+</code></pre>
+<p>Middleware này là điểm khởi đầu cho quá trình xác thực: khi có request đến, Middleware sẽ gọi
+phương thức <code>AuthenticateAsync()</code> của interface <code>IAuthenticationService</code> (xem bên dưới) để xác định người dùng hiện tại.
+Nếu thành công, <code>ClaimsPrincipal</code> sẽ được gán vào <code>HttpContext.User</code>.</p>
+<blockquote class="blockquote">
+<p>💡 Tip: <code>app.UseAuthentication()</code> chỉ thiết lập <code>HttpContext.User</code>, nó không chặn request.
+Việc chặn request (ví dụ yêu cầu đăng nhập hoặc trả về 401) do <code>UseAuthorization()</code> đảm nhiệm ở bước sau.</p>
+</blockquote>
+<h2 id="iauthenticationservice">IAuthenticationService</h2>
+<p>Đây là bộ điều phối trung tâm, nó quyết định handler (xem bên dưới) nào sẽ thực hiện việc xác thực dựa
+trên <code>AuthenticationScheme</code> (xem bên dưới) được cấu hình. Interface này cung cấp các phương thức sau:</p>
+<ul>
+<li><code>AuthenticateAsync</code>: Xác thực yêu cầu hiện tại và trả về <code>AuthenticateResult</code>.</li>
+<li><code>ChallengeAsync()</code>: Phản hồi khi yêu cầu cần xác thực (redirect hoặc HTTP 401).</li>
+<li><code>ForbidAsync()</code>: Phản hồi khi người dùng đã đăng nhập nhưng không đủ quyền (HTTP 403).</li>
+<li><code>SignInAsync</code>: Tạo thông tin đăng nhập (cookie hoặc token).</li>
+<li><code>SignOutAsync</code>: Xóa thông tin đăng nhập.</li>
+</ul>
+<blockquote class="blockquote">
+<p>💡 Tip: Interface này được .NET cung cấp mặc định thông qua dependency injection.
+Bạn có thể inject <code>IAuthenticationService</code> vào Controller nếu muốn thực hiện xác thực
+thủ công.<br />
+📘 Tham khảo: <a href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.authentication.iauthenticationservice?view=aspnetcore-9.0">Microsoft Docs – Authentication service</a></p>
+</blockquote>
+<h2 id="authentication-scheme">Authentication Scheme</h2>
+<p>Mỗi scheme là một cấu hình xác thực cụ thể, xác định handler nào sẽ được sử dụng cho cơ chế đó.
+. Khi cấu hình, bạn có thể đăng ký
+nhiều Scheme, ví dụ scheme dùng JWT cho API, một scheme khác dùng Cookie cho MVC web.</p>
+<pre><code class="language-csharp">builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =&gt; builder.Configuration.Bind(&quot;JwtSettings&quot;, options))
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =&gt; builder.Configuration.Bind(&quot;CookieSettings&quot;, options));
+</code></pre>
+<p>Khi xác thực, <code>IAuthenticationService</code> sẽ tra cứu tên scheme để gọi handler tương ứng.</p>
+<blockquote class="blockquote">
+<p>💡 Tip: Khi ứng dụng có nhiều scheme (JWT cho API, Cookie cho Web), bạn có thể
+dùng <code>[Authorize(AuthenticationSchemes = &quot;JwtBearer&quot;)]</code> để buộc controller/action chỉ
+dùng đúng loại xác thực mong muốn.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>⚠️ Note: Nếu bạn không đặt <code>DefaultScheme</code>, hệ thống sẽ không biết dùng handler nào và
+<code>AuthenticateAsync()</code> có thể trả về null.</p>
+</blockquote>
+<h2 id="authentication-handler">Authentication Handler</h2>
+<p>Handler là thành phần thực thi cốt lõi của quá trình xác thực.
+Mỗi scheme sẽ tương ứng với một handler cụ thể, ví dụ:</p>
+<ul>
+<li><code>CookieAuthenticationHandler</code>: Quản lý xác thực dựa trên cookie.</li>
+<li><code>JwtBearerHandler</code>: Quản lý xác thực dựa trên JWT.</li>
+<li><code>OpenIdConnectHandler</code>: Quản lý xác thực theo chuẩn OpenIDConnect hay WS-Federation.</li>
+<li><code>RemoteAuthenticationHandler</code>: OAuth2/External Provider như Google, Facebook...</li>
+</ul>
+<p>Một handler có trách nhiệm xử lý 3 nhiệm vụ chính:</p>
+<ul>
+<li><strong>Authenticate:</strong> Đọc và xác thực thông tin đăng nhập (cookie hoặc token) và tạo danh tính
+người dùng (đối tượng <code>ClaimsPrincipal</code>).</li>
+<li><strong>Challenge:</strong> Phản hồi khi một người dùng chưa đăng nhập cố truy cập vào
+tài nguyên được bảo vệ (như chuyển hướng người dùng đến trang đăng nhập hoặc trả về HTTP 401 Unauthorized).</li>
+<li><strong>Forbid:</strong> Phản hồi khi một người dùng đã đăng nhập nhưng không có
+quyền truy cập (trả về HTTP 403 Forbidden).</li>
+</ul>
+<blockquote class="blockquote">
+<p>💡 Tip: Một handler có thể kế thừa từ <code>AuthenticationHandler&lt;TOptions&gt;</code> để bạn viết
+custom authentication.
+Bạn chỉ cần override <code>HandleAuthenticateAsync()</code> để tự xác định danh tính người dùng.</p>
+</blockquote>
+<h2 id="claimsprincipal-danh-tinh-cua-nguoi-dung">ClaimsPrincipal - Danh tính của người dùng</h2>
+<p>Sau khi xác thực thành công, thông tin người dùng được lưu vào
+<code>ClaimsPrincipal</code>, một đối tượng đại diện cho người dùng trong hệ thống.
+Cấu trúc của <code>ClaimsPrincipal</code> gồm:</p>
+<ul>
+<li><code>Claim</code>: Là một mảnh thông tin về người dùng, được lưu trữ dưới dạng cặp key-value, tương tự
+như một dòng thông tin trong căn cước công dân (Họ và tên: Nguyễn Văn A; Ngày sinh: 01/01/1990).</li>
+<li><code>ClaimsIdentity</code>: Một tập hợp các Claim, tương tự như như một loại giấy tờ tuỳ thân (căn cước công dân, giấy phép lái xe, hộ chiếu).</li>
+<li><code>ClaimsPrincipal</code>: Chứa một hoặc nhiều ClaimsIdentity, đại diện cho người dùng hiện tại. Giống
+việc một người có thể có nhiều loại giấy tờ tùy thân.</li>
+</ul>
+<pre><code class="language-csharp">// Tưởng tượng ClaimsPrincipal như một chiếc ví chứa nhiều loại giấy tờ của một người
+var principal = new ClaimsPrincipal();
+
+// Giấy tờ 1: Căn cước công dân (Identity chính)
+var nationalId = new ClaimsIdentity(new[]
+{
+    new Claim(ClaimTypes.NameIdentifier, &quot;12345&quot;),  // Số CCCD
+    new Claim(ClaimTypes.Name, &quot;Nguyễn Văn A&quot;),     // Họ tên
+    new Claim(ClaimTypes.DateOfBirth, &quot;1990-01-01&quot;) // Ngày sinh
+}, &quot;NationalID&quot;);
+
+// Giấy tờ 2: Bằng lái xe (Identity thứ 2)
+var driverLicense = new ClaimsIdentity(new[]
+{
+    new Claim(&quot;LicenseNumber&quot;, &quot;DL-123456&quot;),
+    new Claim(&quot;VehicleType&quot;, &quot;B2&quot;),
+    new Claim(&quot;ExpiryDate&quot;, &quot;2030-12-31&quot;)
+}, &quot;DriverLicense&quot;);
+
+// Cho cả 2 vào ví
+principal.AddIdentity(nationalId);
+principal.AddIdentity(driverLicense);
+</code></pre>
+<p>Trong ứng dụng .NET, bạn có thể truy cập đối tượng này thông qua <code>HttpContext.User</code>:</p>
+<pre><code class="language-csharp">var userName = HttpContext.User.Identity.Name;
+var roles = HttpContext.User.Claims
+                .Where(c =&gt; c.Type == ClaimTypes.Role)
+                .Select(c =&gt; c.Value);
+</code></pre>
+<blockquote class="blockquote">
+<p>💡 Tip: Trong .NET, chỉ một identity được xem là chính (<code>User.Identity</code>). Nếu có nhiều
+identity (ví dụ thêm từ external provider), bạn nên hợp nhất claim hoặc chỉ giữ lại
+một identity cần thiết.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>⚠️ Note: Một số middleware (ví dụ OpenID Connect) có thể thêm nhiều identity vào
+cùng một principal nên cần cẩn trọng nếu serialize hoặc lưu vào cookie.</p>
+</blockquote>
+<h2 id="luong-hoat-ong-cua-authentication">Luồng hoạt động của Authentication</h2>
+<p>Để hình dung rõ hơn về pipeline xác thực trong .NET, xem sơ đồ sau:</p>
+<div class="mermaid">
+flowchart TD
+    subgraph Client["🧑‍💻 Client"]
+    end
+    subgraph Pipeline["🌐 ASP.NET Core Middleware Pipeline"]
+        A["Authentication Middleware"]
+        B["IAuthenticationService"]
+        C["Authentication Scheme"]
+        D["Authentication Handler"]
+        E["ClaimsPrincipal"]
+        F["Authorization Middleware"]
+    end
+    subgraph AuthZ["🧭 Authorization Layer"]
+        G["IAuthorizationService"]
+        H["IAuthorizationHandler"]
+        I["Access Granted/Denied"]
+    end
+    Client --> A
+    A -->|AuthenticateAsync| B
+    B --> C
+    C --> D
+    D -->|Trả về ClaimsPrincipal| E
+    E -->|Gán vào HttpContext.User| F
+    F -->|Gọi AuthorizeAsync| G
+    G --> H
+    H -->|Kết quả đánh giá policy| I
+</div>
+<blockquote class="blockquote">
+<p>💡 Tip: <code>HttpContext.User</code> luôn tồn tại, ngay cả khi người dùng chưa đăng nhập,
+nhưng khi đó <code>User.Identity.IsAuthenticated == false</code>. Do đó không dùng User != null để kiểm tra
+đăng nhập.</p>
+</blockquote>
+<h1 id="cookie-authentication-thuong-dung-cho-web-app-nhu.net-mvc-va-razor-pages">Cookie Authentication (thường dùng cho Web App như .NET MVC và Razor Pages)</h1>
+<p>Cookie Authentication là một trong những phương pháp xác thực phổ biến nhất trong các ứng dụng web.
+Nó sử dụng cookie để lưu trữ thông tin xác thực của người dùng sau khi họ đăng nhập thành công.
+Dưới đây là cách triển khai Cookie Authentication trong .NET:</p>
+<blockquote class="blockquote">
+<p>💡 Tip: Cookie xác thực trong ASP.NET Core được mã hóa và bảo vệ bằng <code>IDataProtector</code>,
+vì vậy không thể đọc plain text claim trong cookie.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>⚠️ Note: Cookie authentication phụ thuộc vào state (cookie lưu session trên client)
+nên không phù hợp cho API RESTful, vì API nên stateless.</p>
+</blockquote>
+<p><strong>Bước 1: Cấu hình Cookie Authentication</strong></p>
+<pre><code class="language-csharp">var builder = WebApplication.CreateBuilder(args);
+
+// Đăng ký dịch vụ xác thực với Scheme mặc định là Cookies
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =&gt;
+    {
+        options.Cookie.Name = &quot;MyAppCookie&quot;;
+        options.LoginPath = &quot;/Account/Login&quot;; // Đường dẫn tới trang đăng nhập
+        options.AccessDeniedPath = &quot;/Account/AccessDenied&quot;; // Đường dẫn khi bị từ chối truy cập
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20); // Thời gian cookie hết hạn
+        options.SlidingExpiration = true; // Tự động gia hạn nếu còn hoạt động
+        options.Cookie.HttpOnly = true; // Bảo vệ cookie khỏi JavaScript
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Chỉ gửi cookie qua HTTPS
+    });
+
+builder.Services.AddControllersWithViews();
+
+var app = builder.Build();
+
+app.UseRouting();
+
+// UseAuthentication phải được đặt sau UseRouting và trước UseAuthorization
+app.UseAuthentication(); // Middleware này thiết lập HttpContext.User
+app.UseAuthorization(); // Middleware này thực thi việc phân quyền
+
+app.MapControllers();
+
+app.Run();
+</code></pre>
+<p><strong>Bước 2: Đăng nhập và tạo Cookie</strong></p>
+<p>Khi người dùng gửi thông tin đăng nhập, bạn sẽ tạo <code>ClaimsPrincipal</code> rồi
+gọi <code>SignInAsync</code> để tạo và lưu cookie:</p>
+<pre><code class="language-csharp">[HttpPost]
+public async Task&lt;IActionResult&gt; Login(LoginModel model)
+{
+    if (!ModelState.IsValid)
+        return View(model);
+
+    var user = await AuthenticateUser(model.UserName, model.Password);
+    if (user == null)
+    {
+        ModelState.AddModelError(&quot;&quot;, &quot;Tên đăng nhập hoặc mật khẩu không đúng&quot;);
+        return View(model);
+    }
+
+    var claims = new List&lt;Claim&gt;
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id),
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.Role, &quot;Member&quot;),
+        new Claim(&quot;FavoriteDrink&quot;, &quot;Tea&quot;)
+    };
+
+    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+    var principal = new ClaimsPrincipal(identity);
+
+    await HttpContext.SignInAsync(
+        CookieAuthenticationDefaults.AuthenticationScheme, 
+        principal,
+        new AuthenticationProperties
+        {
+            IsPersistent = model.RememberMe, // Ghi nhớ đăng nhập
+            ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(20)
+        });
+
+    return LocalRedirect(model.ReturnUrl ?? &quot;/&quot;);
+}
+</code></pre>
+<p>Để đăng xuất, bạn chỉ cần gọi <code>SignOutAsync</code>, hệ thống sẽ xóa cookie xác thực:</p>
+<pre><code class="language-csharp">[Authorize]
+public async Task&lt;IActionResult&gt; Logout()
+{
+    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    return RedirectToAction(&quot;Index&quot;, &quot;Home&quot;);
+}
+</code></pre>
+<h1 id="jwt-bearer-authentication-thuong-dung-cho-api">JWT Bearer Authentication (thường dùng cho API)</h1>
+<h2 id="jwt-la-gi">JWT là gì?</h2>
+<p>JWT (JSON Web Token) là một token tự chứa (self-contained) dưới dạng json gồm 3 phần:</p>
+<ul>
+<li>Header: loại thuật toán ký (ví dụ HS256).</li>
+<li>Payload: chứa các <code>claims</code> (thông tin về người dùng như id, email...).</li>
+<li>Signature: dùng để xác minh tính toàn vẹn (được ký bằng secret key).</li>
+</ul>
+<p>Ví dụ:</p>
+<pre><code class="language-javascript">{
+  &quot;sub&quot;: &quot;user123&quot;,
+  &quot;name&quot;: &quot;Alice&quot;,
+  &quot;role&quot;: &quot;Admin&quot;,
+  &quot;exp&quot;: 1734567890
+}
+</code></pre>
+<blockquote class="blockquote">
+<p>💡 Tip: JWT là dạng stateless authentication, token không cần lưu server-side.
+Do đó, khi user đổi mật khẩu hoặc bị khóa tài khoản, token cũ vẫn còn hiệu lực cho tới
+khi hết hạn -&gt; cần có cơ chế blacklist token nếu cần.</p>
+</blockquote>
+<h2 id="cau-hinh-jwt-bearer-trong.net">Cấu hình JWT Bearer trong .NET</h2>
+<p>Đầu tiên cần đăng ký Service và Middleware:</p>
+<pre><code class="language-csharp">// Program.cs
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Cấu hình JwtSettings trong appsettings.json (Issuer, Audience, SecretKey, ExpireMinutes)
+var jwtSettings = builder.Configuration.GetSection(&quot;JwtSettings&quot;);
+
+// Thêm Authentication với JWT Bearer
+builder.Services.AddAuthentication(options =&gt;
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =&gt;
+{
+    options.RequireHttpsMetadata = true;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = jwtSettings[&quot;Issuer&quot;],
+
+        ValidateAudience = true,
+        ValidAudience = jwtSettings[&quot;Audience&quot;],
+
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings[&quot;SecretKey&quot;])),
+
+        RequireExpirationTime = true,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.FromSeconds(30)
+    };
+});
+
+builder.Services.AddAuthorization();
+</code></pre>
+<p>Tiếp theo tạo JWT:</p>
+<pre><code class="language-csharp">public class JwtTokenService
+{
+    private readonly IConfiguration _config;
+
+    public JwtTokenService(IConfiguration config)
+    {
+        _config = config;
+    }
+
+    public string GenerateToken(User user)
+    {
+        var jwtSettings = _config.GetSection(&quot;JwtSettings&quot;);
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings[&quot;SecretKey&quot;]));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var claims = new List&lt;Claim&gt;
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user.Role),
+            // thêm claim khác nếu cần
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: jwtSettings[&quot;Issuer&quot;],
+            audience: jwtSettings[&quot;Audience&quot;],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings[&quot;ExpireMinutes&quot;])),
+            signingCredentials: creds
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+}
+</code></pre>
+<h1 id="authorization-kiem-soat-quyen-truy-cap">Authorization - Kiểm soát quyền truy cập</h1>
+<h2 id="kien-truc-authorization-trong.net">Kiến trúc Authorization trong .NET</h2>
+<p>Sau khi người dùng đã được xác thực (Authentication), hệ thống cần kiểm tra quyền truy cập
+(Authorization) trước khi cho phép thực hiện hành động hoặc truy cập tài nguyên.</p>
+<p>Cơ chế Authorization trong .NET được xây dựng dựa trên 4 thành phần chính, liên kết chặt
+chẽ với tầng Authentication:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Thành phần</th>
+<th>Vai trò</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Authorization Middleware</strong></td>
+<td>Thành phần trong pipeline chịu trách nhiệm gọi <code>IAuthorizationService.AuthorizeAsync()</code> để xác định quyền truy cập.</td>
+</tr>
+<tr>
+<td><strong>IAuthorizationService</strong></td>
+<td>Bộ điều phối chính — xử lý logic đánh giá policy hoặc yêu cầu quyền truy cập.</td>
+</tr>
+<tr>
+<td><strong>IAuthorizationHandler</strong></td>
+<td>Xử lý từng yêu cầu (requirement) cụ thể trong policy, xác định người dùng có đạt điều kiện không.</td>
+</tr>
+<tr>
+<td><strong>Authorization Requirement / Policy</strong></td>
+<td>Mô tả điều kiện cần thỏa mãn để truy cập tài nguyên (ví dụ: yêu cầu vai trò, claim, hoặc điều kiện tùy chỉnh).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="moi-quan-he-giua-cac-thanh-phan">Mối quan hệ giữa các thành phần</h2>
+<div class="mermaid">
+flowchart LR
+    subgraph Authentication["🔐 Tầng Authentication"]
+        E["ClaimsPrincipal<br/>(Danh tính người dùng)"]
+    end
+    subgraph Authorization["🧭 Tầng Authorization (4 thành phần)"]
+        F["Authorization Middleware"]
+        G["IAuthorizationService"]
+        H["IAuthorizationHandler"]
+        I["Policy/Requirement"]
+        J["Access Granted /Denied"]
+    end
+    E --> F
+    F -->|Gọi AuthorizeAsync| G
+    G -->|Đánh giá Policy| H
+    H -->|Kiểm tra Requirement| I
+    I -->|Kết quả| J
+</div>
+<h2 id="luong-hoat-ong-cua-authorization">Luồng hoạt động của Authorization</h2>
+<div class="mermaid">
+sequenceDiagram
+    participant C as Client
+    participant M as AuthorizationMiddleware
+    participant S as IAuthorizationService
+    participant H as IAuthorizationHandler
+    participant P as PolicyRequirement
+    C->>M: Gửi HTTP Request (đã có ClaimsPrincipal)
+    M->>S: Gọi AuthorizeAsync()
+    S->>H: Gửi từng Requirement trong Policy
+    H->>P: Đánh giá điều kiện
+    P-->>H: Kết quả từng Requirement
+    H-->>S: Tất cả Requirement thỏa mãn?
+    S-->>M: Access Granted hoặc Denied
+    M-->>C: Trả về 403 Forbidden hoặc cho phép truy cập Controller
+    Note over M,C: Nếu được phép thì tiếp tục thực thi Controller Action
+</div>
+<h2 id="trien-khai-trong.net-mvc-hoac-api">Triển khai trong .NET MVC (hoặc API)</h2>
+<h3 id="role-based-authorization">Role-based Authorization</h3>
+<p>Phân quyền dựa theo vai trò.
+Áp dụng khi bạn gán role cho người dùng (Admin, Manager, Premium Member, ...):</p>
+<pre><code class="language-csharp">[Authorize(Roles = &quot;Admin,Manager&quot;)]
+public IActionResult Dashboard()
+{
+    return View();
+}
+</code></pre>
+<blockquote class="blockquote">
+<p>💡 Tip: Có thể khai báo nhiều role trong 1 attribute bằng dấu phẩy: <code>[Authorize(Roles = &quot;Admin,Manager&quot;)]</code></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>⚠️ Note: Role chỉ nên dùng cho hệ thống nhỏ. Khi hệ thống có nhiều quyền chi tiết
+(ví dụ &quot;Xem đơn hàng&quot;, &quot;Sửa đơn hàng&quot;), nên chuyển sang policy-based authorization để
+linh hoạt hơn.</p>
+</blockquote>
+<h3 id="claims-based-authorization">Claims-based Authorization</h3>
+<p>Phân quyền dựa vào giá trị cụ thể của <code>Claim</code>:</p>
+<pre><code class="language-csharp">[Authorize(Policy = &quot;CanDrinkTea&quot;)]
+public IActionResult TeaLounge() =&gt; View();
+</code></pre>
+<p>Cấu hình policy:</p>
+<pre><code class="language-csharp">builder.Services.AddAuthorization(options =&gt;
+{
+    options.AddPolicy(&quot;CanDrinkTea&quot;, policy =&gt;
+        policy.RequireClaim(&quot;FavoriteDrink&quot;, &quot;Tea&quot;));
+});
+</code></pre>
+<blockquote class="blockquote">
+<p>💡 Tip: Claim là dữ liệu động nên bạn có thể thêm claim &quot;FavoriteDrink&quot; hoặc &quot;Department&quot; tùy người dùng.
+Điều này cực kỳ tiện nếu muốn xác thực theo context kinh doanh
+(Ví dụ: chỉ cho phép người dùng uống trà vào).</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>⚠️ Note: Nếu claim được load từ cơ sở dữ liệu, hãy cache hoặc sử dụng
+<code>IClaimsTransformation</code> để tránh truy vấn DB mỗi request.</p>
+</blockquote>
+<h3 id="policy-based-authorization">Policy-based Authorization</h3>
+<p>Cho phép kết hợp nhiều điều kiện (role, claim, custom logic).
+Dùng khi quyền truy cập phức tạp, cần custom logic.
+Ví dụ custom handler:</p>
+<p>Tạo requirement và handler:</p>
+<pre><code class="language-csharp">public class MinimumAgeRequirement : IAuthorizationRequirement
+{
+    public int Age { get; }
+    public MinimumAgeRequirement(int age) =&gt; Age = age;
+}
+
+public class MinimumAgeHandler : AuthorizationHandler&lt;MinimumAgeRequirement&gt;
+{
+    protected override Task HandleRequirementAsync(
+        AuthorizationHandlerContext context, MinimumAgeRequirement requirement)
+    {
+        var birthDateClaim = context.User.FindFirst(c =&gt; c.Type == &quot;BirthDate&quot;);
+        if (birthDateClaim == null)
+            return Task.CompletedTask;
+
+        var birthDate = DateTime.Parse(birthDateClaim.Value);
+        var age = DateTime.Today.Year - birthDate.Year;
+
+        if (age &gt;= requirement.Age)
+            context.Succeed(requirement);
+
+        return Task.CompletedTask;
+    }
+}
+</code></pre>
+<p>Đăng ký policy:</p>
+<pre><code class="language-csharp">builder.Services.AddAuthorization(options =&gt;
+{
+    options.AddPolicy(&quot;AtLeast18&quot;, policy =&gt;
+        policy.Requirements.Add(new MinimumAgeRequirement(18)));
+});
+
+builder.Services.AddSingleton&lt;IAuthorizationHandler, MinimumAgeHandler&gt;();
+</code></pre>
+<blockquote class="blockquote">
+<p>⚠️ Note: Đừng quên đăng ký handler bằng <code>AddSingleton&lt;IAuthorizationHandler, THandler&gt;()</code>.
+Nếu không, policy sẽ không được kích hoạt.</p>
+</blockquote>
+<h3 id="resource-based-authorization">Resource-based Authorization</h3>
+<p>Dùng resource-based Authorization khi quyền phụ thuộc cụ thể vào một tài nguyên cụ thể
+(document, order hay photo).
+Ví dụ: Khi cần phân quyền &quot;chỉ chủ sở hữu bài viết được chỉnh sửa bài viết của họ&quot;.
+Đây là ownership check, không thể chỉ dựa trên role hay claim.</p>
+<p>Định nghĩa Requirement:</p>
+<pre><code class="language-csharp">public class DocumentEditRequirement : IAuthorizationRequirement { }
+</code></pre>
+<p>Định nghĩa Handler (resource-based):</p>
+<pre><code class="language-csharp">public class DocumentEditHandler : AuthorizationHandler&lt;DocumentEditRequirement, Document&gt;
+{
+    protected override Task HandleRequirementAsync(
+        AuthorizationHandlerContext context,
+        DocumentEditRequirement requirement,
+        Document resource)
+    {
+        // Nếu là Admin thì pass
+        if (context.User.IsInRole(&quot;Admin&quot;))
+        {
+            context.Succeed(requirement);
+            return Task.CompletedTask;
+        }
+
+        // Ownership check - resource.OwnerId so với user claim
+        var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId != null &amp;&amp; resource.OwnerId == userId)
+        {
+            context.Succeed(requirement);
+        }
+
+        return Task.CompletedTask;
+    }
+}
+</code></pre>
+<p>Đăng ký handler trong <code>Program.cs</code>:</p>
+<pre><code class="language-csharp">builder.Services.AddAuthorization();
+builder.Services.AddSingleton&lt;IAuthorizationHandler, DocumentEditHandler&gt;();
+</code></pre>
+<p>Sử dụng <code>IAuthorizationService</code> trong Controller:</p>
+<pre><code class="language-csharp">public class DocumentsController : Controller
+{
+    private readonly IAuthorizationService _authorizationService;
+    private readonly IDocumentRepository _repo;
+
+    public DocumentsController(IAuthorizationService authorizationService, IDocumentRepository repo)
+    {
+        _authorizationService = authorizationService;
+        _repo = repo;
+    }
+
+    [HttpPost]
+    public async Task&lt;IActionResult&gt; Edit(Guid id, DocumentEditModel model)
+    {
+        var doc = await _repo.GetByIdAsync(id);
+        if (doc == null) return NotFound();
+
+        var authResult = await _authorizationService.AuthorizeAsync(User, doc, new DocumentEditRequirement());
+        if (!authResult.Succeeded) return Forbid();
+
+        // thực hiện update
+        // ...
+        return Ok();
+    }
+}
+</code></pre>
+<blockquote class="blockquote">
+<p>⚠️ Note: Không thể dùng <code>[Authorize]</code> attribute cho kiểu này, vì requirement cần
+object cụ thể để so sánh (ví dụ Document).</p>
+</blockquote>
+<h1 id="claims-transformation">Claims Transformation</h1>
+<p>Dùng <code>IClaimsTransformation</code> để thêm hoặc sửa claim sau khi xác thực.<br />
+Ví dụ: load roles/permissions từ DB và thêm claim khi user login.</p>
+<pre><code class="language-csharp">public class ClaimsTransformer : IClaimsTransformation
+{
+    public Task&lt;ClaimsPrincipal&gt; TransformAsync(ClaimsPrincipal principal)
+    {
+        var id = ((ClaimsIdentity)principal.Identity);
+        var permission = GetUserPermissionFromDatabase(id);
+        id.AddClaim(new Claim(&quot;Permission&quot;, permission));
+        return Task.FromResult(principal);
+    }
+}
+</code></pre>
+<blockquote class="blockquote">
+<p><code>TransformAsync</code> chạy ở mỗi request, nên cần tránh truy vấn DB liên tục. Hãy cache hoặc
+dùng in-memory permission service.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>📘 Tham khảo: <a href="https://learn.microsoft.com/en-us/aspnet/core/security/authentication/claims?view=aspnetcore-8.0">Claims transformation – Microsoft Docs</a></p>
+</blockquote>
+<p>Hy vọng qua bài viết này, bạn đã hiểu rõ hơn sự khác biệt giữa Authentication
+và Authorization, cũng như cách mà .NET triển khai hai cơ chế này thông qua các middleware,
+handler, scheme và service.
+Bảo mật không chỉ là lớp tường rào, mà là nền tảng giúp hệ thống vận hành an toàn, tin cậy
+và dễ mở rộng. Hãy luôn đảm bảo mọi endpoint, service và hành động trong ứng dụng của
+bạn đều được xác thực và phân quyền đúng cách.</p>
 
 </div>
