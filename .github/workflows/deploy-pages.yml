@@ -6,14 +6,13 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    environment: github-pages
 
     steps:
       - name: Checkout repo
@@ -59,11 +58,12 @@ jobs:
         run: |
           ls -la publish/wwwroot | sed -n '1,200p'
 
-      - name: Upload artifact for Pages
-        uses: actions/upload-pages-artifact@v1
+      - name: Deploy to gh-pages branch (peaceiris/actions-gh-pages)
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          path: publish/wwwroot
-
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
-        # GITHUB_TOKEN is used implicitly by the action
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./publish/wwwroot
+          publish_branch: gh-pages
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          allow_empty_commit: true
