@@ -54,6 +54,16 @@ jobs:
             fi
           fi
 
+      - name: Ensure .nojekyll (prevent Jekyll from ignoring _framework)
+        run: |
+          mkdir -p publish/wwwroot
+          touch publish/wwwroot/.nojekyll
+
+      - name: Show index.html head (debug)
+        run: |
+          echo "--- index.html head ---"
+          sed -n '1,120p' publish/wwwroot/index.html || true
+
       - name: Show publish contents
         run: |
           ls -la publish/wwwroot | sed -n '1,200p'
@@ -61,9 +71,18 @@ jobs:
       - name: Deploy to gh-pages branch (peaceiris/actions-gh-pages)
         uses: peaceiris/actions-gh-pages@v3
         with:
+          # Prefer a Personal Access Token (GH_PAGES_PAT) if you set it in repository secrets.
+          # If you don't set GH_PAGES_PAT, the action will fall back to using the GITHUB_TOKEN.
+          personal_token: ${{ secrets.GH_PAGES_PAT }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./publish/wwwroot
           publish_branch: gh-pages
           user_name: github-actions[bot]
           user_email: 41898282+github-actions[bot]@users.noreply.github.com
           allow_empty_commit: true
+
+# Notes:
+# 1) If deployment previously failed with permission/branch-protection errors, create a PAT
+#    with `repo` scope and add it as repository secret named GH_PAGES_PAT.
+# 2) After adding the secret, re-run the workflow (Actions -> Build and deploy -> Re-run jobs).
+# 3) If gh-pages branch is protected, allow GitHub Actions or use PAT with permissions to push.
