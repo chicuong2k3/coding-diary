@@ -30,7 +30,7 @@ của ứng dụng.
 Trước khi đi vào chi tiết, hãy cùng xem sơ đồ tổng quan luồng đăng nhập đa IdP trong
 ứng dụng Blazor Web App (với WebAssembly Render Mode) sử dụng mô hình BFF.
 
-<div class="mermaid"> 
+::: mermaid
 sequenceDiagram 
     participant User as Browser 
     participant Client as Blazor Client 
@@ -47,7 +47,7 @@ sequenceDiagram
     Client->>BFF: Gọi API 
     BFF->>DB/External API: Xác thực bằng cookie hoặc token tùy vào internal hay external API
     BFF-->>Client: Trả dữ liệu
-</div>
+:::
 
 # Triển khai
 
@@ -114,7 +114,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 ```
 
-> Điều này đảm bảo `UserManager`, `SignInManager` được đăng ký và cookie của Identity sẽ được tạo.
+::: info
+Điều này đảm bảo `UserManager`, `SignInManager` được đăng ký và cookie của Identity sẽ được tạo.
+:::
 
 ##  Cấu hình External Authentication trong Program.cs (Server project)
 
@@ -294,7 +296,7 @@ builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, AppClai
 
 Trong `appsettings.json`:
 
-```javascript
+```json
 {
   "Oidc": {
     "Google": {
@@ -313,9 +315,9 @@ Trong `appsettings.json`:
 }
 ```
 
-> ❌ Không thể dùng `.AddOpenIdConnect()` cho Facebook
-vì Facebook không hỗ trợ chuẩn OpenID Connect (OIDC).
-Bạn bắt buộc phải dùng `.AddFacebook()` (package **Microsoft.AspNetCore.Authentication.Facebook**) nếu muốn login qua Facebook.
+::: info
+❌ Không thể dùng `.AddOpenIdConnect()` cho Facebook
+:::
 
 ## Giao diện đăng nhập
 

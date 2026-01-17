@@ -17,8 +17,10 @@ Phần này sẽ tập trung vào hai nội dung quan trọng:
 Blazor sử dụng cơ chế **Authorization của ASP.NET Core**, dựa trên mô hình **Claims-based Identity**.  
 Mỗi người dùng được biểu diễn bởi một `ClaimsPrincipal`, chứa các `Claim` (như email, vai trò, hoặc quyền hạn cụ thể).
 
-> 💡 Để hiểu rõ hơn về mô hình Claims-based Identity trong .NET hãy
-đọc [bài viết này](/post/authentication-va-authorization-trong-net).
+::: info
+💡 Để hiểu rõ hơn về mô hình Claims-based Identity trong .NET hãy
+đọc [bài viết này](/post/authentication-va-authorization-trong-net)
+:::
 
 Các claim này được lưu trong `ClaimsPrincipal` và có thể truy cập thông
 qua `AuthenticationStateProvider` như sau:
@@ -88,7 +90,7 @@ Sử dụng `AuthorizeView`:
 ```
 
 Hoặc route được bảo vệ bằng attribute:
-```markup
+```razor
 &#64;page "/admin"
 
 &#64;attribute [Authorize(Roles = "Administrator")]
@@ -209,7 +211,9 @@ else
 }
 ```
 
-> Xem thêm về Authorization trong .NET [tại đây](/post/authentication-va-authorization-trong-net)
+::: info
+Xem thêm về Authorization trong .NET [tại đây](/post/authentication-va-authorization-trong-net)
+:::
 
 # Gọi Protected API
 
@@ -228,7 +232,7 @@ Server đọc cookie, xác định danh tính qua `HttpContext.User`.
 
 **Luồng hoạt động:**
 
-<div class="mermaid">
+::: mermaid
 sequenceDiagram
     participant User as Browser
     participant BFF as Blazor Server
@@ -238,7 +242,7 @@ sequenceDiagram
     BFF->>API: Xử lý request, đọc HttpContext.User
     API-->>BFF: Dữ liệu người dùng
     BFF-->>User: JSON response
-</div>
+:::
 
 Ví dụ: API lấy thông tin người dùng
 
@@ -281,7 +285,7 @@ Thay vào đó, server sẽ lấy Access Token đã lưu khi đăng nhập (OIDC
 
 **Luồng hoạt động:**
 
-<div class="mermaid">
+::: mermaid
 sequenceDiagram
     participant User as Browser/Blazor Client
     participant BFF as BFF Server
@@ -292,7 +296,7 @@ sequenceDiagram
     BFF->>API: Gửi request với Authorization: Bearer token
     API-->>BFF: Trả dữ liệu JSON
     BFF-->>User: JSON response
-</div>
+:::
 
 ### TokenHandler
 
@@ -340,7 +344,9 @@ builder.Services.AddHttpClient("ExternalApi", client =>
 }).AddHttpMessageHandler<TokenHandler>();
 ```
 
-> Khi gọi ExternalApi, .NET sẽ tự động thêm Access Token từ `HttpContext`.
+::: info
+Khi gọi ExternalApi, .NET sẽ tự động thêm Access Token từ `HttpContext`.
+:::
 
 ### Endpoint proxy server
 

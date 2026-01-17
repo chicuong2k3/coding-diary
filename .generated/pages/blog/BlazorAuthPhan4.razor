@@ -4,8 +4,6 @@
 <PageTitle>My first test page 3</PageTitle>
 
 <div class="content">
-    <h1>My first test page 3</h1>
-
     <p>Ở <a href="/post/authentication-va-authorization-trong-blazor-phan-2-trien-khai-authentication-trong-blazor">phần 2</a>,
 chúng ta đã triển khai Authentication cho ứng dụng Blazor nhưng chỉ hỗ trợ một
 Identity Provider (IdP) duy nhất.</p>
@@ -27,24 +25,23 @@ nhưng kết quả cuối cùng được ánh xạ vào một user account duy n
 của ứng dụng.</p>
 <p>Trước khi đi vào chi tiết, hãy cùng xem sơ đồ tổng quan luồng đăng nhập đa IdP trong
 ứng dụng Blazor Web App (với WebAssembly Render Mode) sử dụng mô hình BFF.</p>
-<div class="mermaid"> 
-sequenceDiagram 
-    participant User as Browser 
-    participant Client as Blazor Client 
-    participant BFF as Server BFF 
-    participant IdP as Identity Provider 
-    participant DB as Internal Database
-<pre><code>Client-&gt;&gt;BFF: Chọn đăng nhập với Google/Facebook/Tiktok
+<MermaidContainer >
+<p>sequenceDiagram
+participant User as Browser
+participant Client as Blazor Client
+participant BFF as Server BFF
+participant IdP as Identity Provider
+participant DB as Internal Database</p>
+<p>Client-&gt;&gt;BFF: Chọn đăng nhập với Google/Facebook/Tiktok
 BFF-&gt;&gt;IdP: Redirect tới OIDC endpoint của IdP
 IdP--&gt;&gt;BFF: Trả về authorization code và id_token
 BFF-&gt;&gt;DB: Map token IdP về user account nội bộ
 DB--&gt;&gt;BFF: User account
 BFF-&gt;&gt;Client: Lưu cookie xác thực Identity
-Client-&gt;&gt;BFF: Gọi API 
+Client-&gt;&gt;BFF: Gọi API
 BFF-&gt;&gt;DB/External API: Xác thực bằng cookie hoặc token tùy vào internal hay external API
-BFF--&gt;&gt;Client: Trả dữ liệu
-</code></pre>
-</div>
+BFF--&gt;&gt;Client: Trả dữ liệu</p>
+</MermaidContainer>
 <h1 id="trien-khai">Triển khai</h1>
 <h2 id="cau-hinh-identity">Cấu hình Identity</h2>
 <p>Tạo lớp <code>ApplicationUser</code> kế thừa từ <code>IdentityUser</code>:</p>
@@ -99,9 +96,13 @@ builder.Services.ConfigureApplicationCookie(options =&gt;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 </code></pre>
-<blockquote class="blockquote">
+<div class="alert alert-info" role="alert">
+<div class="d-flex align-items-center">
+<i class="bi-info-circle-fill flex-shrink-0 me-2"aria-label="Info:"></i>
+<h5>Info:</h5>
+</div>
 <p>Điều này đảm bảo <code>UserManager</code>, <code>SignInManager</code> được đăng ký và cookie của Identity sẽ được tạo.</p>
-</blockquote>
+</div>
 <h2 id="cau-hinh-external-authentication-trong-program.cs-server-project">Cấu hình External Authentication trong Program.cs (Server project)</h2>
 <p>Thêm <code>AddOpenIdConnect</code> cho các IdP muốn sử dụng:</p>
 <pre><code class="language-csharp">var oidcSection = builder.Configuration.GetSection(&quot;Oidc&quot;);
@@ -269,7 +270,7 @@ thêm <code>picture</code> claim:</p>
 <pre><code class="language-csharp">builder.Services.AddScoped&lt;IUserClaimsPrincipalFactory&lt;ApplicationUser&gt;, AppClaimsPrincipalFactory&gt;();
 </code></pre>
 <p>Trong <code>appsettings.json</code>:</p>
-<pre><code class="language-javascript">{
+<pre><code class="language-json">{
   &quot;Oidc&quot;: {
     &quot;Google&quot;: {
       &quot;Authority&quot;: &quot;https://accounts.google.com&quot;,
@@ -286,26 +287,28 @@ thêm <code>picture</code> claim:</p>
   }
 }
 </code></pre>
-<blockquote class="blockquote">
-<p>❌ Không thể dùng <code>.AddOpenIdConnect()</code> cho Facebook
-vì Facebook không hỗ trợ chuẩn OpenID Connect (OIDC).
-Bạn bắt buộc phải dùng <code>.AddFacebook()</code> (package <strong>Microsoft.AspNetCore.Authentication.Facebook</strong>) nếu muốn login qua Facebook.</p>
-</blockquote>
+<div class="alert alert-info" role="alert">
+<div class="d-flex align-items-center">
+<i class="bi-info-circle-fill flex-shrink-0 me-2"aria-label="Info:"></i>
+<h5>Info:</h5>
+</div>
+<p>❌ Không thể dùng <code>.AddOpenIdConnect()</code> cho Facebook</p>
+</div>
 <h2 id="giao-dien-ang-nhap">Giao diện đăng nhập</h2>
 <p>Trong phần 2, giao diện chỉ có một nút login cho Google. Ở đây, chúng ta thêm component<br />
 <code>ExternalLogin.razor</code> để hiển thị các nút Login cho các IdP khác (bạn có thể tùy chỉnh tùy theo nhu cầu):</p>
-<pre><code class="language-markup">@@inject NavigationManager NavigationManager
+<pre><code class="language-markup">&amp;#64;inject NavigationManager NavigationManager
 
 &lt;div class=&quot;external-login-buttons&quot;&gt;
-    @@foreach (var provider in availableProviders)
+    &amp;#64;foreach (var provider in availableProviders)
     {
-        &lt;button @@onclick=&quot;() =&gt; Login(provider)&quot;&gt;
-            @@provider
+        &lt;button &amp;#64;onclick=&quot;() =&gt; Login(provider)&quot;&gt;
+            &amp;#64;provider
         &lt;/button&gt;
     }
 &lt;/div&gt;
 
-@@code {
+&amp;#64;code {
     // danh sách các IdP
     private List&lt;string&gt; availableProviders = new() { &quot;Google&quot;, &quot;Facebook&quot; };
 

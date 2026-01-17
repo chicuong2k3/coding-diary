@@ -1,0 +1,22 @@
+@inject IJSRuntime JS
+
+<pre id="@_id" style="display:none">@ChildContent</pre>
+<div id="@_containerId" class="mermaid-container"></div>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private readonly string _id = $"mermaid-src-{Guid.NewGuid():N}";
+    private readonly string _containerId = $"mermaid-out-{Guid.NewGuid():N}";
+    private bool _rendered;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_rendered)
+        {
+            _rendered = true;
+            await JS.InvokeVoidAsync("renderMermaid", _id, _containerId);
+        }
+    }
+}

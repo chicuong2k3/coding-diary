@@ -1,10 +1,8 @@
 ---
-title: 'My first test page'
+title: 'Toán học cơ bản cho học máy: Đại số tuyến tính'
 date: 2025-07-16
-image: images/blake-logo.png
 tags: ["machine-learning", "algebra"]
-description: "Get to know the fundamentals of Blake, the static site generator."
-iconIdentifier: "bi bi-plus-square-fill-nav-menu"
+description: "Tìm hiểu các khái niệm cơ bản về đại số tuyến tính, bao gồm vectơ, ma trận và hệ phương trình tuyến tính - nền tảng toán học quan trọng trong học máy."
 ---
 
 # Đại số tuyến tính

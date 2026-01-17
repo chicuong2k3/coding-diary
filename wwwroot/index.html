@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Valaxy Theme Sakura</title>
-    <base href="/coding-diary/" />
+    <title>Code Magic</title>
+    <base href="/" />
     <link rel="preload" id="webassembly" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link href="DocumentationWeb.styles.css" rel="stylesheet" />
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <script type="importmap"></script>
 </head>
 
@@ -47,6 +49,27 @@
 
     <script type="text/javascript" id="MathJax-script" async
             src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+
+        window.renderMermaid = async function(srcId, containerId) {
+            const srcEl = document.getElementById(srcId);
+            const containerEl = document.getElementById(containerId);
+            if (!srcEl || !containerEl) return;
+
+            const definition = srcEl.innerText.trim();
+            if (!definition) return;
+
+            try {
+                const { svg } = await mermaid.render('mermaid-' + Date.now(), definition);
+                containerEl.innerHTML = svg;
+            } catch (e) {
+                containerEl.innerHTML = '<pre style="color:red;">Mermaid Error: ' + e.message + '</pre>';
+            }
+        };
     </script>
 
     <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>
@@ -150,7 +173,95 @@
             // Trigger initial scroll check
             setTimeout(scrollHandler, 200);
         };
+
+        // Copy code to clipboard
+        window.copyCode = async function(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            const text = code.innerText;
+
+            try {
+                await navigator.clipboard.writeText(text);
+                button.classList.add('copied');
+                button.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+                setTimeout(() => {
+                    button.classList.remove('copied');
+                    button.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+            }
+        };
+
+        // Initialize code blocks with copy button and syntax highlighting
+        window.initCodeBlocks = function() {
+            document.querySelectorAll('pre:not(.code-initialized)').forEach(pre => {
+                // Skip mermaid and special pre blocks
+                if (pre.closest('.mermaid-container') || pre.style.display === 'none') return;
+
+                pre.classList.add('code-initialized');
+
+                // Wrap in code-block container
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-block';
+
+                // Get language from code element class
+                const code = pre.querySelector('code');
+                let language = 'text';
+                if (code) {
+                    const langClass = Array.from(code.classList).find(c => c.startsWith('language-'));
+                    if (langClass) {
+                        language = langClass.replace('language-', '');
+                    }
+                }
+
+                // Create header with language label and copy button
+                const header = document.createElement('div');
+                header.className = 'code-header';
+                header.innerHTML = `
+                    <span class="code-lang">${language}</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                        </svg>
+                        Copy
+                    </button>
+                `;
+
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(header);
+                wrapper.appendChild(pre);
+            });
+
+            // Apply Prism highlighting
+            if (window.Prism) {
+                Prism.highlightAll();
+            }
+        };
+
+        // Run on page load and after Blazor navigation
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(initCodeBlocks, 500);
+        });
+
+        // Observe DOM changes for Blazor navigation
+        const codeObserver = new MutationObserver(() => {
+            setTimeout(initCodeBlocks, 100);
+        });
+        codeObserver.observe(document.body, { childList: true, subtree: true });
     </script>
+
+    <!-- Prism.js -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-csharp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-razor.min.js"></script>
 </body>
 
 </html>

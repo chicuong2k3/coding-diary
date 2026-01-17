@@ -17,7 +17,7 @@ của chúng.
 Dưới đây là danh sách thành phần bạn sẽ gặp khi triển khai BFF-based authentication
 trong Blazor Web App.
 
-<div class="mermaid">
+::: mermaid
 graph TD
     subgraph Browser["Blazor Client (WebAssembly)"]
         ASP[AuthenticationStateProvider]
@@ -41,7 +41,7 @@ graph TD
     COOKIE -->|Refresh Token/Access Token| TOKEN
     TOKEN -->|Token Response| COR
     COR -->|Lưu token trong cookie| ASP
-</div>
+:::
 
 ## AuthenticationStateProvider
 
@@ -54,10 +54,12 @@ cho cơ chế prerendering + hydrate của Blazor Web App:
 - `PersistentAuthenticationStateProvider` (nằm trong Client project): Khi client hydrate, đọc lại `UserInfo`  
   (từ `PersistentComponentState`) và khởi tạo `ClaimsPrincipal` giúp UI hiển thị đúng trạng thái đăng nhập.
 
-> **Vì sao cần có 2 Provider?**  
+::: info
+**Vì sao cần có 2 Provider?**  
 Khi ứng dụng được prerender trên server, Blazor chưa có runtime WebAssembly nên phải lưu
 `UserInfo` vào `PersistentComponentState`. Sau khi hydrate, client (wasm) đọc lại để đồng bộ
 trạng thái đăng nhập.
+:::
 
 ```csharp
 internal sealed class PersistingAuthenticationStateProvider

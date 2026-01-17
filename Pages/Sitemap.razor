@@ -1,17 +1,71 @@
 @page "/sitemap"
+@using Blake.Types
+@using Blake.Generated
 
-@inject NavigationManager Nav
+<PageTitle>Sitemap - Code Magic</PageTitle>
 
-<h1>Sitemap</h1>
+<div class="sitemap-page">
+    <h1>Sitemap</h1>
+    <p class="sitemap-desc">Danh sách tất cả các trang trên website.</p>
 
-<p>This page lists important pages on the site.</p>
+    <section class="sitemap-section">
+        <h2>Trang chính</h2>
+        <ul class="sitemap-list">
+            <li><a href="">Trang chủ</a></li>
+            <li><a href="tags">Bài viết</a></li>
+            <li><a href="about">Giới thiệu</a></li>
+            <li><a href="sitemap">Sitemap</a></li>
+        </ul>
+    </section>
 
-<ul>
-    <li><a href="@Nav.BaseUri">Home</a></li>
-    <li><a href="@($"{Nav.BaseUri}guide/installation")">Installation</a></li>
-    <li><a href="@($"{Nav.BaseUri}guide/update")">Update</a></li>
-    <li><a href="@($"{Nav.BaseUri}about")">About</a></li>
-    <li><a href="@($"{Nav.BaseUri}tags")">Tags</a></li>
-</ul>
+    <section class="sitemap-section">
+        <h2>Bài viết (@allPosts.Count())</h2>
+        <ul class="sitemap-list">
+            @foreach (var post in allPosts)
+            {
+                <li>
+                    <a href="@post.Slug.TrimStart('/')">@post.Title</a>
+                    <span class="sitemap-date">@(((DateTime)post.Date!).ToString("dd/MM/yyyy"))</span>
+                </li>
+            }
+        </ul>
+    </section>
 
-<p>For search engines, a machine-readable sitemap is available at <a href="/sitemap.xml">/sitemap.xml</a>.</p>
+    <section class="sitemap-section">
+        <h2>Chủ đề (@allTags.Count())</h2>
+        <div class="sitemap-tags">
+            @foreach (var tag in allTags)
+            {
+                <a href="tags?t=@Uri.EscapeDataString(tag.Name)" class="sitemap-tag">
+                    #@tag.Name <span>(@tag.Count)</span>
+                </a>
+            }
+        </div>
+    </section>
+</div>
+
+@code {
+    private IEnumerable<PageModel> allPosts = Enumerable.Empty<PageModel>();
+    private List<TagInfo> allTags = new();
+
+    protected override void OnInitialized()
+    {
+        allPosts = GeneratedContentIndex.GetPages()
+            .Where(p => !p.Draft)
+            .OrderByDescending(p => p.Date);
+
+        allTags = allPosts
+            .SelectMany(p => p.Tags)
+            .GroupBy(t => t, StringComparer.OrdinalIgnoreCase)
+            .Select(g => new TagInfo { Name = g.First(), Count = g.Count() })
+            .OrderByDescending(t => t.Count)
+            .ThenBy(t => t.Name)
+            .ToList();
+    }
+
+    private class TagInfo
+    {
+        public string Name { get; set; } = "";
+        public int Count { get; set; }
+    }
+}

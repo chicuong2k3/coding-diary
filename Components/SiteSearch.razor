@@ -14,7 +14,7 @@
                    @oninput="OnSearchInput"
                    @onkeydown="OnKeyDown"
                    class="search-input"
-                   placeholder="Search articles..." />
+                   placeholder="Tìm bài viết..." />
             <div class="search-kbd">
                 <kbd>ESC</kbd>
             </div>
@@ -31,7 +31,7 @@
                 @if (searchResults.Any())
                 {
                     <div class="search-results">
-                        <div class="results-label">Results</div>
+                        <div class="results-label">Kết quả</div>
                         @foreach (var result in searchResults.Take(8))
                         {
                             <a href="@result.Url" class="search-result" @onclick="Close">
@@ -69,15 +69,15 @@
                                 <line x1="8" y1="11" x2="14" y2="11"/>
                             </svg>
                         </div>
-                        <p>No results for "<strong>@searchTerm</strong>"</p>
-                        <span>Try different keywords</span>
+                        <p>Không có kết quả cho "<strong>@searchTerm</strong>"</p>
+                        <span>Thử từ khóa khác</span>
                     </div>
                 }
             }
             else
             {
                 <div class="search-suggestions">
-                    <div class="suggestions-label">Popular tags</div>
+                    <div class="suggestions-label">Chủ đề phổ biến</div>
                     <div class="tag-suggestions">
                         @foreach (var tag in PopularTags.Take(6))
                         {
@@ -92,8 +92,8 @@
 
         <div class="search-footer">
             <div class="search-tips">
-                <span><kbd>Enter</kbd> to select</span>
-                <span><kbd>ESC</kbd> to close</span>
+                <span><kbd>Enter</kbd> để tìm</span>
+                <span><kbd>ESC</kbd> để thoát</span>
             </div>
         </div>
     </div>

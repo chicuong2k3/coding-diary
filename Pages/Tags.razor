@@ -1,8 +1,10 @@
 @page "/tags/{TagName}"
+@page "/tags"
 @using Blake.Types
 @using Blake.Generated
+@inject NavigationManager Navigation
 
-<PageTitle>Posts tagged "@TagName"</PageTitle>
+<PageTitle>Posts tagged @GetTitle()</PageTitle>
 
 <div class="tags-page">
     <div class="tags-header">
@@ -13,10 +15,24 @@
                     <line x1="7" y1="7" x2="7.01" y2="7"/>
                 </svg>
             </span>
-            #@TagName
+            @GetTitle()
         </h1>
-        <p class="tags-count">@filteredPosts.Count() post(s)</p>
+        <p class="tags-count">@filteredPosts.Count() bài viết</p>
     </div>
+
+    @if (_selectedTags.Any())
+    {
+        <div class="selected-tags">
+            @foreach (var tag in _selectedTags)
+            {
+                <button type="button" class="selected-tag" @onclick="() => RemoveTag(tag)">
+                    #@tag
+                    <span class="remove-icon">&times;</span>
+                </button>
+            }
+            <button type="button" class="tag-clear-btn" @onclick="ClearAll">Bỏ chọn tất cả</button>
+        </div>
+    }
 
     <div class="posts-list">
         @if (filteredPosts.Any())
@@ -49,21 +65,22 @@
         else
         {
             <div class="no-posts">
-                <p>No posts found with tag "<strong>@TagName</strong>"</p>
-                <a href="" class="btn-back">Back to Home</a>
+                <p>Không có bài viết phù hợp </p>
+                <a href="" class="btn-back">Trở về Trang chủ</a>
             </div>
         }
     </div>
 
     <div class="all-tags">
-        <h3>All Tags</h3>
+        <h3>Chọn chủ đề</h3>
         <div class="tag-list">
             @foreach (var tag in allTags)
             {
-                <a href="tags/@tag.ToLowerInvariant()"
-                   class="tag-link @(tag.Equals(TagName, StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                <button type="button"
+                        class="tag-link @(IsSelected(tag) ? "active" : "")"
+                        @onclick="() => ToggleTag(tag)">
                     #@tag
-                </a>
+                </button>
             }
         </div>
     </div>
@@ -71,23 +88,96 @@
 
 @code {
     [Parameter]
-    public string TagName { get; set; } = string.Empty;
+    public string? TagName { get; set; }
 
+    [SupplyParameterFromQuery(Name = "t")]
+    public string[]? QueryTags { get; set; }
+
+    private HashSet<string> _selectedTags = new(StringComparer.OrdinalIgnoreCase);
     private IEnumerable<PageModel> filteredPosts = Enumerable.Empty<PageModel>();
     private List<string> allTags = new();
 
     protected override void OnParametersSet()
     {
+        _selectedTags.Clear();
+
+        // Support both /tags/tagname and /tags?t=tag1&t=tag2
+        if (!string.IsNullOrEmpty(TagName))
+        {
+            _selectedTags.Add(TagName);
+        }
+
+        if (QueryTags != null)
+        {
+            foreach (var tag in QueryTags)
+            {
+                if (!string.IsNullOrEmpty(tag))
+                    _selectedTags.Add(tag);
+            }
+        }
+
         var allPages = GeneratedContentIndex.GetPages().Where(p => !p.Draft);
 
-        filteredPosts = allPages
-            .Where(p => p.Tags.Any(t => t.Equals(TagName, StringComparison.OrdinalIgnoreCase)))
-            .OrderByDescending(p => p.Date);
+        if (_selectedTags.Any())
+        {
+            // OR logic: bài viết chỉ cần có 1 trong các tags được chọn
+            filteredPosts = allPages
+                .Where(p => p.Tags.Any(postTag =>
+                    _selectedTags.Any(selectedTag => postTag.Equals(selectedTag, StringComparison.OrdinalIgnoreCase))))
+                .OrderByDescending(p => p.Date);
+        }
+        else
+        {
+            filteredPosts = allPages.OrderByDescending(p => p.Date);
+        }
 
         allTags = allPages
             .SelectMany(p => p.Tags)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(t => t)
             .ToList();
+    }
+
+    private string GetTitle()
+    {
+        if (!_selectedTags.Any()) return "Các bài viết";
+        if (_selectedTags.Count == 1) return $"#{_selectedTags.First()}";
+        return string.Join(", ", _selectedTags.Select(t => $"#{t}"));
+    }
+
+    private bool IsSelected(string tag) => _selectedTags.Contains(tag);
+
+    private void ToggleTag(string tag)
+    {
+        if (_selectedTags.Contains(tag))
+            _selectedTags.Remove(tag);
+        else
+            _selectedTags.Add(tag);
+
+        NavigateToTags();
+    }
+
+    private void RemoveTag(string tag)
+    {
+        _selectedTags.Remove(tag);
+        NavigateToTags();
+    }
+
+    private void ClearAll()
+    {
+        _selectedTags.Clear();
+        Navigation.NavigateTo("/tags");
+    }
+
+    private void NavigateToTags()
+    {
+        if (!_selectedTags.Any())
+        {
+            Navigation.NavigateTo("/tags");
+            return;
+        }
+
+        var query = string.Join("&", _selectedTags.Select(t => $"t={Uri.EscapeDataString(t)}"));
+        Navigation.NavigateTo($"/tags?{query}");
     }
 }

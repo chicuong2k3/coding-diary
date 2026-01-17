@@ -4,8 +4,6 @@
 <PageTitle>My first test page 3</PageTitle>
 
 <div class="content">
-    <h1>My first test page 3</h1>
-
     <p>Sau khi người dùng đăng nhập thành công, bước tiếp theo là xác định họ được phép làm gì.
 Phần này sẽ tập trung vào hai nội dung quan trọng:</p>
 <ul>
@@ -15,10 +13,14 @@ Phần này sẽ tập trung vào hai nội dung quan trọng:</p>
 <h1 id="tong-quan-ve-authorization-trong-blazor">Tổng quan về Authorization trong Blazor</h1>
 <p>Blazor sử dụng cơ chế <strong>Authorization của ASP.NET Core</strong>, dựa trên mô hình <strong>Claims-based Identity</strong>.<br />
 Mỗi người dùng được biểu diễn bởi một <code>ClaimsPrincipal</code>, chứa các <code>Claim</code> (như email, vai trò, hoặc quyền hạn cụ thể).</p>
-<blockquote class="blockquote">
+<div class="alert alert-info" role="alert">
+<div class="d-flex align-items-center">
+<i class="bi-info-circle-fill flex-shrink-0 me-2"aria-label="Info:"></i>
+<h5>Info:</h5>
+</div>
 <p>💡 Để hiểu rõ hơn về mô hình Claims-based Identity trong .NET hãy
-đọc <a href="/post/authentication-va-authorization-trong-net">bài viết này</a>.</p>
-</blockquote>
+đọc <a href="/post/authentication-va-authorization-trong-net">bài viết này</a></p>
+</div>
 <p>Các claim này được lưu trong <code>ClaimsPrincipal</code> và có thể truy cập thông
 qua <code>AuthenticationStateProvider</code> như sau:</p>
 <pre><code class="language-markup">&amp;#64;page &quot;/me&quot;
@@ -76,7 +78,7 @@ Identity Provider (Azure AD, IdentityServer, Keycloak...) trả về claim <code
 &lt;/AuthorizeView&gt;
 </code></pre>
 <p>Hoặc route được bảo vệ bằng attribute:</p>
-<pre><code class="language-markup">&amp;#64;page &quot;/admin&quot;
+<pre><code class="language-razor">&amp;#64;page &quot;/admin&quot;
 
 &amp;#64;attribute [Authorize(Roles = &quot;Administrator&quot;)]
 
@@ -179,9 +181,13 @@ else
     }
 }
 </code></pre>
-<blockquote class="blockquote">
+<div class="alert alert-info" role="alert">
+<div class="d-flex align-items-center">
+<i class="bi-info-circle-fill flex-shrink-0 me-2"aria-label="Info:"></i>
+<h5>Info:</h5>
+</div>
 <p>Xem thêm về Authorization trong .NET <a href="/post/authentication-va-authorization-trong-net">tại đây</a></p>
-</blockquote>
+</div>
 <h1 id="goi-protected-api">Gọi Protected API</h1>
 <p>Trong Blazor Web App với mô hình BFF (Backend for Frontend),
 ứng dụng không giữ token ở client mà token nằm ở phía server. Điều này có nghĩa là:</p>
@@ -196,17 +202,16 @@ token đó để gọi API backend.</li>
 Người dùng đã đăng nhập, nên cookie xác thực được gửi kèm trong mọi request.
 Server đọc cookie, xác định danh tính qua <code>HttpContext.User</code>.</p>
 <p><strong>Luồng hoạt động:</strong></p>
-<div class="mermaid">
-sequenceDiagram
-    participant User as Browser
-    participant BFF as Blazor Server
-    participant API as Internal API
-<pre><code>User-&gt;&gt;BFF: GET /api/profile (cookie tự động gửi)
+<MermaidContainer >
+<p>sequenceDiagram
+participant User as Browser
+participant BFF as Blazor Server
+participant API as Internal API</p>
+<p>User-&gt;&gt;BFF: GET /api/profile (cookie tự động gửi)
 BFF-&gt;&gt;API: Xử lý request, đọc HttpContext.User
 API--&gt;&gt;BFF: Dữ liệu người dùng
-BFF--&gt;&gt;User: JSON response
-</code></pre>
-</div>
+BFF--&gt;&gt;User: JSON response</p>
+</MermaidContainer>
 <p>Ví dụ: API lấy thông tin người dùng</p>
 <pre><code class="language-csharp">app.MapGet(&quot;/api/profile&quot;, (HttpContext ctx) =&gt;
 {
@@ -240,18 +245,17 @@ ta không thể dùng cookie vì cookie chỉ có giá trị nội bộ.
 Thay vào đó, server sẽ lấy Access Token đã lưu khi đăng nhập (OIDC) rồi
 đính kèm token vào header <code>Authorization: Bearer &lt;token&gt;</code>, rồi proxy request ra ngoài.</p>
 <p><strong>Luồng hoạt động:</strong></p>
-<div class="mermaid">
-sequenceDiagram
-    participant User as Browser/Blazor Client
-    participant BFF as BFF Server
-    participant API as External API
-<pre><code>User-&gt;&gt;BFF: Gọi /api/github-repos
+<MermaidContainer >
+<p>sequenceDiagram
+participant User as Browser/Blazor Client
+participant BFF as BFF Server
+participant API as External API</p>
+<p>User-&gt;&gt;BFF: Gọi /api/github-repos
 BFF-&gt;&gt;BFF: Lấy access_token từ cookie (GetTokenAsync)
 BFF-&gt;&gt;API: Gửi request với Authorization: Bearer token
 API--&gt;&gt;BFF: Trả dữ liệu JSON
-BFF--&gt;&gt;User: JSON response
-</code></pre>
-</div>
+BFF--&gt;&gt;User: JSON response</p>
+</MermaidContainer>
 <h3 id="tokenhandler">TokenHandler</h3>
 <p>Ta tạo một <code>DelegatingHandler</code> để tự động gắn Access Token cho các request ra ngoài.</p>
 <pre><code class="language-csharp">using System.Net.Http.Headers;
@@ -292,9 +296,13 @@ builder.Services.AddHttpClient(&quot;ExternalApi&quot;, client =&gt;
     client.DefaultRequestHeaders.UserAgent.ParseAdd(&quot;BlazorBFF&quot;);
 }).AddHttpMessageHandler&lt;TokenHandler&gt;();
 </code></pre>
-<blockquote class="blockquote">
+<div class="alert alert-info" role="alert">
+<div class="d-flex align-items-center">
+<i class="bi-info-circle-fill flex-shrink-0 me-2"aria-label="Info:"></i>
+<h5>Info:</h5>
+</div>
 <p>Khi gọi ExternalApi, .NET sẽ tự động thêm Access Token từ <code>HttpContext</code>.</p>
-</blockquote>
+</div>
 <h3 id="endpoint-proxy-server">Endpoint proxy server</h3>
 <pre><code class="language-csharp">app.MapGet(&quot;/api/github-repos&quot;, async (IHttpClientFactory factory) =&gt;
 {

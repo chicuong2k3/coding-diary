@@ -15,6 +15,7 @@
     <PackageReference Include="BlakePlugin.ReadTime" Version="1.0.1" />
     <PackageReference Include="BlazorWasmPreRendering.Build" Version="7.0.0" />
     <PackageReference Include="MathJaxBlazor" Version="2.0.1" />
+    <PackageReference Include="MermaidJS.Blazor" Version="2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.1" PrivateAssets="all" />
   
@@ -35,6 +36,21 @@
     <Compile Remove="**/cascading-template.razor" />
     <None Include="**/cascading-template.razor" />
     <None Remove="scripts\rewrite_base_href.py" />
+    <Content Update="wwwroot\images\Felix_Argyle_Scared_By_JavaScript_The_Good_Parts.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\images\Kaguya_Shinomiya_Exceptional_C.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\images\Kobayashi_Holds_9_Algorithms_That_Changed_The_World.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\images\Minori_Hanasato_Programming_Rust.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\images\Professor_Shinonome_Finds_SICP.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 

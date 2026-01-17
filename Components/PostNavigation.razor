@@ -1,0 +1,125 @@
+@inject NavigationManager Navigation
+
+@if (CurrentPost != null)
+{
+    <div class="post-navigation">
+        @if (RelatedPosts.Any())
+        {
+            <section class="related-posts">
+                <h3>Bài viết liên quan</h3>
+                <div class="related-posts-grid">
+                    @foreach (var post in RelatedPosts.Take(3))
+                    {
+                        <a href="@post.Slug.TrimStart('/')" class="related-post-card">
+                            <h4>@post.Title</h4>
+                            @if (!string.IsNullOrEmpty(post.Description))
+                            {
+                                <p>@TruncateText(post.Description, 80)</p>
+                            }
+                            <div class="related-post-tags">
+                                @foreach (var tag in post.Tags.Take(2))
+                                {
+                                    <span class="tag-sm">#@tag</span>
+                                }
+                            </div>
+                        </a>
+                    }
+                </div>
+            </section>
+        }
+
+        <nav class="prev-next-nav">
+            @if (PreviousPost != null)
+            {
+                <a href="@PreviousPost.Slug.TrimStart('/')" class="nav-link-prev">
+                    <span class="nav-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"/>
+                        </svg>
+                        Bài trước
+                    </span>
+                    <span class="nav-title">@TruncateText(PreviousPost.Title, 50)</span>
+                </a>
+            }
+            else
+            {
+                <div class="nav-link-placeholder"></div>
+            }
+
+            @if (NextPost != null)
+            {
+                <a href="@NextPost.Slug.TrimStart('/')" class="nav-link-next">
+                    <span class="nav-label">
+                        Bài tiếp
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </span>
+                    <span class="nav-title">@TruncateText(NextPost.Title, 50)</span>
+                </a>
+            }
+            else
+            {
+                <div class="nav-link-placeholder"></div>
+            }
+        </nav>
+    </div>
+}
+
+@code {
+    private PageModel? CurrentPost { get; set; }
+    private PageModel? PreviousPost { get; set; }
+    private PageModel? NextPost { get; set; }
+    private List<PageModel> RelatedPosts { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        var currentPath = "/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?')[0].TrimEnd('/');
+
+        var allPosts = GeneratedContentIndex.GetPages()
+            .Where(p => !p.Draft)
+            .OrderByDescending(p => p.Date)
+            .ToList();
+
+        var currentIndex = allPosts.FindIndex(p =>
+            p.Slug.TrimEnd('/').Equals(currentPath, StringComparison.OrdinalIgnoreCase));
+
+        if (currentIndex >= 0)
+        {
+            CurrentPost = allPosts[currentIndex];
+
+            // Next post (newer) - previous in the sorted list
+            if (currentIndex > 0)
+            {
+                NextPost = allPosts[currentIndex - 1];
+            }
+
+            // Previous post (older) - next in the sorted list
+            if (currentIndex < allPosts.Count - 1)
+            {
+                PreviousPost = allPosts[currentIndex + 1];
+            }
+
+            // Related posts - same tags, excluding current
+            if (CurrentPost.Tags.Any())
+            {
+                RelatedPosts = allPosts
+                    .Where(p => p.Slug != CurrentPost.Slug)
+                    .Where(p => p.Tags.Any(t =>
+                        CurrentPost.Tags.Any(ct => ct.Equals(t, StringComparison.OrdinalIgnoreCase))))
+                    .OrderByDescending(p => p.Tags.Count(t =>
+                        CurrentPost.Tags.Any(ct => ct.Equals(t, StringComparison.OrdinalIgnoreCase))))
+                    .ThenByDescending(p => p.Date)
+                    .Take(3)
+                    .ToList();
+            }
+        }
+    }
+
+    private string TruncateText(string text, int maxLength)
+    {
+        if (string.IsNullOrEmpty(text) || text.Length <= maxLength)
+            return text;
+        return text.Substring(0, maxLength).TrimEnd() + "...";
+    }
+}

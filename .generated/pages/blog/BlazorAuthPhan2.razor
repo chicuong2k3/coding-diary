@@ -4,8 +4,6 @@
 <PageTitle>My first test page 3</PageTitle>
 
 <div class="content">
-    <h1>My first test page 3</h1>
-
     <p>Ở <a href="authentication-va-authorization-trong-blazor-phan-1-nen-tang">phần 1</a> chúng ta đã tìm hiểu các khái niệm,
 các mô hình (SSR/SPA/BFF) và lý do Microsoft khuyến nghị BFF cho Blazor Web App. Ở phần 2 này,
 chúng ta đi sâu vào việc triển khai từ các thành phần cốt lõi và cách hoạt động
@@ -13,31 +11,28 @@ của chúng.</p>
 <h1 id="cac-thanh-phan-chinh-va-vai-tro-cua-chung">Các thành phần chính và vai trò của chúng</h1>
 <p>Dưới đây là danh sách thành phần bạn sẽ gặp khi triển khai BFF-based authentication
 trong Blazor Web App.</p>
-<div class="mermaid">
-graph TD
-    subgraph Browser["Blazor Client (WebAssembly)"]
-        ASP[AuthenticationStateProvider]
-        AV[AuthorizeView/ClaimsPrincipal]
-        ASP --> AV
-    end
-<pre><code>subgraph Server[&quot;Blazor Server (BFF)&quot;]
-    COR[CookieOidcRefresher]
-    OIDC[OpenIdConnect Middleware]
-    COOKIE[Cookie Authentication]
-    COR --&gt; COOKIE
-    COOKIE --&gt; OIDC
-end
-
-subgraph IdP[&quot;Identity Provider (Google, Azure AD, ...)&quot;]
-    TOKEN[OIDC Token Endpoint]
-end
-
-AV --&gt;|Gửi request| COOKIE
+<MermaidContainer >
+<p>graph TD
+subgraph Browser[&quot;Blazor Client (WebAssembly)&quot;]
+ASP<a href="#">AuthenticationStateProvider</a>
+AV[AuthorizeView/ClaimsPrincipal]
+ASP --&gt; AV
+end</p>
+<p>subgraph Server[&quot;Blazor Server (BFF)&quot;]
+COR[CookieOidcRefresher]
+OIDC[OpenIdConnect Middleware]
+COOKIE[Cookie Authentication]
+COR --&gt; COOKIE
+COOKIE --&gt; OIDC
+end</p>
+<p>subgraph IdP[&quot;Identity Provider (Google, Azure AD, ...)&quot;]
+TOKEN[OIDC Token Endpoint]
+end</p>
+<p>AV --&gt;|Gửi request| COOKIE
 COOKIE --&gt;|Refresh Token/Access Token| TOKEN
 TOKEN --&gt;|Token Response| COR
-COR --&gt;|Lưu token trong cookie| ASP
-</code></pre>
-</div>
+COR --&gt;|Lưu token trong cookie| ASP</p>
+</MermaidContainer>
 <h2 id="authenticationstateprovider">AuthenticationStateProvider</h2>
 <p><code>AuthenticationStateProvider</code> là abstraction của Blazor để cung cấp trạng thái xác thực
 (<code>AuthenticationState</code>) cho component. Microsoft có hai implementation quan trọng phục vụ
@@ -49,12 +44,16 @@ trong <code>InteractiveWebAssembly</code> hoặc <code>Auto</code> render mode.<
 <li><code>PersistentAuthenticationStateProvider</code> (nằm trong Client project): Khi client hydrate, đọc lại <code>UserInfo</code><br />
 (từ <code>PersistentComponentState</code>) và khởi tạo <code>ClaimsPrincipal</code> giúp UI hiển thị đúng trạng thái đăng nhập.</li>
 </ul>
-<blockquote class="blockquote">
+<div class="alert alert-info" role="alert">
+<div class="d-flex align-items-center">
+<i class="bi-info-circle-fill flex-shrink-0 me-2"aria-label="Info:"></i>
+<h5>Info:</h5>
+</div>
 <p><strong>Vì sao cần có 2 Provider?</strong><br />
 Khi ứng dụng được prerender trên server, Blazor chưa có runtime WebAssembly nên phải lưu
 <code>UserInfo</code> vào <code>PersistentComponentState</code>. Sau khi hydrate, client (wasm) đọc lại để đồng bộ
 trạng thái đăng nhập.</p>
-</blockquote>
+</div>
 <pre><code class="language-csharp">internal sealed class PersistingAuthenticationStateProvider
     : AuthenticationStateProvider, IHostEnvironmentAuthenticationStateProvider, IDisposable
 {
@@ -483,9 +482,9 @@ await builder.Build().RunAsync();
 </code></pre>
 <h3 id="routes.razor">Routes.razor</h3>
 <pre><code class="language-markup">&lt;CascadingAuthenticationState&gt;
-    &lt;Router AppAssembly=&quot;@@typeof(Blogtify.Client.Program).Assembly&quot;&gt;
+    &lt;Router AppAssembly=&quot;&amp;#64;typeof(Blogtify.Client.Program).Assembly&quot;&gt;
         &lt;Found Context=&quot;routeData&quot;&gt;
-            &lt;AuthorizeRouteView RouteData=&quot;@@routeData&quot; DefaultLayout=&quot;@@typeof(MainLayout)&quot;&gt;
+            &lt;AuthorizeRouteView RouteData=&quot;&amp;#64;routeData&quot; DefaultLayout=&quot;&amp;#64;typeof(MainLayout)&quot;&gt;
                 &lt;NotAuthorized&gt;
                     &lt;p&gt;Bạn cần đăng nhập để truy cập trang này.&lt;/p&gt;
                 &lt;/NotAuthorized&gt;
@@ -493,7 +492,7 @@ await builder.Build().RunAsync();
         &lt;/Found&gt;
         &lt;NotFound&gt;
             &lt;PageTitle&gt;Not found&lt;/PageTitle&gt;
-            &lt;LayoutView Layout=&quot;@@typeof(MainLayout)&quot;&gt;
+            &lt;LayoutView Layout=&quot;&amp;#64;typeof(MainLayout)&quot;&gt;
                 &lt;p role=&quot;alert&quot;&gt;Sorry, there's nothing at this address.&lt;/p&gt;
             &lt;/LayoutView&gt;
         &lt;/NotFound&gt;
@@ -501,23 +500,23 @@ await builder.Build().RunAsync();
 &lt;/CascadingAuthenticationState&gt;
 </code></pre>
 <h3 id="loginlogout-ui">Login/Logout UI</h3>
-<pre><code class="language-markup">@@inject NavigationManager NavigationManager
+<pre><code class="language-markup">&amp;#64;inject NavigationManager NavigationManager
 
 &lt;AuthorizeView&gt;
     &lt;Authorized&gt;
-        &lt;span&gt;Xin chào, @@context.User.Identity?.Name!&lt;/span&gt;
+        &lt;span&gt;Xin chào, &amp;#64;context.User.Identity?.Name!&lt;/span&gt;
         &lt;form action=&quot;authentication/logout&quot; method=&quot;post&quot;&gt;
             &lt;AntiforgeryToken /&gt;
-            &lt;input type=&quot;hidden&quot; name=&quot;returnUrl&quot; value=&quot;@@NavigationManager.Uri&quot; /&gt;
+            &lt;input type=&quot;hidden&quot; name=&quot;returnUrl&quot; value=&quot;&amp;#64;NavigationManager.Uri&quot; /&gt;
             &lt;button type=&quot;submit&quot;&gt;Đăng xuất&lt;/button&gt;
         &lt;/form&gt;
     &lt;/Authorized&gt;
     &lt;NotAuthorized&gt;
-        &lt;button @@onclick=&quot;@@Login&quot;&gt;Đăng nhập&lt;/button&gt;
+        &lt;button &amp;#64;onclick=&quot;&amp;#64;Login&quot;&gt;Đăng nhập&lt;/button&gt;
     &lt;/NotAuthorized&gt;
 &lt;/AuthorizeView&gt;
 
-@@code {
+&amp;#64;code {
     private void Login()
     {
         var returnUrl = Uri.EscapeDataString(NavigationManager.Uri);

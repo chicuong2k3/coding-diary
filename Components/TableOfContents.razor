@@ -2,7 +2,7 @@
 @implements IDisposable
 
 <div class="toc-wrapper">
-    <h4 class="toc-title">Mục Lục</h4>
+    <h4 class="toc-title">Mục lục</h4>
 
     @if (_tocItems.Any())
     {
@@ -10,9 +10,11 @@
             @foreach (var item in _tocItems)
             {
                 <a href="#@item.Id"
-                   class="toc-link @(item.Id == _activeId ? "active" : "")"
+                   class="toc-link toc-level-@item.Level @(_activeId == item.Id ? "active" : "")"
                    @onclick="() => ScrollToHeading(item.Id)"
-                   @onclick:preventDefault>@item.Text</a>
+                   @onclick:preventDefault>
+                    @item.Text
+                </a>
             }
         </nav>
     }

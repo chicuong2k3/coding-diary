@@ -10,26 +10,44 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1b708014-c583-4fb8-acc0-ca5a6987b3e5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Pages/About.razor" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-1.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-2.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-3.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-4.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pages/Blog/lap-trinh-mang-phan-1.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pages/Blog/webhook.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pages/Sitemap.razor" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wwwroot/robots.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wwwroot/sitemap.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Components/MermaidContainer.razor" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/wwwroot/favicon.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/wwwroot/images/Felix_Argyle_Scared_By_JavaScript_The_Good_Parts.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/wwwroot/images/Kaguya_Shinomiya_Exceptional_C.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/wwwroot/images/Kobayashi_Holds_9_Algorithms_That_Changed_The_World.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/wwwroot/images/Minori_Hanasato_Programming_Rust.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/wwwroot/images/Professor_Shinonome_Finds_SICP.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.generated/GeneratedContentIndex.cs" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/GeneratedContentIndex.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan1.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan1.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan2.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan2.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan3.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan3.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan4.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/BlazorAuthPhan4.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.generated/pages/blog/LapTrinhMangPhan1.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/LapTrinhMangPhan1.razor" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.generated/pages/blog/Sample2.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/Sample2.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.generated/pages/blog/SamplePost.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/SamplePost.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.generated/pages/blog/Webhook.razor" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/pages/blog/Webhook.razor" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DocumentationWeb/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DocumentationWeb/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Components/SiteSearch.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Components/SiteSearch.razor" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Components/TableOfContents.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Components/TableOfContents.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Components/TagCloud.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Components/TagCloud.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DocumentationWeb.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/DocumentationWeb.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Layout/MainLayout.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Layout/MainLayout.razor" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Layout/MainLayout.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Layout/MainLayout.razor.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Layout/NavMenu.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Layout/NavMenu.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/About.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/About.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-1.md" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-1.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-2.md" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-2.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-3.md" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-3.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-4.md" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-4.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Blog/sample-post.md" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Blog/math-for-machine-learning.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pages/Blog/sample2.md" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Blog/sample2.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Blog/template.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Blog/template.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Home.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Home.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Sitemap.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Sitemap.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Tags.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Tags.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/css/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/docs/css/app.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/wwwroot/css/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/wwwroot/css/app.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wwwroot/favicon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wwwroot/icon-192.png" beforeDir="false" afterPath="$PROJECT_DIR$/wwwroot/icon-192.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/wwwroot/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/wwwroot/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -57,8 +75,10 @@
   }
 }]]></component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Components/MermaidContainer.razor" root0="FORCE_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Pages/About.razor" root0="FORCE_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Pages/Sitemap.razor" root0="FORCE_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.min.css.map" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="McpProjectServerCommands">
     <commands />
@@ -164,7 +184,7 @@
       <updated>1768587614962</updated>
       <workItem from="1768587619723" duration="1601000" />
       <workItem from="1768592351256" duration="15000" />
-      <workItem from="1768592404004" duration="36851000" />
+      <workItem from="1768592404004" duration="51226000" />
     </task>
     <task id="LOCAL-00001" summary="update workflow">
       <option name="closed" value="true" />
@@ -246,7 +266,23 @@
       <option name="project" value="LOCAL" />
       <updated>1768643073837</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="test">
+      <option name="closed" value="true" />
+      <created>1768649273938</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1768649273938</updated>
+    </task>
+    <task id="LOCAL-00012" summary="test">
+      <option name="closed" value="true" />
+      <created>1768649288944</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1768649288944</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -264,7 +300,8 @@
     <MESSAGE value="remove simd" />
     <MESSAGE value="install wasmtools" />
     <MESSAGE value="update" />
-    <option name="LAST_COMMIT_MESSAGE" value="update" />
+    <MESSAGE value="test" />
+    <option name="LAST_COMMIT_MESSAGE" value="test" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

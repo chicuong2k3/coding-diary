@@ -1,4 +1,5 @@
 @using Blake.Types
+@inject NavigationManager Navigation
 
 <div class="tag-cloud-container">
     <h3 class="tag-cloud-title">
@@ -9,48 +10,72 @@
         Tags
     </h3>
     <div class="tag-cloud">
-        @foreach (var tag in GetWeightedTags())
+        @foreach (var tag in GetTags())
         {
-            <a href="tags/@tag.Name.ToLowerInvariant()"
-               class="tag-cloud-item"
-               style="--tag-weight: @tag.Weight.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);">
+            <button type="button"
+                    class="tag-cloud-item @(IsSelected(tag.Name) ? "active" : "")"
+                    @onclick="() => ToggleTag(tag.Name)">
                 <span class="tag-name">#@tag.Name</span>
                 <span class="tag-count">@tag.Count</span>
-            </a>
+            </button>
         }
     </div>
+    @if (_selectedTags.Any())
+    {
+        <button type="button" class="tag-clear-btn" @onclick="ClearSelection">
+            Bỏ chọn tất cả
+        </button>
+    }
 </div>
 
 @code {
-    private List<WeightedTag> GetWeightedTags()
+    private HashSet<string> _selectedTags = new(StringComparer.OrdinalIgnoreCase);
+
+    private List<TagInfo> GetTags()
     {
-        var tagCounts = GeneratedContentIndex.GetPages()
+        return GeneratedContentIndex.GetPages()
             .Where(p => !p.Draft)
             .SelectMany(p => p.Tags)
             .GroupBy(tag => tag, StringComparer.OrdinalIgnoreCase)
-            .ToDictionary(g => g.First(), g => g.Count());
-
-        if (!tagCounts.Any())
-            return new List<WeightedTag>();
-
-        var maxCount = tagCounts.Values.Max();
-
-        return tagCounts
-            .Select(kvp => new WeightedTag
-            {
-                Name = kvp.Key,
-                Count = kvp.Value,
-                Weight = 0.85 + (kvp.Value / (double)maxCount * 0.35)
-            })
+            .Select(g => new TagInfo { Name = g.First(), Count = g.Count() })
             .OrderByDescending(t => t.Count)
             .ThenBy(t => t.Name)
             .ToList();
     }
 
-    private class WeightedTag
+    private bool IsSelected(string tag) => _selectedTags.Contains(tag);
+
+    private void ToggleTag(string tag)
+    {
+        if (_selectedTags.Contains(tag))
+            _selectedTags.Remove(tag);
+        else
+            _selectedTags.Add(tag);
+
+        NavigateToTags();
+    }
+
+    private void ClearSelection()
+    {
+        _selectedTags.Clear();
+        Navigation.NavigateTo("/tags");
+    }
+
+    private void NavigateToTags()
+    {
+        if (!_selectedTags.Any())
+        {
+            Navigation.NavigateTo("/tags");
+            return;
+        }
+
+        var query = string.Join("&", _selectedTags.Select(t => $"t={Uri.EscapeDataString(t)}"));
+        Navigation.NavigateTo($"/tags?{query}");
+    }
+
+    private class TagInfo
     {
         public string Name { get; set; } = string.Empty;
         public int Count { get; set; }
-        public double Weight { get; set; }
     }
 }
