@@ -68,7 +68,7 @@ jobs:
               s{(<head\b[^>]*>)(.*?)(</head>)}{
                 my $open=$1; my $inner=$2; my $close=$3;
                 $inner =~ s{<base\b[^>]*>}{}isi;
-                $open . $inner . "\n  <base href=\"$ENV{BASE_HREF}\" />" . $close
+                $open . "\n  <base href=\"$ENV{BASE_HREF}\" />" . $inner . $close
               }sgei' "$INDEX"
 
             echo "=== index.html after patch (head snippet) ==="

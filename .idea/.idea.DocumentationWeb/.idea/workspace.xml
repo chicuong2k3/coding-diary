@@ -9,24 +9,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1b708014-c583-4fb8-acc0-ca5a6987b3e5" name="Changes" comment="update">
-      <change afterPath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.sc2h57dyec.wasm.br" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.sc2h57dyec.wasm.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/_framework/dotnet.bum0gb8r76.js.br" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy-pages.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy-pages.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.k2txyitgaa.wasm" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.sc2h57dyec.wasm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.k2txyitgaa.wasm.br" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.k2txyitgaa.wasm.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.n1galiedg5.wasm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.n1galiedg5.wasm.br" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_framework/DocumentationWeb.n1galiedg5.wasm.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_framework/dotnet.mp413n3b6s.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_framework/dotnet.mp413n3b6s.js.br" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_framework/dotnet.mp413n3b6s.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_framework/dotnet.z4vdhm3etg.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_framework/dotnet.bum0gb8r76.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_framework/dotnet.z4vdhm3etg.js.br" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_framework/dotnet.z4vdhm3etg.js.gz" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_framework/dotnet.bum0gb8r76.js.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/index.html.bak.1768632387" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index.html.bak.1768637229" afterDir="false" />
+    <list default="true" id="1b708014-c583-4fb8-acc0-ca5a6987b3e5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/DocumentationWeb.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/DocumentationWeb.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,7 +140,7 @@
       <updated>1768587614962</updated>
       <workItem from="1768587619723" duration="1601000" />
       <workItem from="1768592351256" duration="15000" />
-      <workItem from="1768592404004" duration="28283000" />
+      <workItem from="1768592404004" duration="30024000" />
     </task>
     <task id="LOCAL-00001" summary="update workflow">
       <option name="closed" value="true" />
@@ -206,7 +190,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768639046998</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="update">
+      <option name="closed" value="true" />
+      <created>1768639398349</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1768639398349</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
