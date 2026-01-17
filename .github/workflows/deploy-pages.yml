@@ -1,67 +1,69 @@
-name: Deploy to GitHub Pages
+name: Build and deploy to GitHub Pages
 
-# Run on pushes to main branch
 on:
   push:
-    branches: [main]
-  workflow_dispatch: # Allow manual triggering
+    branches:
+      - main
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
-  deploy-to-github-pages:
+  build_and_deploy:
     runs-on: ubuntu-latest
+    environment: github-pages
+
     steps:
-      # Checkout the repository
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      # Setup .NET 10
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 10.0.x
+          dotnet-version: '8.0.x'
 
-      # Install Blake CLI
-      - name: Install Blake CLI
-        run: dotnet tool install -g Blake.CLI
+      - name: Restore & publish
+        run: |
+          dotnet restore DocumentationWeb.sln
+          dotnet publish DocumentationWeb.csproj -c Release -o publish
 
-      # Generate Blake content
-      - name: Run blake bake
-        run: blake bake
-
-      # Build the Blazor WebAssembly app
-      - name: Publish .NET Project
-        run: dotnet publish -c Release -o release --nologo
-
-      # Fix base path for GitHub Pages subdirectory hosting
-      - name: Change base-tag in index.html
+      - name: Compute base href (project vs user site)
+        id: basehref
         run: |
           REPO_NAME="${{ github.event.repository.name }}"
-          sed -i "s|<base href=\"/\" />|<base href=\"/${REPO_NAME}/\" />|g" release/wwwroot/index.html
+          OWNER="${{ github.repository_owner }}"
+          if [ "$REPO_NAME" = "${OWNER}.github.io" ]; then
+            echo "BASE_HREF=/"
+            echo "BASE_HREF=/" >> $GITHUB_OUTPUT
+          else
+            BASE="/${REPO_NAME}/"
+            echo "BASE_HREF=${BASE}"
+            echo "BASE_HREF=${BASE}" >> $GITHUB_OUTPUT
+          fi
 
-      # Copy index.html to 404.html for SPA routing
-      - name: Copy index.html to 404.html
-        run: cp release/wwwroot/index.html release/wwwroot/404.html
+      - name: Patch index.html base href
+        run: |
+          BASE_HREF="${{ steps.basehref.outputs.BASE_HREF }}"
+          INDEX="publish/wwwroot/index.html"
+          if [ -f "$INDEX" ]; then
+            if grep -q "<base href=" "$INDEX"; then
+              perl -0777 -pe "s|<base href=\"[^\"]*\" */?>|<base href=\"${BASE_HREF}\" />|s" -i "$INDEX"
+            else
+              perl -0777 -pe "s|<head>|<head>\n    <base href=\"${BASE_HREF}\" />|s" -i "$INDEX"
+            fi
+          fi
 
-      # Add .nojekyll file to bypass Jekyll processing
-      - name: Add .nojekyll file
-        run: touch release/wwwroot/.nojekyll
+      - name: Show publish contents
+        run: |
+          ls -la publish/wwwroot | sed -n '1,200p'
 
-      # Upload artifact for GitHub Pages
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload artifact for Pages
+        uses: actions/upload-pages-artifact@v1
         with:
-          path: release/wwwroot
+          path: publish/wwwroot
 
-      # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v1
+        # GITHUB_TOKEN is used implicitly by the action
