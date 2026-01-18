@@ -31,6 +31,7 @@
     <!-- Remove template.razor files -->
     <Content Remove="**/template.razor" />
     <Compile Remove="**/template.razor" />
+    <Content Include="Tools\SitemapGenerator\SitemapGenerator.csproj" />
     <None Include="**/template.razor" />
     <Content Remove="**/cascading-template.razor" />
     <Compile Remove="**/cascading-template.razor" />

@@ -9,7 +9,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1b708014-c583-4fb8-acc0-ca5a6987b3e5" name="Changes" comment="" />
+    <list default="true" id="1b708014-c583-4fb8-acc0-ca5a6987b3e5" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Tools/SitemapGenerator/Program.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Tools/SitemapGenerator/SitemapGenerator.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy-pages.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy-pages.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DocumentationWeb.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/DocumentationWeb.csproj" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -155,6 +160,7 @@
       <workItem from="1768678146599" duration="171000" />
       <workItem from="1768733213206" duration="599000" />
       <workItem from="1768743650903" duration="6119000" />
+      <workItem from="1768762858041" duration="715000" />
     </task>
     <task id="LOCAL-00001" summary="update workflow">
       <option name="closed" value="true" />
@@ -300,7 +306,23 @@
       <option name="project" value="LOCAL" />
       <updated>1768750448576</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="remove files">
+      <option name="closed" value="true" />
+      <created>1768762929699</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1768762929699</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;docs/404.html&#10;#&#9;docs/DocumentationWeb.styles.css&#10;#&#9;docs/DocumentationWeb.styles.css.br&#10;#&#9;docs/DocumentationWeb.styles.css.gz&#10;#&#9;docs/_framework/DocumentationWeb.e9khge6vmo.wasm&#10;#&#9;docs/_framework/Microsoft.Extensions.DependencyInjection.Abstractions.d7s9dxzrd8.wasm&#10;#&#9;docs/_framework/System.Linq.skbbrxu8bi.wasm&#10;#&#9;docs/_framework/dotnet.bm3jex41ln.js&#10;#&#9;docs/_framework/dotnet.native.aae0yg3rrx.wasm&#10;#&#9;docs/_framework/dotnet.native.aae0yg3rrx.wasm.gz&#10;#&#9;docs/coding-diary/about/index.html&#10;#&#9;docs/coding-diary/about/index.html.br&#10;#&#9;docs/coding-diary/about/index.html.gz&#10;#&#9;docs/coding-diary/book/blazor/index.html&#10;#&#9;docs/coding-diary/book/index.html&#10;#&#9;docs/coding-diary/book/machine-learning/index.html&#10;#&#9;docs/coding-diary/book/non-technical/index.html&#10;#&#9;docs/coding-diary/index.html&#10;#&#9;docs/coding-diary/index.html.br&#10;#&#9;docs/coding-diary/index.html.gz&#10;#&#9;docs/coding-diary/sitemap/index.html&#10;#&#9;docs/coding-diary/sitemap/index.html.br&#10;#&#9;docs/coding-diary/sitemap/index.html.gz&#10;#&#9;docs/css/app.css&#10;#&#9;docs/css/app.css.br&#10;#&#9;docs/css/app.css.gz&#10;#&#9;docs/index.html&#10;#&#9;docs/index.html.br&#10;#&#9;docs/index.html.gz">
+      <option name="closed" value="true" />
+      <created>1768762990688</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1768762990688</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -323,7 +345,9 @@
     <MESSAGE value="udpate tags" />
     <MESSAGE value="update urls" />
     <MESSAGE value="new UI" />
-    <option name="LAST_COMMIT_MESSAGE" value="new UI" />
+    <MESSAGE value="remove files" />
+    <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;docs/404.html&#10;#&#9;docs/DocumentationWeb.styles.css&#10;#&#9;docs/DocumentationWeb.styles.css.br&#10;#&#9;docs/DocumentationWeb.styles.css.gz&#10;#&#9;docs/_framework/DocumentationWeb.e9khge6vmo.wasm&#10;#&#9;docs/_framework/Microsoft.Extensions.DependencyInjection.Abstractions.d7s9dxzrd8.wasm&#10;#&#9;docs/_framework/System.Linq.skbbrxu8bi.wasm&#10;#&#9;docs/_framework/dotnet.bm3jex41ln.js&#10;#&#9;docs/_framework/dotnet.native.aae0yg3rrx.wasm&#10;#&#9;docs/_framework/dotnet.native.aae0yg3rrx.wasm.gz&#10;#&#9;docs/coding-diary/about/index.html&#10;#&#9;docs/coding-diary/about/index.html.br&#10;#&#9;docs/coding-diary/about/index.html.gz&#10;#&#9;docs/coding-diary/book/blazor/index.html&#10;#&#9;docs/coding-diary/book/index.html&#10;#&#9;docs/coding-diary/book/machine-learning/index.html&#10;#&#9;docs/coding-diary/book/non-technical/index.html&#10;#&#9;docs/coding-diary/index.html&#10;#&#9;docs/coding-diary/index.html.br&#10;#&#9;docs/coding-diary/index.html.gz&#10;#&#9;docs/coding-diary/sitemap/index.html&#10;#&#9;docs/coding-diary/sitemap/index.html.br&#10;#&#9;docs/coding-diary/sitemap/index.html.gz&#10;#&#9;docs/css/app.css&#10;#&#9;docs/css/app.css.br&#10;#&#9;docs/css/app.css.gz&#10;#&#9;docs/index.html&#10;#&#9;docs/index.html.br&#10;#&#9;docs/index.html.gz" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;docs/404.html&#10;#&#9;docs/DocumentationWeb.styles.css&#10;#&#9;docs/DocumentationWeb.styles.css.br&#10;#&#9;docs/DocumentationWeb.styles.css.gz&#10;#&#9;docs/_framework/DocumentationWeb.e9khge6vmo.wasm&#10;#&#9;docs/_framework/Microsoft.Extensions.DependencyInjection.Abstractions.d7s9dxzrd8.wasm&#10;#&#9;docs/_framework/System.Linq.skbbrxu8bi.wasm&#10;#&#9;docs/_framework/dotnet.bm3jex41ln.js&#10;#&#9;docs/_framework/dotnet.native.aae0yg3rrx.wasm&#10;#&#9;docs/_framework/dotnet.native.aae0yg3rrx.wasm.gz&#10;#&#9;docs/coding-diary/about/index.html&#10;#&#9;docs/coding-diary/about/index.html.br&#10;#&#9;docs/coding-diary/about/index.html.gz&#10;#&#9;docs/coding-diary/book/blazor/index.html&#10;#&#9;docs/coding-diary/book/index.html&#10;#&#9;docs/coding-diary/book/machine-learning/index.html&#10;#&#9;docs/coding-diary/book/non-technical/index.html&#10;#&#9;docs/coding-diary/index.html&#10;#&#9;docs/coding-diary/index.html.br&#10;#&#9;docs/coding-diary/index.html.gz&#10;#&#9;docs/coding-diary/sitemap/index.html&#10;#&#9;docs/coding-diary/sitemap/index.html.br&#10;#&#9;docs/coding-diary/sitemap/index.html.gz&#10;#&#9;docs/css/app.css&#10;#&#9;docs/css/app.css.br&#10;#&#9;docs/css/app.css.gz&#10;#&#9;docs/index.html&#10;#&#9;docs/index.html.br&#10;#&#9;docs/index.html.gz" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

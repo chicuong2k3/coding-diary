@@ -145,6 +145,11 @@ jobs:
           fi
           echo "Smoke-check passed: key files present."
 
+      - name: Generate dynamic sitemap.xml
+        run: |
+          dotnet run --project Tools/SitemapGenerator/SitemapGenerator.csproj --output publish/wwwroot/sitemap.xml
+        # If you use a different script or tool, adjust the command above accordingly
+
       - name: Deploy to main/docs (publish folder)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
