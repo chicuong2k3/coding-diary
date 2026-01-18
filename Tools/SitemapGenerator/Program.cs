@@ -15,26 +15,47 @@ namespace DocumentationWeb.Tools.SitemapGenerator
     {
         static int Main(string[] args)
         {
-            string output = args.Length > 1 && args[0] == "--output" ? args[1] : "sitemap.xml";
-            var pages = Blake.Generated.GeneratedContentIndex.GetPages().Where(p => !p.Draft).ToList();
-            string baseUrl = Environment.GetEnvironmentVariable("SITE_BASE_URL") ?? "https://example.com/";
-            if (!baseUrl.EndsWith("/")) baseUrl += "/";
+            try
+            {
+                string output = "sitemap.xml";
+                // simple arg parsing: --output <path>
+                for (int i = 0; i < args.Length; i++)
+                {
+                    if (args[i] == "--output" && i + 1 < args.Length)
+                    {
+                        output = args[i + 1];
+                        i++;
+                    }
+                }
 
-            var urlset = new System.Xml.Linq.XElement("urlset",
-                new System.Xml.Linq.XAttribute("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9"),
-                pages.Select(p =>
-                    new System.Xml.Linq.XElement("url",
-                        new System.Xml.Linq.XElement("loc", baseUrl.TrimEnd('/') + p.Slug),
-                        new System.Xml.Linq.XElement("changefreq", "weekly"),
-                        new System.Xml.Linq.XElement("priority", p.Slug == "/" ? "1.0" : "0.5")
+                var pages = Blake.Generated.GeneratedContentIndex.GetPages().Where(p => !p.Draft).ToList();
+                string baseUrl = Environment.GetEnvironmentVariable("SITE_BASE_URL") ?? "https://example.com/";
+                if (!baseUrl.EndsWith("/")) baseUrl += "/";
+
+                XNamespace ns = "http://www.sitemaps.org/schemas/sitemap/0.9";
+
+                var urlset = new XElement(ns + "urlset",
+                    pages.Select(p =>
+                        new XElement(ns + "url",
+                            new XElement(ns + "loc", baseUrl.TrimEnd('/') + p.Slug),
+                            new XElement(ns + "changefreq", "weekly"),
+                            new XElement(ns + "priority", p.Slug == "/" ? "1.0" : "0.5")
+                        )
                     )
-                )
-            );
-            var doc = new System.Xml.Linq.XDocument(new System.Xml.Linq.XDeclaration("1.0", "UTF-8", "yes"), urlset);
-            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(output) ?? ".");
-            doc.Save(output);
-            System.Console.WriteLine($"Sitemap generated at {output}");
-            return 0;
+                );
+
+                var doc = new XDocument(new XDeclaration("1.0", "UTF-8", "yes"), urlset);
+                var dir = Path.GetDirectoryName(output);
+                if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+                doc.Save(output);
+                Console.WriteLine($"Sitemap generated at {output}");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("Error generating sitemap: " + ex);
+                return 2;
+            }
         }
     }
 }
