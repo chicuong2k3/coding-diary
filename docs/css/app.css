@@ -496,6 +496,15 @@ html {
     margin-top: 0.15rem;
 }
 
+.result-book {
+    font-size: 0.75rem;
+    color: var(--accent-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 0.15rem;
+}
+
 .result-arrow {
     flex-shrink: 0;
     color: var(--text-muted);
