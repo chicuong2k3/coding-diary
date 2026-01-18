@@ -56,5 +56,29 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json" />
+    <_ContentIncludedByDefault Remove="publish\web.config" />
+    <_ContentIncludedByDefault Remove="publish\DocumentationWeb.runtimeconfig.json" />
+    <_ContentIncludedByDefault Remove="publish\DocumentationWeb.staticwebassets.endpoints.json" />
+    <_ContentIncludedByDefault Remove="publish\publish\DocumentationWeb.runtimeconfig.json" />
+    <_ContentIncludedByDefault Remove="publish\publish\DocumentationWeb.staticwebassets.endpoints.json" />
+    <_ContentIncludedByDefault Remove="publish\publish\publish\DocumentationWeb.runtimeconfig.json" />
+    <_ContentIncludedByDefault Remove="publish\publish\publish\DocumentationWeb.staticwebassets.endpoints.json" />
+    <_ContentIncludedByDefault Remove="publish\publish\publish\publish\DocumentationWeb.runtimeconfig.json" />
+    <_ContentIncludedByDefault Remove="publish\publish\publish\publish\DocumentationWeb.staticwebassets.endpoints.json" />
+    <_ContentIncludedByDefault Remove="publish\publish\publish\publish\publish\DocumentationWeb.runtimeconfig.json" />
+    <_ContentIncludedByDefault Remove="publish\publish\publish\publish\publish\DocumentationWeb.staticwebassets.endpoints.json" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove=".generated\pages\blog\BlazorAuthPhan1.razor" />
+    <UpToDateCheckInput Remove=".generated\pages\blog\BlazorAuthPhan2.razor" />
+    <UpToDateCheckInput Remove=".generated\pages\blog\BlazorAuthPhan3.razor" />
+    <UpToDateCheckInput Remove=".generated\pages\blog\BlazorAuthPhan4.razor" />
+    <UpToDateCheckInput Remove=".generated\pages\blog\LapTrinhMangPhan1.razor" />
+    <UpToDateCheckInput Remove=".generated\pages\blog\MathForMachineLearning.razor" />
+    <UpToDateCheckInput Remove=".generated\pages\blog\Sample2.razor" />
+    <UpToDateCheckInput Remove=".generated\pages\blog\SamplePost.razor" />
+    <UpToDateCheckInput Remove=".generated\pages\blog\Webhook.razor" />
   </ItemGroup>
 </Project>
