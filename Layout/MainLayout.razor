@@ -6,19 +6,26 @@
     private string CurrentPath => Navigation.ToBaseRelativePath(Navigation.Uri).Trim('/');
     private bool IsHomePage => CurrentPath == "";
     private bool IsBlogPost => CurrentPath.StartsWith("blog/", StringComparison.OrdinalIgnoreCase);
-    private bool IsTagsPage => CurrentPath.Equals("tags", StringComparison.OrdinalIgnoreCase)
-                              || CurrentPath.StartsWith("tags?", StringComparison.OrdinalIgnoreCase)
-                              || CurrentPath.StartsWith("tags/", StringComparison.OrdinalIgnoreCase);
+    private bool IsBookPage => CurrentPath.Equals("book", StringComparison.OrdinalIgnoreCase)
+                              || CurrentPath.StartsWith("book/", StringComparison.OrdinalIgnoreCase);
     private bool ShowToc => IsBlogPost;
-    private bool ShowTags => IsBlogPost;
+    private bool ShowBookChapters => IsBlogPost;
 
     private bool _isDarkTheme = true;
     private bool _isSearchOpen = false;
 
-    private IEnumerable<PageModel> RecentPosts => GeneratedContentIndex.GetPages()
-        .Where(p => !p.Draft)
-        .OrderByDescending(p => p.Date)
-        .Take(6);
+    private record BookInfo(string Name, string Slug, int ChapterCount, PageModel LatestChapter);
+
+    private IEnumerable<BookInfo> Books => GeneratedContentIndex.GetPages()
+        .Where(p => !p.Draft && p.Tags.Any())
+        .GroupBy(p => p.Tags.First(), StringComparer.OrdinalIgnoreCase)
+        .Select(g => new BookInfo(
+            g.Key,
+            g.Key.ToLower().Replace(" ", "-"),
+            g.Count(),
+            g.OrderByDescending(p => p.Date).First()
+        ))
+        .OrderByDescending(b => b.LatestChapter.Date);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -70,9 +77,9 @@
         <nav class="main-nav" aria-label="Primary">
             <ul>
                 <li><a href="">Trang chủ</a></li>
-                <li><a href="tags">Bài viết</a></li>
+                <li><a href="book">Thư viện sách</a></li>
+                <li><a href="bookmarks">Đánh dấu</a></li>
                 <li><a href="about">Giới thiệu</a></li>
-                <li><a href="sitemap">Sitemap</a></li>
             </ul>
         </nav>
 
@@ -131,7 +138,7 @@
         </div>
         <div class="hero-inner">
             <div class="hero-title">Code Magic</div>
-            <div class="hero-sub">Notes, thoughts, and learnings from my coding journey</div>
+            <div class="hero-sub">Dịch sách công nghệ</div>
         </div>
         <svg class="hero-wave" viewBox="0 0 1440 100" preserveAspectRatio="none" aria-hidden="true">
             <path class="wave-path" d="M0,40 Q360,100 720,50 T1440,60 L1440,100 L0,100 Z"/>
@@ -140,35 +147,35 @@
 
     <!-- Quote section -->
     <section class="quote-section">
-        <blockquote class="featured-quote">
+        <div class="featured-quote">
             <p>"Programming is the closest thing to magic."</p>
-        </blockquote>
+        </div>
     </section>
 
-    <!-- Recent Posts section -->
+    <!-- Books section -->
     <section class="posts-section">
         <div class="posts-header">
-            <h2>Trang chủ</h2>
-            <p>Các bài viết mới nhất</p>
+            <h2>Thư viện sách</h2>
+            <p>Danh sách sách đã và đang dịch</p>
         </div>
-        <div class="posts-grid">
-            @foreach (var post in RecentPosts)
+        <div class="books-grid">
+            @foreach (var book in Books)
             {
-                <a href="@post.Slug.TrimStart('/')" class="post-card-home">
-                    <div class="post-card-inner">
-                        <div class="post-card-date">
-                            <span class="date-day">@(((DateTime)post.Date!).Day)</span>
-                            <span class="date-month">@(((DateTime)post.Date).ToString("MMM"))</span>
+                <a href="book/@book.Slug" class="book-card">
+                    <div class="book-card-inner">
+                        <div class="book-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                            </svg>
                         </div>
-                        <div class="post-card-body">
-                            <h3>@post.Title</h3>
-                            <p>@post.Description</p>
-                            <div class="post-card-tags">
-                                @foreach (var tag in post.Tags.Take(3))
-                                {
-                                    <span class="tag-sm">#@tag</span>
-                                }
+                        <div class="book-card-body">
+                            <h3>@book.Name</h3>
+                            <div class="book-meta">
+                                <span class="chapter-count">@book.ChapterCount chương</span>
+                                <span class="latest-update">Cập nhật: @(((DateTime)book.LatestChapter.Date!).ToString("dd/MM/yyyy"))</span>
                             </div>
+                            <p class="latest-chapter">Chương mới nhất: @book.LatestChapter.Title</p>
                         </div>
                     </div>
                 </a>
@@ -178,12 +185,12 @@
 }
 else
 {
-    <div class="page sakura-page @(ShowTags ? "" : "no-left-sidebar") @(ShowToc ? "" : "no-right-sidebar")">
-        @if (ShowTags)
+    <div class="page sakura-page @(ShowBookChapters ? "" : "no-left-sidebar") @(ShowToc ? "" : "no-right-sidebar")">
+        @if (ShowBookChapters)
         {
             <aside class="left-sidebar">
                 <div class="sidebar-tags">
-                    <TagCloud/>
+                    <BookChapters/>
                 </div>
             </aside>
         }
@@ -193,7 +200,7 @@ else
                 @Body
                 @if (IsBlogPost)
                 {
-                    <PostNavigation />
+                    <ChapterNavigation />
                 }
             </article>
         </main>
@@ -228,5 +235,10 @@ else
 </footer>
 
 <SiteSearch @bind-IsOpen="_isSearchOpen" />
+
+@if (IsBlogPost)
+{
+    <FloatingBookmark />
+}
 
 </div>

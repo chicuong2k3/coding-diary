@@ -9,7 +9,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1b708014-c583-4fb8-acc0-ca5a6987b3e5" name="Changes" comment="" />
+    <list default="true" id="1b708014-c583-4fb8-acc0-ca5a6987b3e5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.generated/GeneratedContentIndex.cs" beforeDir="false" afterPath="$PROJECT_DIR$/.generated/GeneratedContentIndex.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.DocumentationWeb/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DocumentationWeb/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Components/SiteSearch.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Components/SiteSearch.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Layout/MainLayout.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Layout/MainLayout.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Layout/MainLayout.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Layout/MainLayout.razor.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/About.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/About.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-3.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Blog/blazor-auth-phan-4.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Blog/lap-trinh-mang-phan-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Blog/sample2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Blog/webhook.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pages/Sitemap.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Pages/Sitemap.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_Imports.razor" beforeDir="false" afterPath="$PROJECT_DIR$/_Imports.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wwwroot/css/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/wwwroot/css/app.css" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -152,6 +170,9 @@
       <workItem from="1768592404004" duration="51484000" />
       <workItem from="1768677426413" duration="209000" />
       <workItem from="1768677968711" duration="139000" />
+      <workItem from="1768678146599" duration="171000" />
+      <workItem from="1768733213206" duration="599000" />
+      <workItem from="1768743650903" duration="6082000" />
     </task>
     <task id="LOCAL-00001" summary="update workflow">
       <option name="closed" value="true" />
@@ -281,7 +302,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768678063778</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="update urls">
+      <option name="closed" value="true" />
+      <created>1768678250335</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1768678250335</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -302,7 +331,8 @@
     <MESSAGE value="update" />
     <MESSAGE value="update url" />
     <MESSAGE value="udpate tags" />
-    <option name="LAST_COMMIT_MESSAGE" value="udpate tags" />
+    <MESSAGE value="update urls" />
+    <option name="LAST_COMMIT_MESSAGE" value="update urls" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

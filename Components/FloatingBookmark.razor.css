@@ -1,0 +1,51 @@
+.floating-bookmark {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 50;
+}
+
+.floating-bookmark-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    color: var(--text-secondary);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+}
+
+.floating-bookmark-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    transform: scale(1.1);
+}
+
+.floating-bookmark-btn.bookmarked {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: #fff;
+}
+
+.floating-bookmark-btn.bookmarked:hover {
+    background: var(--accent-secondary);
+    border-color: var(--accent-secondary);
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .floating-bookmark {
+        bottom: 1rem;
+        right: 1rem;
+    }
+
+    .floating-bookmark-btn {
+        width: 44px;
+        height: 44px;
+    }
+}

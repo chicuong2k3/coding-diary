@@ -1,0 +1,118 @@
+@using Blake.Types
+@inject NavigationManager Navigation
+@implements IDisposable
+
+<div class="book-chapters-container">
+    @if (currentBook != null)
+    {
+        <h3 class="book-chapters-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+            @currentBook
+        </h3>
+        <a href="book/@GetBookSlug()" class="view-all-link">Xem tất cả chương →</a>
+        <div class="chapters-list">
+            @for (int i = 0; i < bookChapters.Count; i++)
+            {
+                var chapter = bookChapters[i];
+                var chapterNumber = i + 1;
+                var isActive = IsCurrentChapter(chapter);
+                <a href="@chapter.Slug.TrimStart('/')"
+                   class="chapter-item @(isActive ? "active" : "")">
+                    <span class="chapter-num">@chapterNumber</span>
+                    <span class="chapter-name" title="@chapter.Title">@TruncateText(chapter.Title, 35)</span>
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <h3 class="book-chapters-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+            Mục lục
+        </h3>
+        <p class="no-book-message">Không tìm thấy sách</p>
+    }
+
+    <BookmarkList />
+</div>
+
+@code {
+    private string? currentBook;
+    private List<PageModel> bookChapters = new();
+    private string currentPath = "";
+    private PageModel? currentPost;
+
+    protected override void OnInitialized()
+    {
+        Navigation.LocationChanged += OnLocationChanged;
+        UpdateCurrentChapter();
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        UpdateCurrentChapter();
+        StateHasChanged();
+    }
+
+    private void UpdateCurrentChapter()
+    {
+        var rawPath = Navigation.ToBaseRelativePath(Navigation.Uri).Split('?')[0].TrimEnd('/');
+        currentPath = "/" + rawPath;
+
+        var allPages = GeneratedContentIndex.GetPages()
+            .Where(p => !p.Draft)
+            .ToList();
+
+        currentPost = allPages.FirstOrDefault(p =>
+            NormalizePath(p.Slug).Equals(NormalizePath(currentPath), StringComparison.OrdinalIgnoreCase));
+
+        if (currentPost != null && currentPost.Tags.Any())
+        {
+            currentBook = currentPost.Tags.First();
+
+            bookChapters = allPages
+                .Where(p => p.Tags.Any(t => t.Equals(currentBook, StringComparison.OrdinalIgnoreCase)))
+                .OrderBy(p => p.Date)
+                .ToList();
+        }
+        else
+        {
+            currentBook = null;
+            bookChapters.Clear();
+        }
+    }
+
+    private string GetBookSlug()
+    {
+        return currentBook?.ToLower().Replace(" ", "-") ?? "";
+    }
+
+    private bool IsCurrentChapter(PageModel chapter)
+    {
+        if (currentPost == null) return false;
+        return chapter.Slug.Equals(currentPost.Slug, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private string NormalizePath(string path)
+    {
+        return path.Trim('/').ToLowerInvariant();
+    }
+
+    private string TruncateText(string text, int maxLength)
+    {
+        if (string.IsNullOrEmpty(text) || text.Length <= maxLength)
+            return text;
+        return text.Substring(0, maxLength).TrimEnd() + "...";
+    }
+
+    public void Dispose()
+    {
+        Navigation.LocationChanged -= OnLocationChanged;
+    }
+}

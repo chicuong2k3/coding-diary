@@ -1,0 +1,127 @@
+.chapter-navigation {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.chapter-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.other-books {
+    margin-bottom: 2rem;
+}
+
+.other-books h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 1rem 0;
+}
+
+.other-books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.other-book-card {
+    display: block;
+    padding: 1rem 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.other-book-card:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+}
+
+.other-book-card h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 0.25rem 0;
+}
+
+.other-book-card p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.prev-next-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.nav-link-prev,
+.nav-link-next {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.nav-link-prev:hover,
+.nav-link-next:hover {
+    border-color: var(--accent-primary);
+    background: var(--bg-hover);
+}
+
+.nav-link-prev {
+    align-items: flex-start;
+}
+
+.nav-link-next {
+    align-items: flex-end;
+    text-align: right;
+}
+
+.nav-label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.nav-title {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.nav-link-placeholder {
+    flex: 1;
+}
+
+@media (max-width: 640px) {
+    .prev-next-nav {
+        flex-direction: column;
+    }
+
+    .nav-link-next {
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .other-books-grid {
+        grid-template-columns: 1fr;
+    }
+}

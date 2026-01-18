@@ -1,0 +1,127 @@
+@inject NavigationManager Navigation
+
+@if (CurrentChapter != null)
+{
+    <div class="chapter-navigation">
+        @if (OtherBooks.Any())
+        {
+            <section class="other-books">
+                <h3>Sách khác</h3>
+                <div class="other-books-grid">
+                    @foreach (var book in OtherBooks.Take(3))
+                    {
+                        <a href="book/@book.Slug" class="other-book-card">
+                            <h4>@book.Name</h4>
+                            <p>@book.ChapterCount chương</p>
+                        </a>
+                    }
+                </div>
+            </section>
+        }
+
+        <nav class="prev-next-nav">
+            @if (PreviousChapter != null)
+            {
+                <a href="@PreviousChapter.Slug.TrimStart('/')" class="nav-link-prev">
+                    <span class="nav-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"/>
+                        </svg>
+                        Chương trước
+                    </span>
+                    <span class="nav-title">@TruncateText(PreviousChapter.Title, 50)</span>
+                </a>
+            }
+            else
+            {
+                <div class="nav-link-placeholder"></div>
+            }
+
+            @if (NextChapter != null)
+            {
+                <a href="@NextChapter.Slug.TrimStart('/')" class="nav-link-next">
+                    <span class="nav-label">
+                        Chương sau
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </span>
+                    <span class="nav-title">@TruncateText(NextChapter.Title, 50)</span>
+                </a>
+            }
+            else
+            {
+                <div class="nav-link-placeholder"></div>
+            }
+        </nav>
+    </div>
+}
+
+@code {
+    private PageModel? CurrentChapter { get; set; }
+    private PageModel? PreviousChapter { get; set; }
+    private PageModel? NextChapter { get; set; }
+    private List<BookSummary> OtherBooks { get; set; } = new();
+    private string CurrentBookName { get; set; } = "";
+
+    private record BookSummary(string Name, string Slug, int ChapterCount);
+
+    protected override void OnParametersSet()
+    {
+        var currentPath = "/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?')[0].TrimEnd('/');
+
+        var allPosts = GeneratedContentIndex.GetPages()
+            .Where(p => !p.Draft)
+            .ToList();
+
+        var currentIndex = allPosts.FindIndex(p =>
+            p.Slug.TrimEnd('/').Equals(currentPath, StringComparison.OrdinalIgnoreCase));
+
+        if (currentIndex >= 0)
+        {
+            CurrentChapter = allPosts[currentIndex];
+
+            if (CurrentChapter.Tags.Any())
+            {
+                var currentBook = CurrentChapter.Tags.First();
+                CurrentBookName = currentBook;
+
+                var bookChapters = allPosts
+                    .Where(p => p.Tags.Any(t => t.Equals(currentBook, StringComparison.OrdinalIgnoreCase)))
+                    .OrderBy(p => p.Date)
+                    .ToList();
+
+                var chapterIndex = bookChapters.FindIndex(p =>
+                    p.Slug.TrimEnd('/').Equals(currentPath, StringComparison.OrdinalIgnoreCase));
+
+                if (chapterIndex > 0)
+                {
+                    PreviousChapter = bookChapters[chapterIndex - 1];
+                }
+
+                if (chapterIndex < bookChapters.Count - 1)
+                {
+                    NextChapter = bookChapters[chapterIndex + 1];
+                }
+
+                OtherBooks = allPosts
+                    .Where(p => p.Tags.Any() && !p.Tags.First().Equals(currentBook, StringComparison.OrdinalIgnoreCase))
+                    .GroupBy(p => p.Tags.First(), StringComparer.OrdinalIgnoreCase)
+                    .Select(g => new BookSummary(
+                        g.Key,
+                        g.Key.ToLower().Replace(" ", "-"),
+                        g.Count()))
+                    .OrderByDescending(b => b.ChapterCount)
+                    .Take(3)
+                    .ToList();
+            }
+        }
+    }
+
+    private string TruncateText(string text, int maxLength)
+    {
+        if (string.IsNullOrEmpty(text) || text.Length <= maxLength)
+            return text;
+        return text.Substring(0, maxLength).TrimEnd() + "...";
+    }
+}

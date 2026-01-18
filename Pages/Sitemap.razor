@@ -12,60 +12,65 @@
         <h2>Trang chính</h2>
         <ul class="sitemap-list">
             <li><a href="">Trang chủ</a></li>
-            <li><a href="tags">Bài viết</a></li>
+            <li><a href="book">Thư viện sách</a></li>
             <li><a href="about">Giới thiệu</a></li>
             <li><a href="sitemap">Sitemap</a></li>
         </ul>
     </section>
 
     <section class="sitemap-section">
-        <h2>Bài viết (@allPosts.Count())</h2>
-        <ul class="sitemap-list">
-            @foreach (var post in allPosts)
-            {
-                <li>
-                    <a href="@post.Slug.TrimStart('/')">@post.Title</a>
-                    <span class="sitemap-date">@(((DateTime)post.Date!).ToString("dd/MM/yyyy"))</span>
-                </li>
-            }
-        </ul>
-    </section>
-
-    <section class="sitemap-section">
-        <h2>Chủ đề (@allTags.Count())</h2>
+        <h2>Sách (@allBooks.Count())</h2>
         <div class="sitemap-tags">
-            @foreach (var tag in allTags)
+            @foreach (var book in allBooks)
             {
-                <a href="tags?t=@Uri.EscapeDataString(tag.Name)" class="sitemap-tag">
-                    #@tag.Name <span>(@tag.Count)</span>
+                <a href="book/@book.Slug" class="sitemap-tag">
+                    @book.Name <span>(@book.Count chương)</span>
                 </a>
             }
         </div>
     </section>
+
+    <section class="sitemap-section">
+        <h2>Tất cả chương (@allChapters.Count())</h2>
+        <ul class="sitemap-list">
+            @foreach (var chapter in allChapters)
+            {
+                <li>
+                    <a href="@chapter.Slug.TrimStart('/')">@chapter.Title</a>
+                    <span class="sitemap-date">@(((DateTime)chapter.Date!).ToString("dd/MM/yyyy"))</span>
+                </li>
+            }
+        </ul>
+    </section>
 </div>
 
 @code {
-    private IEnumerable<PageModel> allPosts = Enumerable.Empty<PageModel>();
-    private List<TagInfo> allTags = new();
+    private IEnumerable<PageModel> allChapters = Enumerable.Empty<PageModel>();
+    private List<BookInfo> allBooks = new();
 
     protected override void OnInitialized()
     {
-        allPosts = GeneratedContentIndex.GetPages()
+        allChapters = GeneratedContentIndex.GetPages()
             .Where(p => !p.Draft)
             .OrderByDescending(p => p.Date);
 
-        allTags = allPosts
-            .SelectMany(p => p.Tags)
-            .GroupBy(t => t, StringComparer.OrdinalIgnoreCase)
-            .Select(g => new TagInfo { Name = g.First(), Count = g.Count() })
-            .OrderByDescending(t => t.Count)
-            .ThenBy(t => t.Name)
+        allBooks = allChapters
+            .Where(p => p.Tags.Any())
+            .GroupBy(p => p.Tags.First(), StringComparer.OrdinalIgnoreCase)
+            .Select(g => new BookInfo {
+                Name = g.Key,
+                Slug = g.Key.ToLower().Replace(" ", "-"),
+                Count = g.Count()
+            })
+            .OrderByDescending(b => b.Count)
+            .ThenBy(b => b.Name)
             .ToList();
     }
 
-    private class TagInfo
+    private class BookInfo
     {
         public string Name { get; set; } = "";
+        public string Slug { get; set; } = "";
         public int Count { get; set; }
     }
 }

@@ -1,0 +1,145 @@
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+@inject BookmarkService BookmarkService
+@implements IDisposable
+
+@if (currentChapter != null)
+{
+    <div class="floating-bookmark">
+        <button class="floating-bookmark-btn @(isBookmarked ? "bookmarked" : "")"
+                @onclick="ToggleBookmark"
+                title="@(isBookmarked ? "Bỏ đánh dấu chương này" : "Đánh dấu chương này (lưu vị trí đọc)")">
+            @if (isBookmarked)
+            {
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                </svg>
+            }
+            else
+            {
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                </svg>
+            }
+        </button>
+    </div>
+}
+
+@code {
+    private PageModel? currentChapter;
+    private string currentBookName = "";
+    private bool isBookmarked = false;
+
+    protected override void OnInitialized()
+    {
+        Navigation.LocationChanged += OnLocationChanged;
+        BookmarkService.OnBookmarksChanged += OnBookmarksChanged;
+        UpdateCurrentChapter();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await BookmarkService.InitializeAsync();
+            CheckBookmarkStatus();
+            await TrackReadingProgress();
+            StateHasChanged();
+        }
+    }
+
+    private async Task TrackReadingProgress()
+    {
+        if (currentChapter == null || string.IsNullOrEmpty(currentBookName)) return;
+
+        try
+        {
+            var bookSlug = currentBookName.ToLower().Replace(" ", "-");
+            var storageKey = $"reading_progress_{bookSlug}";
+
+            var data = await JS.InvokeAsync<string>("localStorage.getItem", storageKey);
+            var readChapters = string.IsNullOrEmpty(data)
+                ? new HashSet<string>()
+                : System.Text.Json.JsonSerializer.Deserialize<HashSet<string>>(data) ?? new();
+
+            if (!readChapters.Contains(currentChapter.Slug))
+            {
+                readChapters.Add(currentChapter.Slug);
+                var json = System.Text.Json.JsonSerializer.Serialize(readChapters);
+                await JS.InvokeVoidAsync("localStorage.setItem", storageKey, json);
+            }
+        }
+        catch
+        {
+            // Ignore
+        }
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        UpdateCurrentChapter();
+        CheckBookmarkStatus();
+        StateHasChanged();
+    }
+
+    private void OnBookmarksChanged()
+    {
+        CheckBookmarkStatus();
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void UpdateCurrentChapter()
+    {
+        var rawPath = Navigation.ToBaseRelativePath(Navigation.Uri).Split('?')[0].TrimEnd('/');
+
+        var allPages = GeneratedContentIndex.GetPages()
+            .Where(p => !p.Draft)
+            .ToList();
+
+        currentChapter = allPages.FirstOrDefault(p =>
+            p.Slug.Trim('/').Equals(rawPath, StringComparison.OrdinalIgnoreCase));
+
+        if (currentChapter != null && currentChapter.Tags.Any())
+        {
+            currentBookName = currentChapter.Tags.First();
+        }
+        else
+        {
+            currentBookName = "";
+        }
+    }
+
+    private void CheckBookmarkStatus()
+    {
+        if (currentChapter == null)
+        {
+            isBookmarked = false;
+            return;
+        }
+
+        isBookmarked = BookmarkService.IsBookmarked(currentChapter.Slug);
+    }
+
+    private async Task ToggleBookmark()
+    {
+        if (currentChapter == null) return;
+
+        // Get current scroll position
+        var scrollPosition = await JS.InvokeAsync<double>("eval", "window.scrollY || window.pageYOffset");
+
+        await BookmarkService.ToggleBookmarkAsync(
+            currentChapter.Slug,
+            currentChapter.Title,
+            currentBookName,
+            scrollPosition
+        );
+
+        isBookmarked = BookmarkService.IsBookmarked(currentChapter.Slug);
+    }
+
+    public void Dispose()
+    {
+        Navigation.LocationChanged -= OnLocationChanged;
+        BookmarkService.OnBookmarksChanged -= OnBookmarksChanged;
+    }
+}

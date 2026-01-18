@@ -1,0 +1,94 @@
+.book-chapters-container {
+    padding: 0;
+}
+
+.book-chapters-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 0.5rem 0;
+    padding: 0 0.5rem;
+}
+
+.book-chapters-title svg {
+    color: var(--accent-primary);
+}
+
+.view-all-link {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--accent-primary);
+    text-decoration: none;
+    padding: 0 0.5rem;
+    margin-bottom: 0.75rem;
+    transition: opacity 0.2s;
+}
+
+.view-all-link:hover {
+    opacity: 0.8;
+}
+
+.chapters-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: calc(100vh - 250px);
+    overflow-y: auto;
+}
+
+.chapter-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+}
+
+.chapter-item:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+}
+
+.chapter-item.active {
+    color: var(--accent-primary);
+    background: var(--accent-bg);
+}
+
+.chapter-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-hover);
+    border-radius: 4px;
+}
+
+.chapter-item.active .chapter-num {
+    color: var(--accent-primary);
+    background: rgba(236, 72, 153, 0.15);
+}
+
+.chapter-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.no-book-message {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    padding: 0.5rem;
+    text-align: center;
+}

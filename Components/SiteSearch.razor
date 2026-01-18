@@ -14,7 +14,7 @@
                    @oninput="OnSearchInput"
                    @onkeydown="OnKeyDown"
                    class="search-input"
-                   placeholder="Tìm bài viết..." />
+                   placeholder="Tìm chương, sách..." />
             <div class="search-kbd">
                 <kbd>ESC</kbd>
             </div>
@@ -31,23 +31,21 @@
                 @if (searchResults.Any())
                 {
                     <div class="search-results">
-                        <div class="results-label">Kết quả</div>
+                        <div class="results-label">Chương tìm thấy</div>
                         @foreach (var result in searchResults.Take(8))
                         {
                             <a href="@result.Url" class="search-result" @onclick="Close">
                                 <div class="result-icon">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                                        <polyline points="14 2 14 8 20 8"/>
-                                        <line x1="16" y1="13" x2="8" y2="13"/>
-                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                                     </svg>
                                 </div>
                                 <div class="result-content">
                                     <div class="result-title">@result.Title</div>
-                                    @if (!string.IsNullOrEmpty(result.Excerpt))
+                                    @if (result.Tags.Any())
                                     {
-                                        <div class="result-excerpt">@result.Excerpt</div>
+                                        <div class="result-book">@result.Tags.First()</div>
                                     }
                                 </div>
                                 <div class="result-arrow">
@@ -77,13 +75,13 @@
             else
             {
                 <div class="search-suggestions">
-                    <div class="suggestions-label">Chủ đề phổ biến</div>
+                    <div class="suggestions-label">Sách phổ biến</div>
                     <div class="tag-suggestions">
-                        @foreach (var tag in PopularTags.Take(6))
+                        @foreach (var book in PopularBooks.Take(6))
                         {
-                            <button class="tag-suggestion" @onclick="() => SearchByTag(tag)">
-                                #@tag
-                            </button>
+                            <a href="book/@book.Slug" class="tag-suggestion" @onclick="Close">
+                                @book.Name
+                            </a>
                         }
                     </div>
                 </div>
@@ -107,12 +105,13 @@
     private string searchTerm = string.Empty;
     private List<SearchResult> searchResults = new();
 
-    private IEnumerable<string> PopularTags => GeneratedContentIndex.GetPages()
-        .Where(p => !p.Draft)
-        .SelectMany(p => p.Tags)
-        .GroupBy(t => t, StringComparer.OrdinalIgnoreCase)
+    private record BookItem(string Name, string Slug, int Count);
+
+    private IEnumerable<BookItem> PopularBooks => GeneratedContentIndex.GetPages()
+        .Where(p => !p.Draft && p.Tags.Any())
+        .GroupBy(p => p.Tags.First(), StringComparer.OrdinalIgnoreCase)
         .OrderByDescending(g => g.Count())
-        .Select(g => g.Key);
+        .Select(g => new BookItem(g.Key, g.Key.ToLower().Replace(" ", "-"), g.Count()));
 
     protected override async Task OnParametersSetAsync()
     {
@@ -146,12 +145,6 @@
         }
 
         searchResults = SearchPages(searchTerm);
-    }
-
-    private void SearchByTag(string tag)
-    {
-        searchTerm = tag;
-        searchResults = SearchPages(tag);
     }
 
     private async Task OnKeyDown(KeyboardEventArgs e)

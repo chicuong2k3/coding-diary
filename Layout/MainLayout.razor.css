@@ -686,6 +686,105 @@ html { background: var(--bg-primary); }
     padding: 0.15rem 0;
 }
 
+/* Book Cards Grid */
+.books-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+}
+
+.book-card {
+    display: block;
+    text-decoration: none;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+.book-card:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.book-card-inner {
+    display: flex;
+    align-items: stretch;
+}
+
+.book-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: var(--accent-bg);
+    border-right: 1px solid var(--border-color);
+    color: var(--accent-primary);
+}
+
+.book-card-body {
+    flex: 1;
+    padding: 1.25rem 1.5rem;
+}
+
+.book-card-body h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 0.5rem 0;
+}
+
+.book-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.chapter-count {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent-primary);
+    background: var(--accent-bg);
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+}
+
+.latest-update {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.latest-chapter {
+    font-size: 0.85rem;
+    color: var(--text-tertiary);
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@media (max-width: 640px) {
+    .books-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .book-card-inner {
+        flex-direction: column;
+    }
+
+    .book-icon {
+        padding: 1rem;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+}
+
 /* Home Footer */
 .home-footer {
     background: var(--bg-secondary);

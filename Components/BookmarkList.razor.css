@@ -1,0 +1,130 @@
+.bookmark-list-container {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.bookmark-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    padding: 0 0.5rem;
+}
+
+.bookmark-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.bookmark-title svg {
+    color: var(--accent-primary);
+}
+
+.view-all-bookmarks {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: var(--text-muted);
+    border-radius: 4px;
+    transition: all 0.15s;
+}
+
+.view-all-bookmarks:hover {
+    color: var(--accent-primary);
+    background: var(--bg-hover);
+}
+
+.view-more-link {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--accent-primary);
+    text-decoration: none;
+    padding: 0.5rem;
+    text-align: center;
+    transition: opacity 0.15s;
+}
+
+.view-more-link:hover {
+    opacity: 0.8;
+}
+
+.bookmark-items {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bookmark-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: transparent;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.bookmark-item:hover {
+    background: var(--bg-hover);
+}
+
+.bookmark-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.bookmark-chapter-title {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bookmark-book-name {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.bookmark-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--text-muted);
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.15s ease;
+}
+
+.bookmark-item:hover .bookmark-remove {
+    opacity: 1;
+}
+
+.bookmark-remove:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.no-bookmarks {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding: 0.5rem;
+    text-align: center;
+}
