@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Code Magic</title>
     
-    <link href="_framework/dotnet.141b3b6ysp.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-YamICFtTxocUTUQQ/bRkG3b611Ia5ZBl5Vv8Dt6EqqY="/>
+    <link href="_framework/dotnet.43f4ggb8tk.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-oNrT/Nlp8y7kbH1EtdEF97EI3RXtDx9a6VTVKkvQ/6s="/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
@@ -17,7 +17,7 @@
     <script type="importmap">{
   "imports": {
     "./_framework/blazor.webassembly.js": "./_framework/blazor.webassembly.66stpp682q.js",
-    "./_framework/dotnet.js": "./_framework/dotnet.141b3b6ysp.js",
+    "./_framework/dotnet.js": "./_framework/dotnet.43f4ggb8tk.js",
     "./_framework/dotnet.native.js": "./_framework/dotnet.native.reu89doxsd.js",
     "./_framework/dotnet.runtime.js": "./_framework/dotnet.runtime.2tx45g8lli.js"
   },
@@ -25,8 +25,8 @@
   "integrity": {
     "./_framework/blazor.webassembly.66stpp682q.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
     "./_framework/blazor.webassembly.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
-    "./_framework/dotnet.141b3b6ysp.js": "sha256-YamICFtTxocUTUQQ/bRkG3b611Ia5ZBl5Vv8Dt6EqqY=",
-    "./_framework/dotnet.js": "sha256-YamICFtTxocUTUQQ/bRkG3b611Ia5ZBl5Vv8Dt6EqqY=",
+    "./_framework/dotnet.43f4ggb8tk.js": "sha256-oNrT/Nlp8y7kbH1EtdEF97EI3RXtDx9a6VTVKkvQ/6s=",
+    "./_framework/dotnet.js": "sha256-oNrT/Nlp8y7kbH1EtdEF97EI3RXtDx9a6VTVKkvQ/6s=",
     "./_framework/dotnet.native.js": "sha256-8whnkX/V6lwINjqCls0XU2bDmTzFJEuRSW6aJT5w0EQ=",
     "./_framework/dotnet.native.reu89doxsd.js": "sha256-8whnkX/V6lwINjqCls0XU2bDmTzFJEuRSW6aJT5w0EQ=",
     "./_framework/dotnet.runtime.2tx45g8lli.js": "sha256-2lZh9yO0fnzm3Xt7yV+Kox3DH3nK7L8hDhm84VT1xco=",
@@ -106,30 +106,199 @@
     <script type="text/javascript" id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
     </script>
 
+    <!-- Polyfills + Mermaid dual-loader (module + nomodule fallback) -->
+    <script>
+        // Polyfills for older Safari (Element.matches / Element.closest)
+        if (!Element.prototype.matches) {
+            Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector || function(s) {
+                var matches = (this.document || this.ownerDocument).querySelectorAll(s), i = matches.length;
+                while (--i >= 0 && matches.item(i) !== this) {}
+                return i > -1;
+            };
+        }
+        if (!Element.prototype.closest) {
+            Element.prototype.closest = function(s) {
+                var el = this;
+                do {
+                    if (el.matches && el.matches(s)) return el;
+                    el = el.parentElement || el.parentNode;
+                } while (el !== null && el.nodeType === 1);
+                return null;
+            };
+        }
+
+        // Mermaid (ES module) for modern browsers
+    </script>
+
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        // Keep configuration minimal and safe for older engines
         mermaid.initialize({ startOnLoad: false, theme: 'dark' });
 
+        window._mermaid = mermaid;
         window.renderMermaid = async function(srcId, containerId) {
             const srcEl = document.getElementById(srcId);
             const containerEl = document.getElementById(containerId);
             if (!srcEl || !containerEl) return;
 
-            const definition = srcEl.innerText.trim();
+            // Use textContent for maximum compatibility
+            const definition = srcEl.textContent.trim();
             if (!definition) return;
 
             try {
-                const { svg } = await mermaid.render('mermaid-' + Date.now(), definition);
-                containerEl.innerHTML = svg;
+                // mermaid.render may return { svg } or a string depending on build
+                const maybe = await mermaid.render('mermaid-' + Date.now(), definition);
+                if (maybe && maybe.svg) containerEl.innerHTML = maybe.svg;
+                else if (typeof maybe === 'string') containerEl.innerHTML = maybe;
+                else {
+                    containerEl.innerHTML = '<pre style="color:red;">Mermaid: unexpected render result</pre>';
+                    if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Mermaid unexpected render result', String(maybe));
+                }
             } catch (e) {
-                containerEl.innerHTML = '<pre style="color:red;">Mermaid Error: ' + e.message + '</pre>';
+                containerEl.innerHTML = '<pre style="color:red;">Mermaid Error: ' + (e && e.message || e) + '</pre>';
+                if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Mermaid render failed', e && e.message ? e.message : String(e));
             }
         };
+    </script>
+
+    <!-- UMD/nombre module fallback for older Safari that doesn't fully support modules -->
+    <script nomodule="" src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <script nomodule="">
+        if (window.mermaid) {
+            window._mermaid = window.mermaid;
+            window._mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+
+            window.renderMermaid = function(srcId, containerId) {
+                const srcEl = document.getElementById(srcId);
+                const containerEl = document.getElementById(containerId);
+                if (!srcEl || !containerEl) return;
+                const definition = srcEl.textContent.trim();
+                if (!definition) return;
+
+                try {
+                    // Some UMD builds return svg string or { svg }, others use callback
+                    try {
+                        const result = window._mermaid.render('mermaid-' + Date.now(), definition);
+                        if (result && result.svg) containerEl.innerHTML = result.svg;
+                        else if (typeof result === 'string') containerEl.innerHTML = result;
+                        else {
+                            containerEl.innerHTML = '<pre style="color:red;">Mermaid: unexpected render result</pre>';
+                            if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Mermaid unexpected render result', String(result));
+                        }
+                    } catch (err) {
+                        // Try callback signature
+                        window._mermaid.render('mermaid-' + Date.now(), definition, function(svgCode) {
+                            containerEl.innerHTML = svgCode;
+                        });
+                    }
+                } catch (e) {
+                    containerEl.innerHTML = '<pre style="color:red;">Mermaid Error: ' + (e && e.message || e) + '</pre>';
+                    if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Mermaid render failed', e && e.message ? e.message : String(e));
+                }
+            };
+        }
     </script>
 
     <script src="_framework/blazor.webassembly.66stpp682q.js"></script>
 
     <script>
+        // Small helper: detect old Safari / iOS (<=15)
+        window.isOldSafari = function() {
+            try {
+                var ua = navigator.userAgent || '';
+                // iOS Safari detection: look for 'OS 12_...' or similar
+                var iosMatch = ua.match(/OS (\d+)_/i);
+                if (iosMatch && iosMatch[1]) {
+                    var iosVer = parseInt(iosMatch[1], 10);
+                    return iosVer <= 15;
+                }
+
+                // Desktop Safari: contains 'Safari' and 'Version/X' and not Chrome/Chromium/Edge
+                if (/Safari/.test(ua) && !/Chrome|Chromium|CrMo|CriOS|Edg|OPR|Android/.test(ua)) {
+                    var verMatch = ua.match(/Version\/(\d+)\./i);
+                    if (verMatch && verMatch[1]) {
+                        var ver = parseInt(verMatch[1], 10);
+                        return ver <= 15;
+                    }
+                }
+            } catch (e) {
+                console.warn('isOldSafari detection failed', e);
+            }
+            return false;
+        };
+
+        // Display a friendly error UI for browser-caused problems (visible on the page)
+        window.showBrowserError = function(message, details) {
+            try {
+                var el = document.getElementById('blazor-error-ui');
+                if (!el) {
+                    el = document.createElement('div');
+                    el.id = 'blazor-error-ui';
+                    document.body.appendChild(el);
+                }
+
+                // Basic styling so it's visible even if site styles hide it
+                el.style.display = 'block';
+                el.style.position = 'fixed';
+                el.style.left = '8px';
+                el.style.right = '8px';
+                el.style.bottom = '8px';
+                el.style.zIndex = 99999;
+                el.style.background = '#fff6f6';
+                el.style.border = '1px solid #f5c2c2';
+                el.style.color = '#661414';
+                el.style.padding = '12px';
+                el.style.borderRadius = '8px';
+                el.style.boxShadow = '0 6px 18px rgba(0,0,0,0.08)';
+                el.style.maxHeight = '40vh';
+                el.style.overflow = 'auto';
+
+                var uaNote = window.isOldSafari && window.isOldSafari() ? '<div style="font-size:12px;color:#8a0000;margin-bottom:8px">Warning: Browser looks like an older Safari/iOS — some features may not work correctly.</div>' : '';
+
+                var detailsHtml = details ? ('<pre style="white-space:pre-wrap;margin:6px 0;padding:8px;background:#fff;border-radius:6px;border:1px solid #fee;max-height:200px;overflow:auto;">' + escapeHtml(details) + '</pre>') : '';
+
+                el.innerHTML = '<strong>Browser error detected</strong>' + uaNote + '<div style="margin-top:6px;word-break:break-word;">' + escapeHtml(message || 'Unknown browser error') + '</div>' + detailsHtml + '<div style="margin-top:8px;text-align:right;"><button id="blazor-error-dismiss" style="background:#fff;color:#661414;border:1px solid #f5c2c2;padding:6px 10px;border-radius:6px;cursor:pointer">Dismiss</button></div>';
+
+                var btn = document.getElementById('blazor-error-dismiss');
+                if (btn) btn.addEventListener('click', function() { el.style.display = 'none'; });
+
+                // helper to escape HTML to avoid breaking page
+                function escapeHtml(str) {
+                    if (!str) return '';
+                    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                }
+
+                // Also log to console for diagnostics
+                console.error('Browser error shown to user:', message, details);
+            } catch (e) {
+                console.error('showBrowserError failed', e);
+            }
+        };
+
+        // Global handlers: only surface UI error if we're on older Safari (user requested)
+        window.addEventListener('error', function(evt) {
+            try {
+                if (window.isOldSafari && window.isOldSafari()) {
+                    var details = (evt.filename ? evt.filename + ':' + evt.lineno + ':' + evt.colno + '\n' : '') + (evt.error && evt.error.stack ? evt.error.stack : '');
+                    window.showBrowserError(evt.message || 'Script error', details);
+                }
+            } catch (e) {
+                // ignore
+            }
+        });
+
+        window.addEventListener('unhandledrejection', function(evt) {
+            try {
+                if (window.isOldSafari && window.isOldSafari()) {
+                    var reason = evt.reason && (evt.reason.message || evt.reason) ? (evt.reason.message || String(evt.reason)) : 'Unhandled rejection';
+                    var stack = evt.reason && evt.reason.stack ? evt.reason.stack : '';
+                    window.showBrowserError('Unhandled promise rejection: ' + reason, stack);
+                }
+            } catch (e) {
+                // ignore
+            }
+        });
+
         // Smooth scroll to heading
         window.scrollToHeading = function(id) {
             const element = document.getElementById(id);
@@ -229,22 +398,67 @@
             setTimeout(scrollHandler, 200);
         };
 
-        // Copy code to clipboard
+        // Copy code to clipboard (with execCommand fallback for older Safari)
         window.copyCode = async function(button) {
-            const codeBlock = button.closest('.code-block');
-            const code = codeBlock.querySelector('code');
-            const text = code.innerText;
+            if (!button) return;
+            const codeBlock = button.closest && button.closest('.code-block');
+            if (!codeBlock) return;
+            const codeEl = codeBlock.querySelector('code');
+            const text = codeEl ? (codeEl.textContent || codeEl.innerText || '') : '';
+            if (!text) return;
 
+            // Try navigator.clipboard first
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    showCopied(button);
+                    return;
+                } catch (e) {
+                    // fall through to fallback
+                    if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Clipboard API failed', e && e.message ? e.message : String(e));
+                }
+            }
+
+            // Fallback using textarea + execCommand
             try {
-                await navigator.clipboard.writeText(text);
-                button.classList.add('copied');
-                button.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
-                setTimeout(() => {
-                    button.classList.remove('copied');
-                    button.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
-                }, 2000);
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                // Make element readonly to avoid iOS virtual keyboard
+                ta.setAttribute('readonly', '');
+                ta.style.position = 'absolute';
+                ta.style.left = '-9999px';
+                // For iOS selection support
+                document.body.appendChild(ta);
+
+                const range = document.createRange();
+                range.selectNodeContents(ta);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+                ta.select();
+
+                const successful = document.execCommand('copy');
+                document.body.removeChild(ta);
+
+                if (successful) {
+                    showCopied(button);
+                } else {
+                    throw new Error('execCommand failed');
+                }
             } catch (err) {
                 console.error('Failed to copy:', err);
+                if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Copy to clipboard failed', err && err.message ? err.message : String(err));
+            }
+
+            function showCopied(btn) {
+                if (!btn) return;
+                btn.classList.add('copied');
+                const prev = btn.innerHTML;
+                btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = prev;
+                }, 2000);
             }
         };
 
