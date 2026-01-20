@@ -9,11 +9,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1b708014-c583-4fb8-acc0-ca5a6987b3e5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Tools/SitemapGenerator/Program.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Tools/SitemapGenerator/SitemapGenerator.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy-pages.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy-pages.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DocumentationWeb.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/DocumentationWeb.csproj" afterDir="false" />
+    <list default="true" id="1b708014-c583-4fb8-acc0-ca5a6987b3e5" name="Changes" comment="fix: web not working on safari">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.DocumentationWeb/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DocumentationWeb/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wwwroot/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/wwwroot/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +24,7 @@
     </persistenceIdMap>
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="2" />
+    <option name="cachedIndexableFilesCount" value="1" />
   </component>
   <component name="Git.Settings">
     <option name="PUSH_AUTO_UPDATE" value="true" />
@@ -160,7 +158,8 @@
       <workItem from="1768678146599" duration="171000" />
       <workItem from="1768733213206" duration="599000" />
       <workItem from="1768743650903" duration="6119000" />
-      <workItem from="1768762858041" duration="715000" />
+      <workItem from="1768762858041" duration="1574000" />
+      <workItem from="1768943114110" duration="457000" />
     </task>
     <task id="LOCAL-00001" summary="update workflow">
       <option name="closed" value="true" />
@@ -322,7 +321,31 @@
       <option name="project" value="LOCAL" />
       <updated>1768762990688</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="update">
+      <option name="closed" value="true" />
+      <created>1768763584389</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1768763584389</updated>
+    </task>
+    <task id="LOCAL-00022" summary="yyyy">
+      <option name="closed" value="true" />
+      <created>1768763895530</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1768763895530</updated>
+    </task>
+    <task id="LOCAL-00023" summary="chab">
+      <option name="closed" value="true" />
+      <created>1768764215168</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1768764215168</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -340,14 +363,17 @@
     <MESSAGE value="remove simd" />
     <MESSAGE value="install wasmtools" />
     <MESSAGE value="test" />
-    <MESSAGE value="update" />
     <MESSAGE value="update url" />
     <MESSAGE value="udpate tags" />
     <MESSAGE value="update urls" />
     <MESSAGE value="new UI" />
     <MESSAGE value="remove files" />
     <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;docs/404.html&#10;#&#9;docs/DocumentationWeb.styles.css&#10;#&#9;docs/DocumentationWeb.styles.css.br&#10;#&#9;docs/DocumentationWeb.styles.css.gz&#10;#&#9;docs/_framework/DocumentationWeb.e9khge6vmo.wasm&#10;#&#9;docs/_framework/Microsoft.Extensions.DependencyInjection.Abstractions.d7s9dxzrd8.wasm&#10;#&#9;docs/_framework/System.Linq.skbbrxu8bi.wasm&#10;#&#9;docs/_framework/dotnet.bm3jex41ln.js&#10;#&#9;docs/_framework/dotnet.native.aae0yg3rrx.wasm&#10;#&#9;docs/_framework/dotnet.native.aae0yg3rrx.wasm.gz&#10;#&#9;docs/coding-diary/about/index.html&#10;#&#9;docs/coding-diary/about/index.html.br&#10;#&#9;docs/coding-diary/about/index.html.gz&#10;#&#9;docs/coding-diary/book/blazor/index.html&#10;#&#9;docs/coding-diary/book/index.html&#10;#&#9;docs/coding-diary/book/machine-learning/index.html&#10;#&#9;docs/coding-diary/book/non-technical/index.html&#10;#&#9;docs/coding-diary/index.html&#10;#&#9;docs/coding-diary/index.html.br&#10;#&#9;docs/coding-diary/index.html.gz&#10;#&#9;docs/coding-diary/sitemap/index.html&#10;#&#9;docs/coding-diary/sitemap/index.html.br&#10;#&#9;docs/coding-diary/sitemap/index.html.gz&#10;#&#9;docs/css/app.css&#10;#&#9;docs/css/app.css.br&#10;#&#9;docs/css/app.css.gz&#10;#&#9;docs/index.html&#10;#&#9;docs/index.html.br&#10;#&#9;docs/index.html.gz" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;docs/404.html&#10;#&#9;docs/DocumentationWeb.styles.css&#10;#&#9;docs/DocumentationWeb.styles.css.br&#10;#&#9;docs/DocumentationWeb.styles.css.gz&#10;#&#9;docs/_framework/DocumentationWeb.e9khge6vmo.wasm&#10;#&#9;docs/_framework/Microsoft.Extensions.DependencyInjection.Abstractions.d7s9dxzrd8.wasm&#10;#&#9;docs/_framework/System.Linq.skbbrxu8bi.wasm&#10;#&#9;docs/_framework/dotnet.bm3jex41ln.js&#10;#&#9;docs/_framework/dotnet.native.aae0yg3rrx.wasm&#10;#&#9;docs/_framework/dotnet.native.aae0yg3rrx.wasm.gz&#10;#&#9;docs/coding-diary/about/index.html&#10;#&#9;docs/coding-diary/about/index.html.br&#10;#&#9;docs/coding-diary/about/index.html.gz&#10;#&#9;docs/coding-diary/book/blazor/index.html&#10;#&#9;docs/coding-diary/book/index.html&#10;#&#9;docs/coding-diary/book/machine-learning/index.html&#10;#&#9;docs/coding-diary/book/non-technical/index.html&#10;#&#9;docs/coding-diary/index.html&#10;#&#9;docs/coding-diary/index.html.br&#10;#&#9;docs/coding-diary/index.html.gz&#10;#&#9;docs/coding-diary/sitemap/index.html&#10;#&#9;docs/coding-diary/sitemap/index.html.br&#10;#&#9;docs/coding-diary/sitemap/index.html.gz&#10;#&#9;docs/css/app.css&#10;#&#9;docs/css/app.css.br&#10;#&#9;docs/css/app.css.gz&#10;#&#9;docs/index.html&#10;#&#9;docs/index.html.br&#10;#&#9;docs/index.html.gz" />
+    <MESSAGE value="update" />
+    <MESSAGE value="yyyy" />
+    <MESSAGE value="chab" />
+    <MESSAGE value="fix: web not working on safari" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: web not working on safari" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
