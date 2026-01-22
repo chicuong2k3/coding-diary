@@ -1,186 +1,186 @@
 name: Build and deploy to GitHub Pages
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 permissions:
-  contents: write
-  pages: write
-  id-token: write
+    contents: write
+    pages: write
+    id-token: write
 
 jobs:
-  build_and_deploy:
-    runs-on: ubuntu-latest
+    build_and_deploy:
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0       # needed so we can push back to main
-          persist-credentials: true
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0 # needed so we can push back to main
+                  persist-credentials: true
 
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0.x'
+            - name: Setup .NET SDK
+              uses: actions/setup-dotnet@v4
+              with:
+                  dotnet-version: "10.0.x"
 
-      - name: Install wasm-tools workload
-        run: dotnet workload install wasm-tools
+            - name: Install wasm-tools workload
+              run: dotnet workload install wasm-tools
 
-      - name: Restore & publish
-        run: |
-          dotnet restore DocumentationWeb.sln
-          dotnet publish DocumentationWeb.csproj -c Release -o publish
+            - name: Restore & publish
+              run: |
+                  dotnet restore DocumentationWeb.sln
+                  dotnet publish DocumentationWeb.csproj -c Release -o publish
 
-      - name: Compute base href (project vs user site)
-        id: basehref
-        run: |
-          REPO_NAME="${{ github.event.repository.name }}"
-          OWNER="${{ github.repository_owner }}"
-          if [ "$REPO_NAME" = "${OWNER}.github.io" ]; then
-            echo "BASE_HREF=/"
-            echo "BASE_HREF=/" >> $GITHUB_OUTPUT
-          else
-            BASE="/${REPO_NAME}/"
-            echo "BASE_HREF=${BASE}"
-            echo "BASE_HREF=${BASE}" >> $GITHUB_OUTPUT
-          fi
+            - name: Compute base href (project vs user site)
+              id: basehref
+              run: |
+                  REPO_NAME="${{ github.event.repository.name }}"
+                  OWNER="${{ github.repository_owner }}"
+                  if [ "$REPO_NAME" = "${OWNER}.github.io" ]; then
+                    echo "BASE_HREF=/"
+                    echo "BASE_HREF=/" >> $GITHUB_OUTPUT
+                  else
+                    BASE="/${REPO_NAME}/"
+                    echo "BASE_HREF=${BASE}"
+                    echo "BASE_HREF=${BASE}" >> $GITHUB_OUTPUT
+                  fi
 
-      - name: Patch index.html base href
-        run: |
-          set -euo pipefail
-          export BASE_HREF="${{ steps.basehref.outputs.BASE_HREF }}"
-          INDEX="publish/wwwroot/index.html"
+            - name: Patch index.html base href
+              run: |
+                  set -euo pipefail
+                  export BASE_HREF="${{ steps.basehref.outputs.BASE_HREF }}"
+                  INDEX="publish/wwwroot/index.html"
 
-          if [ -f "$INDEX" ]; then
-            echo "=== index.html before patch (head snippet) ==="
-            sed -n '1,120p' "$INDEX" || true
+                  if [ -f "$INDEX" ]; then
+                    echo "=== index.html before patch (head snippet) ==="
+                    sed -n '1,120p' "$INDEX" || true
 
-            # Backup for safety and investigation
-            cp "$INDEX" "$INDEX.bak.$(date +%s)"
-            ls -l "$INDEX" "$INDEX.bak."* || true
+                    # Backup for safety and investigation
+                    cp "$INDEX" "$INDEX.bak.$(date +%s)"
+                    ls -l "$INDEX" "$INDEX.bak."* || true
 
-            # Robust perl: slurp file, remove any existing <base ...> tag (case-insensitive),
-            # then insert a single <base href="$BASE_HREF" /> immediately after the opening <head> tag.
-            perl -0777 -i -pe '
-              s{(<head\b[^>]*>)(.*?)(</head>)}{
-                my $open=$1; my $inner=$2; my $close=$3;
-                $inner =~ s{<base\b[^>]*>}{}isi;
-                $open . "\n  <base href=\"$ENV{BASE_HREF}\" />" . $inner . $close
-              }sgei' "$INDEX"
+                    # Robust perl: slurp file, remove any existing <base ...> tag (case-insensitive),
+                    # then insert a single <base href="$BASE_HREF" /> immediately after the opening <head> tag.
+                    perl -0777 -i -pe '
+                      s{(<head\b[^>]*>)(.*?)(</head>)}{
+                        my $open=$1; my $inner=$2; my $close=$3;
+                        $inner =~ s{<base\b[^>]*>}{}isi;
+                        $open . "\n  <base href=\"$ENV{BASE_HREF}\" />" . $inner . $close
+                      }sgei' "$INDEX"
 
-            echo "=== index.html after patch (head snippet) ==="
-            sed -n '1,120p' "$INDEX" || true
+                    echo "=== index.html after patch (head snippet) ==="
+                    sed -n '1,120p' "$INDEX" || true
 
-            # Ensure the base tag is present; fail early if not
-            if ! grep -qi '<base' "$INDEX"; then
-              echo "::error::Base tag missing after patch"
-              exit 1
-            fi
-          else
-            echo "::warning::Index file not found at $INDEX"
-            exit 1
-          fi
+                    # Ensure the base tag is present; fail early if not
+                    if ! grep -qi '<base' "$INDEX"; then
+                      echo "::error::Base tag missing after patch"
+                      exit 1
+                    fi
+                  else
+                    echo "::warning::Index file not found at $INDEX"
+                    exit 1
+                  fi
 
-      - name: Create SPA 404 fallback
-        # Copy the patched index.html to 404.html so GitHub Pages serves the SPA for deep links.
-        run: |
-          set -euo pipefail
-          INDEX="publish/wwwroot/index.html"
-          FALLBACK="publish/wwwroot/404.html"
-          if [ -f "$INDEX" ]; then
-            cp "$INDEX" "$FALLBACK"
-            echo "Created $FALLBACK"
-          else
-            echo "::warning::Index file not found; cannot create 404.html"
-          fi
+            - name: Create SPA 404 fallback
+              # Copy the patched index.html to 404.html so GitHub Pages serves the SPA for deep links.
+              run: |
+                  set -euo pipefail
+                  INDEX="publish/wwwroot/index.html"
+                  FALLBACK="publish/wwwroot/404.html"
+                  if [ -f "$INDEX" ]; then
+                    cp "$INDEX" "$FALLBACK"
+                    echo "Created $FALLBACK"
+                  else
+                    echo "::warning::Index file not found; cannot create 404.html"
+                  fi
 
-      - name: Ensure .nojekyll (prevent Jekyll from ignoring _framework)
-        run: |
-          mkdir -p publish/wwwroot
-          touch publish/wwwroot/.nojekyll
+            - name: Ensure .nojekyll (prevent Jekyll from ignoring _framework)
+              run: |
+                  mkdir -p publish/wwwroot
+                  touch publish/wwwroot/.nojekyll
 
-      - name: Show index.html head (debug)
-        run: |
-          echo "--- index.html head ---"
-          sed -n '1,120p' publish/wwwroot/index.html || true
+            - name: Show index.html head (debug)
+              run: |
+                  echo "--- index.html head ---"
+                  sed -n '1,120p' publish/wwwroot/index.html || true
 
-      - name: Show publish contents
-        run: |
-          ls -la publish/wwwroot | sed -n '1,200p'
+            - name: Show publish contents
+              run: |
+                  ls -la publish/wwwroot | sed -n '1,200p'
 
-      - name: Verify SPA fallback
-        # Ensure publish/wwwroot/404.html exists and has the <base> tag so deep links work on GitHub Pages
-        run: |
-          set -euo pipefail
-          FALLBACK="publish/wwwroot/404.html"
-          if [ ! -f "$FALLBACK" ]; then
-            echo "::error::Missing 404.html fallback"
-            ls -la publish/wwwroot | sed -n '1,200p'
-            exit 1
-          fi
-          if ! grep -qi '<base' "$FALLBACK"; then
-            echo "::error::404.html missing <base> tag"
-            sed -n '1,120p' "$FALLBACK" || true
-            exit 1
-          fi
-          echo "404.html present and contains base tag."
+            - name: Verify SPA fallback
+              # Ensure publish/wwwroot/404.html exists and has the <base> tag so deep links work on GitHub Pages
+              run: |
+                  set -euo pipefail
+                  FALLBACK="publish/wwwroot/404.html"
+                  if [ ! -f "$FALLBACK" ]; then
+                    echo "::error::Missing 404.html fallback"
+                    ls -la publish/wwwroot | sed -n '1,200p'
+                    exit 1
+                  fi
+                  if ! grep -qi '<base' "$FALLBACK"; then
+                    echo "::error::404.html missing <base> tag"
+                    sed -n '1,120p' "$FALLBACK" || true
+                    exit 1
+                  fi
+                  echo "404.html present and contains base tag."
 
-      - name: Smoke-check built assets
-        run: |
-          echo "Checking key files exist in publish/wwwroot..."
-          set -euo pipefail
-          # Use wildcard presence checks because hashes can change
-          if ! ls publish/wwwroot/_framework/blazor.webassembly*.js 1>/dev/null 2>&1; then
-            echo "::error::Missing blazor.webassembly.*.js"
-            ls -la publish/wwwroot/_framework | sed -n '1,200p'
-            exit 1
-          fi
-          if ! ls publish/wwwroot/_content/Blazicons/Blazicons.*.bundle.scp.css 1>/dev/null 2>&1; then
-            echo "::error::Missing Blazicons CSS"
-            ls -la publish/wwwroot/_content/Blazicons | sed -n '1,200p'
-            exit 1
-          fi
-          echo "Smoke-check passed: key files present."
+            - name: Smoke-check built assets
+              run: |
+                  echo "Checking key files exist in publish/wwwroot..."
+                  set -euo pipefail
+                  # Use wildcard presence checks because hashes can change
+                  if ! ls publish/wwwroot/_framework/blazor.webassembly*.js 1>/dev/null 2>&1; then
+                    echo "::error::Missing blazor.webassembly.*.js"
+                    ls -la publish/wwwroot/_framework | sed -n '1,200p'
+                    exit 1
+                  fi
+                  if ! ls publish/wwwroot/_content/Blazicons/Blazicons.*.bundle.scp.css 1>/dev/null 2>&1; then
+                    echo "::error::Missing Blazicons CSS"
+                    ls -la publish/wwwroot/_content/Blazicons | sed -n '1,200p'
+                    exit 1
+                  fi
+                  echo "Smoke-check passed: key files present."
 
-      - name: Generate dynamic sitemap.xml
-        run: |
-          dotnet run --project Tools/SitemapGenerator/SitemapGenerator.csproj --output publish/wwwroot/sitemap.xml
-        # If you use a different script or tool, adjust the command above accordingly
+            # sitemap- name: Generate dynamic sitemap.xml
+            #   run: |
+            #     dotnet run --project Tools/SitemapGenerator/SitemapGenerator.csproj --output publish/wwwroot/sitemap.xml
+            #   # If you use a different script or tool, adjust the command above accordingly
 
-      - name: Deploy to main/docs (publish folder)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          echo "Preparing docs/ for deployment on branch 'main'"
+            - name: Deploy to main/docs (publish folder)
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  set -euo pipefail
+                  echo "Preparing docs/ for deployment on branch 'main'"
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Ensure we have the latest main
-          git fetch origin main
-          git checkout main
+                  # Ensure we have the latest main
+                  git fetch origin main
+                  git checkout main
 
-          # Replace docs/ with publish output
-          rm -rf docs || true
-          mkdir -p docs
-          cp -a publish/wwwroot/. docs/
+                  # Replace docs/ with publish output
+                  rm -rf docs || true
+                  mkdir -p docs
+                  cp -a publish/wwwroot/. docs/
 
-          # ensure .nojekyll exists at site root
-          touch docs/.nojekyll
+                  # ensure .nojekyll exists at site root
+                  touch docs/.nojekyll
 
-          # Stage and commit changes
-          git add -A docs
+                  # Stage and commit changes
+                  git add -A docs
 
-          if git diff --cached --quiet; then
-            echo "No changes to deploy"
-          else
-            git commit -m "Deploy: update docs from CI (publish/wwwroot)"
-            git push origin main
-          fi
+                  if git diff --cached --quiet; then
+                    echo "No changes to deploy"
+                  else
+                    git commit -m "Deploy: update docs from CI (publish/wwwroot)"
+                    git push origin main
+                  fi
 
 # Notes:
 # - This workflow writes deployment output into the `docs/` folder on `main` so GitHub Pages
