@@ -6,19 +6,18 @@
 @if (currentChapter != null)
 {
     <div class="floating-bookmark">
-        <button class="floating-bookmark-btn @(isBookmarked ? "bookmarked" : "")"
-                @onclick="ToggleBookmark"
-                title="@(isBookmarked ? "Bỏ đánh dấu chương này" : "Đánh dấu chương này (lưu vị trí đọc)")">
+        <button class="floating-bookmark-btn @(isBookmarked ? "bookmarked" : "")" @onclick="ToggleBookmark"
+            title="@(isBookmarked ? "Bỏ đánh dấu chương này" : "Đánh dấu chương này (lưu vị trí đọc)")">
             @if (isBookmarked)
             {
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                 </svg>
             }
             else
             {
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                 </svg>
             }
         </button>
@@ -59,8 +58,8 @@
 
             var data = await JS.InvokeAsync<string>("localStorage.getItem", storageKey);
             var readChapters = string.IsNullOrEmpty(data)
-                ? new HashSet<string>()
-                : System.Text.Json.JsonSerializer.Deserialize<HashSet<string>>(data) ?? new();
+            ? new HashSet<string>()
+            : System.Text.Json.JsonSerializer.Deserialize<HashSet<string>>(data) ?? new();
 
             if (!readChapters.Contains(currentChapter.Slug))
             {
@@ -93,11 +92,11 @@
         var rawPath = Navigation.ToBaseRelativePath(Navigation.Uri).Split('?')[0].TrimEnd('/');
 
         var allPages = GeneratedContentIndex.GetPages()
-            .Where(p => !p.Draft)
-            .ToList();
+        .Where(p => !p.Draft)
+        .ToList();
 
         currentChapter = allPages.FirstOrDefault(p =>
-            p.Slug.Trim('/').Equals(rawPath, StringComparison.OrdinalIgnoreCase));
+        p.Slug.Trim('/').Equals(rawPath, StringComparison.OrdinalIgnoreCase));
 
         if (currentChapter != null && currentChapter.Tags.Any())
         {
@@ -127,12 +126,20 @@
         // Get current scroll position
         var scrollPosition = await JS.InvokeAsync<double>("eval", "window.scrollY || window.pageYOffset");
 
-        await BookmarkService.ToggleBookmarkAsync(
+        // If already bookmarked, update the saved scroll position instead of removing the bookmark.
+        if (BookmarkService.IsBookmarked(currentChapter.Slug))
+        {
+            await BookmarkService.UpdateScrollPositionAsync(currentChapter.Slug, scrollPosition);
+        }
+        else
+        {
+            await BookmarkService.ToggleBookmarkAsync(
             currentChapter.Slug,
             currentChapter.Title,
             currentBookName,
             scrollPosition
-        );
+            );
+        }
 
         isBookmarked = BookmarkService.IsBookmarked(currentChapter.Slug);
     }

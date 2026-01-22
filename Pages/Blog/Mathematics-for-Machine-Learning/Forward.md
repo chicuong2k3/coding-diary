@@ -1,0 +1,61 @@
+---
+title: 'Lời tựa'
+date: 2025-01-21
+tags: ["MATHEMATICS FOR MACHINE LEARNING"]
+description: 'Vai trò của toán học, tư duy nền tảng, và con đường tiếp cận machine learning một cách bài bản.'
+---
+
+
+Máy học (Machine Learning) là nỗ lực mới nhất trong một loạt các cố gắng nhằm chắt lọc kiến thức và lý luận của con người thành một dạng phù hợp để xây dựng máy móc và các hệ thống kỹ thuật tự động hóa. Khi máy học trở nên phổ biến hơn và các gói phần mềm của nó trở nên dễ sử dụng hơn, các chi tiết kỹ thuật cấp thấp được trừu tượng hóa và che giấu đi khỏi người áp dụng (practitioner) là điều tự nhiên và được mong muốn. Tuy nhiên, điều này mang đến nguy cơ là người áp dụng không nhận thức được các quyết định thiết kế (design decisions) và các giới hạn của thuật toán máy học (machine learning algorithms).
+
+Người áp dụng nhiệt huyết muốn tìm hiểu thêm về điều kỳ diệu đằng sau các thuật toán máy học thành công hiện phải đối mặt với một loạt kiến thức cần thiết:
+- Ngôn ngữ lập trình và công cụ phân tích dữ liệu
+- Tính toán quy mô lớn (large-scale computation) và các framework liên quan
+- Toán học và thống kê dùng làm nền tảng cho máy học.
+
+Tại các trường đại học, các khóa học giới thiệu về máy học có xu hướng dành những phần đầu của khóa học để dạy một số điều kiện tiên quyết này. Vì lý do lịch sử, các khóa học về máy học thường được dạy ở khoa khoa học máy tính, nơi sinh viên thường được đào tạo tốt về khoa học máy tính và kỹ thuật phần mềm, nhưng lại ít được trang bị nền tảng về toán học và thống kê ứng dụng.
+
+Các sách giáo khoa về máy học hiện tại chủ yếu tập trung vào các thuật toán và phương pháp máy học và cho rằng người đọc có năng lực về toán học và thống kê. Vì vậy, những cuốn sách này chỉ dành một hoặc hai chương về toán học cơ bản, ở phần đầu sách hoặc ở dạng phụ lục. Chúng tôi nhận thấy nhiều người muốn tìm hiểu sâu về nền tảng của các phương pháp máy học cơ bản nhưng lại gặp khó khăn với kiến thức toán học cần thiết để đọc sách giáo khoa về máy học. Từng giảng dạy các khóa đại học và sau đại học tại các trường, chúng tôi nhận thấy rằng khoảng cách giữa toán trung học và trình độ toán cần thiết để đọc một cuốn sách giáo khoa tiêu chuẩn về máy học là quá lớn đối với nhiều người.
+
+Cuốn sách này làm nổi bật nền tảng toán học của các khái niệm máy học cơ bản và tập hợp các kiến thức đó vào một nơi duy nhất, qua đó thu hẹp, thậm chí xóa bỏ khoảng cách kỹ năng này.
+
+## *Tại sao lại có một cuốn sách khác về Máy học?*
+
+Máy học được xây dựng dựa trên ngôn ngữ toán học để diễn đạt các khái niệm có vẻ hiển nhiên bằng trực giác nhưng lại khó mô tả một cách chính xác. Sau khi được hình thức hóa đúng, chúng ta có thể hiểu rõ hơn về nhiệm vụ mà chúng ta muốn giải quyết. Một lời phàn nàn phổ biến của sinh viên toán học trên toàn cầu là các chủ đề được đề cập dường như ít liên quan đến các vấn đề thực tế. Chúng tôi tin rằng máy học là động lực rõ ràng và trực tiếp để mọi người học toán.
+
+Cuốn sách này được biên soạn như một cuốn cẩm nang dẫn dắt người đọc qua kho tàng tài liệu toán học đồ sộ, vốn tạo nên nền tảng của máy học hiện đại. Chúng tôi làm rõ sự cần thiết của các khái niệm toán học bằng cách chỉ ra trực tiếp tính hữu ích của chúng trong bối cảnh các bài toán máy học cơ bản. Để giữ cho cuốn sách ngắn gọn, nhiều chi tiết và khái niệm nâng cao hơn đã bị lược bỏ. Với các khái niệm cơ bản được trình bày ở đây, người đọc có thể tìm thấy nhiều tài nguyên để nghiên cứu sâu hơn mà chúng tôi cung cấp ở cuối các chương tương ứng. Đối với những độc giả có nền tảng toán học, cuốn sách này cung cấp cái nhìn tổng quan ngắn gọn nhưng chính xác về máy học. Ngược lại với những cuốn sách khác tập trung vào các phương pháp và mô hình máy học, chúng tôi chỉ cung cấp bốn ví dụ tiêu biểu về thuật toán máy học. Thay vào đó, chúng tôi tập trung vào các khái niệm toán học đằng sau các mô hình (model). Chúng tôi hy vọng rằng người đọc sẽ có thể hiểu sâu hơn về các câu hỏi cơ bản trong máy học và kết nối các câu hỏi thực tế phát sinh từ việc sử dụng máy học với các lựa chọn cơ bản trong mô hình toán học (mathematical model).
+
+Chúng tôi không có ý định viết một cuốn sách về máy học cổ điển. Thay vào đó, mục đích của chúng tôi là cung cấp nền tảng toán học áp dụng cho bốn vấn đề trung tâm của máy học, để giúp việc đọc các sách giáo khoa khác về máy học trở nên dễ dàng hơn.
+
+## *Ai nên đọc cuốn sách này?*
+
+Khi các ứng dụng của máy học trở nên phổ biến trong xã hội, chúng tôi tin rằng mọi người nên có hiểu biết nhất định về các nguyên tắc cơ bản của nó. Cuốn sách này được viết theo phong cách toán học hàn lâm, cho phép chúng ta hiểu chính xác về các khái niệm đằng sau máy học. Chúng tôi khuyến khích những độc giả chưa quen với phong cách có vẻ ngắn gọn này hãy kiên trì và ghi nhớ mục tiêu của từng chủ đề. Chúng tôi đưa ra những bình luận và nhận xét xuyên suốt cuốn sách với hy vọng rằng nó sẽ cung cấp những hướng dẫn hữu ích về bức tranh toàn cảnh.
+
+*Cuốn sách giả định người đọc có kiến thức toán học trung học*. Ví dụ, người đọc chắc hẳn đã từng thấy đạo hàm và tích phân trước đó cũng như các vectơ hình học hai hoặc ba chiều. Bắt đầu từ đó, chúng ta khái quát hóa các khái niệm này. Vì vậy, đối tượng của cuốn sách bao gồm sinh viên đại học, người học buổi tối và người học tham gia các khóa học về máy học trực tuyến.
+
+Tương tự như âm nhạc, có ba loại tương tác mà con người thực hiện với máy học:
+
+- Người nghe thông minh: Quá trình phổ cập máy học bằng cách cung cấp phần mềm nguồn mở (open-source software), hướng dẫn trực tuyến và các công cụ dựa trên đám mây (cloud-based tools) cho phép người dùng không phải lo lắng về các chi tiết cụ thể của quy trình. Người dùng có thể tập trung vào việc trích xuất thông tin chi tiết từ dữ liệu bằng các công cụ sẵn có (off-the-shelf tools). Điều này cho phép những chuyên gia nghiệp vụ (domain expert) không am hiểu về công nghệ được hưởng lợi từ máy học. Điều này tương tự như việc nghe nhạc; người dùng có thể lựa chọn và phân biệt giữa các loại máy học khác nhau và hưởng lợi từ nó. Những người dùng có kinh nghiệm hơn giống như những nhà phê bình âm nhạc, đặt những câu hỏi quan trọng về ứng dụng máy học trong xã hội như đạo đức (ethics), sự công bằng (fairness), và quyền riêng tư của cá nhân. Chúng tôi hy vọng rằng cuốn sách này cung cấp nền tảng để suy nghĩ về việc thẩm định (certification) và quản lý rủi ro (risk management) của hệ thống máy học, đồng thời cho phép họ sử dụng chuyên môn về lĩnh vực của mình để xây dựng hệ thống máy học tốt hơn.
+- Nghệ sĩ giàu kinh nghiệm: Những người áp dụng máy học có kỹ năng có thể cắm và chạy (plug
+and play) các công cụ và thư viện khác nhau vào một quy trình phân tích (analysis pipeline). Người áp dụng điển hình sẽ là một nhà khoa học hoặc kỹ sư dữ liệu, người hiểu các giao diện máy học (machine learning interfaces) và các trường hợp sử dụng (use cases) của chúng, đồng thời có thể thực hiện những kỳ công dự đoán tuyệt vời từ dữ liệu. Điều này tương tự như việc chơi nhạc điêu luyện, nơi những người thực hành có tay nghề cao có thể biến những nhạc cụ hiện có thành hiện thực và mang lại sự thích thú cho khán giả của họ. Sử dụng toán học được trình bày ở đây làm nền tảng, những người thực hành sẽ có thể hiểu được lợi ích và giới hạn của phương pháp yêu thích của họ, đồng thời mở rộng và khái quát hóa các thuật toán máy học hiện có. Chúng tôi hy vọng rằng cuốn sách này sẽ cung cấp động lực để phát triển các phương pháp máy học một cách nghiêm ngặt (rigorous) và có nguyên tắc (principled) hơn.
+- Nhà soạn nhạc non trẻ: Khi máy học được áp dụng cho các lĩnh vực mới, các lập trình viên (developer) máy học cần phát triển các phương pháp mới và mở rộng các thuật toán hiện có. Họ thường là những nhà nghiên cứu cần hiểu cơ sở toán học của máy học và khám phá mối quan hệ giữa các nhiệm vụ khác nhau. Điều này tương tự như các nhà soạn nhạc, những người trong khuôn khổ các quy tắc và cấu trúc của lý thuyết âm nhạc, tạo ra những tác phẩm mới và tuyệt vời. Chúng tôi hy vọng cuốn sách này cung cấp bức tranh tổng thể (high-level overview) về các sách kỹ thuật khác dành cho những ai muốn trở thành những người sáng tạo trong lĩnh vực máy học. Xã hội có nhu cầu rất lớn về các nhà nghiên cứu mới, những người có khả năng đề xuất và khám phá các phương pháp tiếp cận mới để giải quyết nhiều thách thức trong việc học từ dữ liệu.
+
+## Bảng từ viết tắt
+
+| Từ viết tắt | Nghĩa                                   |
+|-------------|-----------------------------------------|
+| e.g.        | Exempli gratia (tiếng Latin: ví dụ)     |
+| GMM         | Mô hình hỗn hợp Gaussian                |
+| i.e.        | Id est (tiếng Latin: điều này có nghĩa) |
+| i.i.d.      | Độc lập, phân phối giống hệt nhau       |
+| MAP         | Tối đa một hậu thế                      |
+| MLE         | Ước tính/ước tính khả năng tối đa       |
+| ONB         | Cơ sở trực chuẩn                        |
+| PCA         | Phân tích thành phần chính              |
+| PPCA        | Phân tích thành phần chính xác suất     |
+| REF         | Dạng cấp bậc hàng                       |
+| SPD         | Đối xứng, xác định dương                |
+| SVM         | Máy vectơ hỗ trợ                        |
+
+
+

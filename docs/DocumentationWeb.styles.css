@@ -362,6 +362,164 @@
     z-index: 50;
 }
 
+/* --- Table styles: responsive and theme-aware --- */
+.table-responsive {
+    width: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.table-responsive table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    background: transparent;
+    font-size: 0.95rem;
+}
+
+.table-responsive caption {
+    caption-side: top;
+    text-align: left;
+    padding: 0.25rem 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.table-responsive th,
+.table-responsive td {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--table-border-color, var(--border-color));
+    text-align: left;
+    vertical-align: top;
+}
+
+.table-responsive thead th {
+    background: var(--table-header-bg, var(--bg-card));
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.table-responsive tbody tr:nth-child(odd) {
+    background: transparent;
+}
+
+.table-responsive tbody tr:nth-child(even) {
+    background: var(--table-row-alt-bg, transparent);
+}
+
+.table-responsive tbody tr:hover {
+    background: var(--bg-hover);
+}
+
+.table-responsive code,
+.table-responsive pre {
+    font-size: 0.85rem;
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+}
+
+.table-responsive th.sortable {
+    cursor: pointer;
+}
+
+@media (max-width: 640px) {
+    .table-responsive th,
+    .table-responsive td {
+        padding: 0.45rem 0.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Also apply to content-generated tables (no wrapper) */
+.content table,
+.markdown table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 1rem 0;
+}
+
+.content th,
+.content td,
+.markdown th,
+.markdown td {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--table-border-color, var(--border-color));
+    text-align: left;
+    vertical-align: top;
+}
+
+.content thead th,
+.markdown thead th {
+    background: var(--table-header-bg, var(--bg-card));
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Bootstrap-style .table polishing to look good with our theme variables */
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--table-border-color, var(--border-color));
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 0.95rem;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem 0.9rem;
+    vertical-align: top;
+    border-bottom: 1px solid rgba(0,0,0,0.03);
+}
+
+.table thead th {
+    background: var(--table-header-bg, var(--bg-card));
+    color: var(--text-primary);
+    font-weight: 700;
+    border-bottom: 1px solid var(--table-border-color, var(--border-color));
+}
+
+.table tbody tr:nth-child(even) {
+    background: var(--table-row-alt-bg, rgba(0,0,0,0));
+}
+
+.table-hover tbody tr:hover {
+    background: var(--bg-hover);
+}
+
+.table-striped tbody tr:nth-child(odd) {
+    background: var(--table-row-alt-bg, rgba(0,0,0,0));
+}
+
+.table-sm th,
+.table-sm td {
+    padding: 0.45rem 0.6rem;
+    font-size: 0.9rem;
+}
+
+.table caption {
+    caption-side: top;
+    text-align: left;
+    padding: 0.4rem 0.6rem;
+    color: var(--text-muted);
+}
+
+/* Ensure code blocks inside tables look tidy */
+.table code,
+.table pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.12rem 0.28rem;
+    border-radius: 4px;
+}
+
 .floating-bookmark-btn[b-lbgxsygr54] {
     display: flex;
     align-items: center;

@@ -34,3 +34,5 @@ project.lock.json
 # Do not ignore docs/ (we want to commit site output here)
 # docs/
 
+
+.fake

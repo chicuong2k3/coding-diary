@@ -13,13 +13,20 @@
         <h1>
             <span class="book-icon">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
                 </svg>
             </span>
             @GetTitle()
         </h1>
-        <p class="chapters-count">@chapters.Count() chương</p>
+        @if (!string.IsNullOrEmpty(BookSlug))
+        {
+            <p class="chapters-count">@chapterPages.Length chương</p>
+        }
+        else
+        {
+            <p class="chapters-count">@allBooks.Sum(b => b.Count) chương</p>
+        }
     </div>
 
     @if (!string.IsNullOrEmpty(BookSlug))
@@ -29,25 +36,42 @@
             <div class="book-actions">
                 <div class="reading-progress">
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: @GetReadingProgress()%"></div>
+                        <div class="progress-fill" style="width: @(GetReadingProgress())%"></div>
                     </div>
-                    <span class="progress-text">Đã đọc @readChaptersCount/@chaptersArray.Length chương (@GetReadingProgress()%)</span>
+                    <span class="progress-text">Đã đọc @readChaptersCount/@chapterPages.Length chương
+                        (@(GetReadingProgress())%)</span>
                 </div>
                 <div class="action-buttons">
                     @if (lastReadChapter != null)
                     {
                         <a href="@lastReadChapter.Slug.TrimStart('/')" class="btn-action btn-continue">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polygon points="5 3 19 12 5 21 5 3"/>
+                                <polygon points="5 3 19 12 5 21 5 3" />
                             </svg>
                             Tiếp tục đọc
                         </a>
                     }
+                    <button class="btn-action btn-bookmark" @onclick="ToggleBookBookmark"
+                        title="@(isBookBookmarked ? "Bỏ đánh dấu sách" : "Đánh dấu sách")">
+                        @if (isBookBookmarked)
+                        {
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                            </svg>
+                        }
+                        else
+                        {
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                            </svg>
+                        }
+                    </button>
                     <button class="btn-action btn-print" @onclick="PrintBook" title="In toàn bộ sách">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="6 9 6 2 18 2 18 9"/>
-                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
-                            <rect x="6" y="14" width="12" height="8"/>
+                            <polyline points="6 9 6 2 18 2 18 9" />
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                            <rect x="6" y="14" width="12" height="8" />
                         </svg>
                         In sách
                     </button>
@@ -57,9 +81,27 @@
         <div class="chapters-list">
             @if (chapters.Any())
             {
-                @for (int i = 0; i < chaptersArray.Length; i++)
+                @* Render non-chapter pages (e.g., forward) first without chapter numbering *@
+                @foreach (var page in otherPages)
                 {
-                    var chapter = chaptersArray[i];
+                    <a href="@(page.Slug.TrimStart('/'))" class="chapter-card">
+                        <div class="chapter-card-content">
+                            <h2 class="chapter-title">@(page.Title)</h2>
+                            @if (!string.IsNullOrEmpty(page.Description))
+                            {
+                                <p class="chapter-description">@(page.Description)</p>
+                            }
+                            <div class="chapter-meta">
+                                <span class="chapter-date">@(((DateTime)page.Date!).ToString("dd/MM/yyyy"))</span>
+                            </div>
+                        </div>
+                    </a>
+                }
+
+                @* Then render actual numbered chapters *@
+                @for (int i = 0; i < chapterPages.Length; i++)
+                {
+                    var chapter = chapterPages[i];
                     var chapterNumber = i + 1;
                     <a href="@chapter.Slug.TrimStart('/')" class="chapter-card">
                         <div class="chapter-card-content">
@@ -108,7 +150,10 @@
 
     private IEnumerable<PageModel> chapters = Enumerable.Empty<PageModel>();
     private PageModel[] chaptersArray = Array.Empty<PageModel>();
+    private PageModel[] chapterPages = Array.Empty<PageModel>();
+    private PageModel[] otherPages = Array.Empty<PageModel>();
     private List<BookSummary> allBooks = new();
+    private bool isBookBookmarked = false;
     private HashSet<string> readChapters = new();
     private int readChaptersCount = 0;
     private PageModel? lastReadChapter;
@@ -122,22 +167,55 @@
         if (!string.IsNullOrEmpty(BookSlug))
         {
             chapters = allPages
-                .Where(p => p.Tags.Any(t =>
-                    t.ToLower().Replace(" ", "-").Equals(BookSlug, StringComparison.OrdinalIgnoreCase) ||
-                    t.Equals(BookSlug, StringComparison.OrdinalIgnoreCase)))
-                .OrderBy(p => p.Date);
+            .Where(p => p.Tags.Any(t =>
+            t.ToLower().Replace(" ", "-").Equals(BookSlug, StringComparison.OrdinalIgnoreCase) ||
+            t.Equals(BookSlug, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(p => p.Date);
             chaptersArray = chapters.ToArray();
+
+            // Separate actual chapter pages (slug contains '/chapter-') from other pages like forward/preface
+            chapterPages = chaptersArray.Where(c => c.Slug.Contains("/chapter-", StringComparison.OrdinalIgnoreCase))
+            .OrderBy(c => c.Slug) // ensure chapter order by slug (chapter-1, chapter-2...)
+            .ToArray();
+
+            otherPages = chaptersArray.Except(chapterPages).ToArray();
         }
 
         allBooks = allPages
-            .Where(p => p.Tags.Any())
-            .GroupBy(p => p.Tags.First(), StringComparer.OrdinalIgnoreCase)
-            .Select(g => new BookSummary(
-                g.Key,
-                g.Key.ToLower().Replace(" ", "-"),
-                g.Count()))
-            .OrderBy(b => b.Name)
-            .ToList();
+        .Where(p => p.Tags.Any())
+        .GroupBy(p => p.Tags.First(), StringComparer.OrdinalIgnoreCase)
+        .Select(g => new BookSummary(
+        g.Key,
+        g.Key.ToLower().Replace(" ", "-"),
+        g.Count()))
+        .OrderBy(b => b.Name)
+        .ToList();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await BookmarkService.InitializeAsync();
+        CheckBookBookmarkStatus();
+    }
+
+    private string GetBookBookmarkSlug()
+    {
+        return string.IsNullOrEmpty(BookSlug) ? "/book" : $"/book/{BookSlug}";
+    }
+
+    private void CheckBookBookmarkStatus()
+    {
+        var slug = GetBookBookmarkSlug();
+        isBookBookmarked = BookmarkService.IsBookmarked(slug);
+    }
+
+    private async Task ToggleBookBookmark()
+    {
+        var slug = GetBookBookmarkSlug();
+        var title = GetTitle();
+        await BookmarkService.ToggleBookmarkAsync(slug, title, title, 0);
+        CheckBookBookmarkStatus();
+        StateHasChanged();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -157,27 +235,27 @@
             if (!string.IsNullOrEmpty(data))
             {
                 readChapters = System.Text.Json.JsonSerializer.Deserialize<HashSet<string>>(data) ?? new();
-                readChaptersCount = chaptersArray.Count(c => readChapters.Contains(c.Slug));
+                readChaptersCount = chapterPages.Count(c => readChapters.Contains(c.Slug));
             }
 
             // Find last read chapter from bookmarks
             await BookmarkService.InitializeAsync();
             var bookBookmarks = BookmarkService.Bookmarks
-                .Where(b => chaptersArray.Any(c => c.Slug.Equals(b.Slug, StringComparison.OrdinalIgnoreCase)))
-                .OrderByDescending(b => b.LastReadAt ?? b.AddedAt)
-                .FirstOrDefault();
+            .Where(b => chapterPages.Any(c => c.Slug.Equals(b.Slug, StringComparison.OrdinalIgnoreCase)))
+            .OrderByDescending(b => b.LastReadAt ?? b.AddedAt)
+            .FirstOrDefault();
 
             if (bookBookmarks != null)
             {
-                lastReadChapter = chaptersArray.FirstOrDefault(c =>
-                    c.Slug.Equals(bookBookmarks.Slug, StringComparison.OrdinalIgnoreCase));
+                lastReadChapter = chapterPages.FirstOrDefault(c =>
+                c.Slug.Equals(bookBookmarks.Slug, StringComparison.OrdinalIgnoreCase));
             }
 
             // If no bookmark, get first unread chapter
-            if (lastReadChapter == null && chaptersArray.Any())
+            if (lastReadChapter == null && chapterPages.Any())
             {
-                lastReadChapter = chaptersArray.FirstOrDefault(c => !readChapters.Contains(c.Slug))
-                    ?? chaptersArray.First();
+                lastReadChapter = chapterPages.FirstOrDefault(c => !readChapters.Contains(c.Slug))
+                ?? chapterPages.First();
             }
         }
         catch
@@ -188,8 +266,8 @@
 
     private int GetReadingProgress()
     {
-        if (chaptersArray.Length == 0) return 0;
-        return (int)Math.Round((double)readChaptersCount / chaptersArray.Length * 100);
+        if (chapterPages.Length == 0) return 0;
+        return (int)Math.Round((double)readChaptersCount / chapterPages.Length * 100);
     }
 
     private async Task PrintBook()
@@ -202,7 +280,7 @@
         if (string.IsNullOrEmpty(BookSlug)) return "Thư viện sách";
 
         var matchingBook = allBooks.FirstOrDefault(b =>
-            b.Slug.Equals(BookSlug, StringComparison.OrdinalIgnoreCase));
+        b.Slug.Equals(BookSlug, StringComparison.OrdinalIgnoreCase));
 
         return matchingBook?.Name ?? BookSlug;
     }

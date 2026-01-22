@@ -4,10 +4,12 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
     <BlazorWasmPrerenderingDeleteLoadingContents>true</BlazorWasmPrerenderingDeleteLoadingContents>
     <WasmEnableSIMD>false</WasmEnableSIMD>
     <WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>
+    <RunAOTCompilation>false</RunAOTCompilation>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,7 +33,7 @@
     <!-- Remove template.razor files -->
     <Content Remove="**/template.razor" />
     <Compile Remove="**/template.razor" />
-    <Content Include="Tools\SitemapGenerator\SitemapGenerator.csproj" />
+    <!-- Tools projects shouldn't be included as content; removed to avoid duplicate assembly attributes -->
     <None Include="**/template.razor" />
     <Content Remove="**/cascading-template.razor" />
     <Compile Remove="**/cascading-template.razor" />

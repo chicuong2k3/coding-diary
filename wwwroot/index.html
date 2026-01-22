@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Code Magic</title>
-    <base href="/coding-diary/" />
+    <base href="/" />
     <link rel="preload" id="webassembly" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,21 +48,21 @@
     </script>
 
     <script type="text/javascript" id="MathJax-script" async
-            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-    </script>
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+        </script>
 
     <!-- Polyfills + Mermaid dual-loader (module + nomodule fallback) -->
     <script>
         // Polyfills for older Safari (Element.matches / Element.closest)
         if (!Element.prototype.matches) {
-            Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector || function(s) {
+            Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector || function (s) {
                 var matches = (this.document || this.ownerDocument).querySelectorAll(s), i = matches.length;
-                while (--i >= 0 && matches.item(i) !== this) {}
+                while (--i >= 0 && matches.item(i) !== this) { }
                 return i > -1;
             };
         }
         if (!Element.prototype.closest) {
-            Element.prototype.closest = function(s) {
+            Element.prototype.closest = function (s) {
                 var el = this;
                 do {
                     if (el.matches && el.matches(s)) return el;
@@ -81,7 +81,7 @@
         mermaid.initialize({ startOnLoad: false, theme: 'dark' });
 
         window._mermaid = mermaid;
-        window.renderMermaid = async function(srcId, containerId) {
+        window.renderMermaid = async function (srcId, containerId) {
             const srcEl = document.getElementById(srcId);
             const containerEl = document.getElementById(containerId);
             if (!srcEl || !containerEl) return;
@@ -113,7 +113,7 @@
             window._mermaid = window.mermaid;
             window._mermaid.initialize({ startOnLoad: false, theme: 'dark' });
 
-            window.renderMermaid = function(srcId, containerId) {
+            window.renderMermaid = function (srcId, containerId) {
                 const srcEl = document.getElementById(srcId);
                 const containerEl = document.getElementById(containerId);
                 if (!srcEl || !containerEl) return;
@@ -132,7 +132,7 @@
                         }
                     } catch (err) {
                         // Try callback signature
-                        window._mermaid.render('mermaid-' + Date.now(), definition, function(svgCode) {
+                        window._mermaid.render('mermaid-' + Date.now(), definition, function (svgCode) {
                             containerEl.innerHTML = svgCode;
                         });
                     }
@@ -148,7 +148,7 @@
 
     <script>
         // Small helper: detect old Safari / iOS (<=15)
-        window.isOldSafari = function() {
+        window.isOldSafari = function () {
             try {
                 var ua = navigator.userAgent || '';
                 // iOS Safari detection: look for 'OS 12_...' or similar
@@ -173,7 +173,7 @@
         };
 
         // Display a friendly error UI for browser-caused problems (visible on the page)
-        window.showBrowserError = function(message, details) {
+        window.showBrowserError = function (message, details) {
             try {
                 var el = document.getElementById('blazor-error-ui');
                 if (!el) {
@@ -205,7 +205,7 @@
                 el.innerHTML = '<strong>Browser error detected</strong>' + uaNote + '<div style="margin-top:6px;word-break:break-word;">' + escapeHtml(message || 'Unknown browser error') + '</div>' + detailsHtml + '<div style="margin-top:8px;text-align:right;"><button id="blazor-error-dismiss" style="background:#fff;color:#661414;border:1px solid #f5c2c2;padding:6px 10px;border-radius:6px;cursor:pointer">Dismiss</button></div>';
 
                 var btn = document.getElementById('blazor-error-dismiss');
-                if (btn) btn.addEventListener('click', function() { el.style.display = 'none'; });
+                if (btn) btn.addEventListener('click', function () { el.style.display = 'none'; });
 
                 // helper to escape HTML to avoid breaking page
                 function escapeHtml(str) {
@@ -221,7 +221,7 @@
         };
 
         // Global handlers: only surface UI error if we're on older Safari (user requested)
-        window.addEventListener('error', function(evt) {
+        window.addEventListener('error', function (evt) {
             try {
                 if (window.isOldSafari && window.isOldSafari()) {
                     var details = (evt.filename ? evt.filename + ':' + evt.lineno + ':' + evt.colno + '\n' : '') + (evt.error && evt.error.stack ? evt.error.stack : '');
@@ -232,7 +232,7 @@
             }
         });
 
-        window.addEventListener('unhandledrejection', function(evt) {
+        window.addEventListener('unhandledrejection', function (evt) {
             try {
                 if (window.isOldSafari && window.isOldSafari()) {
                     var reason = evt.reason && (evt.reason.message || evt.reason) ? (evt.reason.message || String(evt.reason)) : 'Unhandled rejection';
@@ -245,7 +245,7 @@
         });
 
         // Smooth scroll to heading
-        window.scrollToHeading = function(id) {
+        window.scrollToHeading = function (id) {
             const element = document.getElementById(id);
             if (element) {
                 const headerOffset = 100;
@@ -260,7 +260,7 @@
         };
 
         // Table of Contents functionality
-        window.initToc = function(dotNetRef) {
+        window.initToc = function (dotNetRef) {
             let currentObserver = null;
             let scrollHandler = null;
 
@@ -344,7 +344,7 @@
         };
 
         // Copy code to clipboard (with execCommand fallback for older Safari)
-        window.copyCode = async function(button) {
+        window.copyCode = async function (button) {
             if (!button) return;
             const codeBlock = button.closest && button.closest('.code-block');
             if (!codeBlock) return;
@@ -408,7 +408,7 @@
         };
 
         // Initialize code blocks with copy button and syntax highlighting
-        window.initCodeBlocks = function() {
+        window.initCodeBlocks = function () {
             document.querySelectorAll('pre:not(.code-initialized)').forEach(pre => {
                 // Skip mermaid and special pre blocks
                 if (pre.closest('.mermaid-container') || pre.style.display === 'none') return;
