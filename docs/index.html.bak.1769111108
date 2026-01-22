@@ -1,9 +1,8 @@
 <!DOCTYPE html><html lang="en"><head>
-  <base href="/coding-diary/" />
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Code Magic</title>
-    
+    <base href="/"/>
     <link href="_framework/dotnet.8tb5l603v9.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-9Gc0uIetDgDtRB/W3otH9mg9sESa/RGlAIpccAZqzHc="/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
