@@ -67,14 +67,14 @@
                             </svg>
                         }
                     </button>
-                    <button class="btn-action btn-print" @onclick="PrintBook" title="In toàn bộ sách">
+                    <a href="print-book/@BookSlug" class="btn-action btn-print" title="In toàn bộ sách">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="6 9 6 2 18 2 18 9" />
                             <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
                             <rect x="6" y="14" width="12" height="8" />
                         </svg>
                         In sách
-                    </button>
+                    </a>
                 </div>
             </div>
         }
@@ -268,11 +268,6 @@
     {
         if (chapterPages.Length == 0) return 0;
         return (int)Math.Round((double)readChaptersCount / chapterPages.Length * 100);
-    }
-
-    private async Task PrintBook()
-    {
-        await JS.InvokeVoidAsync("window.print");
     }
 
     private string GetTitle()

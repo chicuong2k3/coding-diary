@@ -2,6 +2,87 @@
 
 /* /Components/BookChapters.razor.rz.scp.css */
 .book-chapters-container[b-nsp51uw5bw] {
+
+/* ===== Documentation table styles (responsive + light/dark) ===== */
+:root {
+    --doc-tbl-bg: #ffffff;
+    --doc-tbl-border: #e5e7eb;
+    --doc-tbl-head-bg: #f3f4f6;
+    --doc-tbl-head-color: #111827;
+    --doc-tbl-row-hover: #f9fafb;
+    --doc-tbl-caption: #6b7280;
+    --doc-tbl-accent: #0366d6;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --doc-tbl-bg: #071022;
+        --doc-tbl-border: #21303b;
+        --doc-tbl-head-bg: #081226;
+        --doc-tbl-head-color: #e6eef8;
+        --doc-tbl-row-hover: #082036;
+        --doc-tbl-caption: #9aa6b2;
+        --doc-tbl-accent: #58a6ff;
+    }
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+    padding: 0.25rem 0;
+}
+
+table.doc-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--doc-tbl-bg);
+    color: inherit;
+    font-size: 0.95rem;
+    margin: 0 0 1rem 0;
+}
+
+table.doc-table th,
+table.doc-table td {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--doc-tbl-border);
+    text-align: left;
+    vertical-align: middle;
+}
+
+table.doc-table thead th {
+    background: var(--doc-tbl-head-bg);
+    color: var(--doc-tbl-head-color);
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+table.doc-table tbody tr:nth-child(odd) {
+    background: rgba(0,0,0,0.02);
+}
+@media (prefers-color-scheme: dark) {
+    table.doc-table tbody tr:nth-child(odd) { background: rgba(255,255,255,0.02); }
+}
+
+table.doc-table tbody tr:hover {
+    background: var(--doc-tbl-row-hover);
+}
+
+table.doc-table caption {
+    caption-side: bottom;
+    font-size: 0.85rem;
+    color: var(--doc-tbl-caption);
+    padding-top: 0.5rem;
+}
+
+table.doc-table img { max-width: 200px; height: auto; border-radius: 4px; }
+table.doc-table td code, table.doc-table td pre { white-space: normal; word-break: break-word; }
+
+/* Fallback: apply doc styles to generic tables in content areas */
+.content table, .markdown-body table, article table { max-width: 100%; }
+
     padding: 0;
 }
 

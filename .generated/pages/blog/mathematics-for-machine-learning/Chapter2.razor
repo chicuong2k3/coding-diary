@@ -1,0 +1,817 @@
+@page "/mathematics-for-machine-learning/chapter-2"
+
+
+<PageTitle>Chương 2: Đại số tuyến tính (Linear algebra)</PageTitle>
+
+<div class="content">
+    <LatexContainer >
+</LatexContainer>
+<p>Khi hình thức hóa các khái niệm trực quan, một cách tiếp cận phổ biến là xác định một tập hợp các đối tượng cùng với các quy tắc thao tác trên chúng - đó là ý nghĩa của đại số. <strong>Đại số tuyến tính</strong> (Linear algebra) nghiên cứu các <strong>vectơ</strong> (vector) và các quy tắc để cộng, nhân vô hướng và thao tác với chúng.</p>
+<p>Trong chương này, chúng ta sử dụng ký hiệu in đậm cho <strong>vectơ</strong>, ví dụ <span class="math">\(\mathbf{x}\)</span>, <span class="math">\(\mathbf{y}\)</span> (thay vì <span class="math">\(\vec{x}\)</span>, <span class="math">\(\vec{y}\)</span>). Một <strong>vectơ</strong> là một đối tượng mà ta có thể cộng với <strong>vectơ</strong> khác và nhân với một số vô hướng, kết quả thu được vẫn là một <strong>vectơ</strong>. Từ góc nhìn trừu tượng, mọi đối tượng thỏa hai tính chất này (đối tượng nhân với vô hướng hoặc cộng với đối tượng cùng loại đều cho ra đối tượng cùng loại) đều được coi là <strong>vectơ</strong>. Dưới đây là một vài ví dụ quen thuộc:</p>
+<ul>
+<li><strong>Vectơ</strong> hình học: Ví dụ về vectơ này có lẽ đã quen thuộc từ toán học và vật lý ở bậc phổ thông.  Vectơ hình học là các đoạn thẳng có hướng, có thể được vẽ (ít nhất là trong không gian hai chiều). Hai vectơ hình học <span class="math">\(\vec{x}\)</span>, <span class="math">\(\vec{y}\)</span> có thể được cộng lại sao cho:</li>
+</ul>
+<div class="math">
+\[
+\vec{x} + \vec{y} = \vec{z}
+\]</div>
+<p>trong đó <span class="math">\(\vec{z}\)</span> là một vectơ hình học khác.<br />
+Hơn nữa, phép nhân một vectơ với một số vô hướng <span class="math">\(\lambda \in \mathbb{R}\)</span>, tức <span class="math">\(\lambda \vec{x}\)</span>, cũng tạo ra một vectơ hình học. Trên thực tế, đó là vectơ ban đầu được co giãn theo hệ số <span class="math">\(\lambda\)</span>.</p>
+<p>Vì vậy, vectơ hình học là những ví dụ cụ thể của khái niệm vectơ đã được giới thiệu trước đó. Việc diễn giải vectơ dưới dạng vectơ hình học cho phép chúng ta sử dụng trực giác về <strong>hướng</strong> và <strong>độ lớn</strong> để suy luận về các phép toán toán học.</p>
+<ul>
+<li>Đa thức: Đa thức cũng là vectơ. Hai đa thức có thể được cộng với nhau và kết quả là một đa thức khác; chúng cũng có thể được nhân với một số vô hướng <span class="math">\(\lambda \in \mathbb{R}\)</span>, và kết quả vẫn là một đa thức. Do đó, đa thức là những vectơ.
+Lưu ý rằng đa thức rất khác với vectơ hình học. Trong khi vectơ hình học là các &quot;hình vẽ&quot; cụ thể, thì đa thức là các khái niệm trừu tượng. Tuy nhiên, cả hai đều là vectơ theo nghĩa đã mô tả trước đó.</li>
+<li>Tín hiệu âm thanh: Tín hiệu âm thanh được biểu diễn dưới dạng một chuỗi các số. Ta có thể cộng các tín hiệu âm thanh lại với nhau, và tổng của chúng là một tín hiệu âm thanh mới. Nếu ta co giãn (nhân vô hướng) một tín hiệu âm thanh, ta cũng thu được một tín hiệu âm thanh khác. Vì vậy, tín hiệu âm thanh cũng là một loại vectơ.</li>
+<li>Các phần tử của <span class="math">\(\mathbb{R}^n\)</span> là vectơ: Các phần tử của <span class="math">\(\mathbb{R}^n\)</span> (bộ gồm <span class="math">\(n\)</span> số thực) là vectơ. <span class="math">\(\mathbb{R}^n\)</span> trừu tượng hơn đa thức, và đây là khái niệm mà cuốn sách này tập trung vào. Ví dụ,</li>
+</ul>
+<div class="math">
+\[
+\mathbf{a} =
+\begin{bmatrix}
+1 \\
+2 \\
+3
+\end{bmatrix}
+\in \mathbb{R}^3
+\]</div>
+<p>là một bộ ba số. Khi cộng hai vectơ <span class="math">\(\mathbf{a}, \mathbf{b} \in \mathbb{R}^n\)</span> theo từng thành phần, ta thu được một vectơ khác <span class="math">\(\mathbf{c} \in \mathbb{R}^n\)</span>. Tương tự, khi nhân <span class="math">\(\mathbf{a} \in \mathbb{R}^n\)</span> với một số vô hướng <span class="math">\(\lambda \in \mathbb{R}\)</span>, ta thu được vectơ đã được co giãn <span class="math">\(\lambda \mathbf{a} \in \mathbb{R}^n\)</span>.</p>
+<p>Việc xem vectơ như các phần tử của <span class="math">\(\mathbb{R}^n\)</span> còn có một lợi ích khác: nó tương ứng khá tự nhiên với các mảng số thực trên máy tính. Nhiều ngôn ngữ lập trình hỗ trợ các phép toán trên mảng, cho phép triển khai thuận tiện các thuật toán liên quan đến phép toán vectơ. Tuy nhiên, cần cẩn thận kiểm tra xem các phép toán trên mảng đó có thực sự tương ứng với các phép toán vectơ hay không khi cài đặt trên máy tính.</p>
+<p>Đại số tuyến tính tập trung vào những điểm tương đồng giữa các khái niệm vectơ này: ta có thể cộng chúng và nhân chúng với các số vô hướng. Trong cuốn sách này, chúng tôi chủ yếu tập trung vào các vectơ trong <span class="math">\(\mathbb{R}^n\)</span>, vì hầu hết các thuật toán trong đại số tuyến tính đều được xây dựng trong <span class="math">\(\mathbb{R}^n\)</span>.</p>
+<p>Ở Chương 8, ta sẽ thấy rằng dữ liệu thường được biểu diễn dưới dạng các vectơ trong <span class="math">\(\mathbb{R}^n\)</span>. Trong sách này, chúng tôi tập trung vào các không gian vectơ hữu hạn chiều (finite-dimensional vector spaces); trong trường hợp đó, tồn tại một sự tương ứng 1:1 giữa bất kỳ loại vectơ nào và <span class="math">\(\mathbb{R}^n\)</span>. Khi thuận tiện, chúng tôi sẽ sử dụng trực giác về vectơ hình học và xem xét các thuật toán dựa trên mảng.</p>
+<p>Một khái niệm quan trọng là <strong>tính đóng</strong> (closure) của một tập: bắt đầu từ một tập <strong>vectơ</strong> nhỏ và thực hiện các phép cộng/tỉ lệ, tập các vectơ (set of vectors) có thể sinh ra là gì? Câu trả lời dẫn đến khái niệm không gian <strong>vectơ</strong> (vector space). Không gian <strong>vectơ</strong> và các tính chất của nó là nền tảng cho nhiều phép toán trong máy học.</p>
+<p>Phần còn lại của chương bày các khái niệm cơ bản: <strong>hệ phương trình tuyến tính</strong> (system of linear equations), <strong>ma trận</strong> (matrix) và các phép toán trên <strong>ma trận</strong> (matrix), <strong>không gian nghiệm</strong> (solution space), <strong>cơ sở</strong> (basis) và các phép biến đổi cần thiết cho các ứng dụng máy học.</p>
+<p><figure><img src="/images/Mathematics-for-Machine-Learning/_page_19_Figure_1.png" alt="Hình 2.2: Sơ đồ tư duy (mind map) về các khái niệm được giới thiệu trong chương này, cùng với vị trí mà chúng được sử dụng ở các phần khác của cuốn sách."  style="max-width:100%;height:auto;" /><figcaption style="margin-left:auto;margin-right:auto;font-style:italic;text-align:center;">Hình 2.2: Sơ đồ tư duy (mind map) về các khái niệm được giới thiệu trong chương này, cùng với vị trí mà chúng được sử dụng ở các phần khác của cuốn sách.</figcaption></figure></p>
+<h2 id="he-phuong-trinh-tuyen-tinh-system-of-linear-equations">2.1 Hệ phương trình tuyến tính (system of linear equations)</h2>
+<p><strong>Hệ phương trình tuyến tính</strong> (system of linear equations) là trung tâm của <strong>đại số tuyến tính</strong>. Nhiều bài toán thực tế có thể được mô tả dưới dạng <strong>hệ phương trình tuyến tính</strong>, và <strong>đại số tuyến tính</strong> cung cấp công cụ để phân tích và giải các hệ này.</p>
+<p><strong>Ví dụ 2.1 (Bài toán phân phối tài nguyên).</strong></p>
+<p>Giả sử một công ty sản xuất n sản phẩm <span class="math">\(N^1, ..., N^n\)</span> bằng cách sử dụng m loại tài nguyên <span class="math">\(R^1, ..., R^m\)</span>. Để sản xuất một đơn vị sản phẩm <span class="math">\(N^j\)</span> cần <span class="math">\(a_{ij}\)</span> đơn vị tài nguyên <span class="math">\(R^i\)</span> <span class="math">\((i = 1,...,m; j = 1,...,n)\)</span>. Nếu có <span class="math">\(b^i\)</span> đơn vị tài nguyên <span class="math">\(R^i\)</span> sẵn có, ta muốn tìm số lượng <span class="math">\(x^1,...,x^n\)</span> sản phẩm để sử dụng tối ưu tài nguyên, lý tưởng là không dư thừa.</p>
+<p>Việc tiêu thụ tài nguyên <span class="math">\(R^i\)</span> bởi kế hoạch sản xuất <span class="math">\(x_1,...,x_n\)</span> là:</p>
+<div class="math">
+\[
+a_{i1}x_1 + \cdots + a_{in}x_n \tag{2.2}
+\]</div>
+<p>Do đó, một kế hoạch sản xuất tối ưu <span class="math">\((x_1, \ldots, x_n) \in \mathbb{R}^n\)</span> phải thỏa mãn hệ phương trình sau:</p>
+<div class="math">
+\[
+\begin{aligned}
+a_{11}x_1 + \cdots + a_{1n}x_n &amp;= b_1 \\
+\vdots \qquad\qquad\qquad\quad &amp; \vdots \\
+a_{m1}x_1 + \cdots + a_{mn}x_n &amp;= b_m
+\end{aligned}
+\]</div>
+<p>Ta gọi đây là dạng tổng quát (general form) của <strong>hệ phương trình tuyến tính</strong>; <strong>nghiệm</strong> (solution) của hệ là các n-tuple (<span class="math">\(x_1\)</span>,...,<span class="math">\(x_n\)</span>) thỏa các phương trình trên.</p>
+<p><strong>Ví dụ 2.2.</strong> Xét hệ</p>
+<div class="math">
+\[
+\begin{aligned}
+x_1 + x_2 + x_3 &amp;= 3 \quad (1) \\
+x_1 - x_2 + 2x_3 &amp;= 2 \quad (2) \\
+2x_1 + 3x_3 &amp;= 1 \quad (3)
+\end{aligned}
+\tag{2.4}
+\]</div>
+<p><strong>không có nghiệm</strong>: Cộng hai phương trình đầu tiên ta được<br />
+<span class="math">\(2x_1 + 3x_3 = 5\)</span>, điều này mâu thuẫn với phương trình thứ ba (3).</p>
+<hr />
+<p>Xét hệ phương trình tuyến tính</p>
+<div class="math">
+\[
+\begin{aligned}
+x_1 + x_2 + x_3 &amp;= 3 \quad (1) \\
+x_1 - x_2 + 2x_3 &amp;= 2 \quad (2) \\
+x_2 + x_3 &amp;= 2 \quad (3)
+\end{aligned}
+\tag{2.5}
+\]</div>
+<p>Từ phương trình (1) và (3) suy ra <span class="math">\(x_1 = 1\)</span>.<br />
+Từ (1) + (2) ta được <span class="math">\(2x_1 + 3x_3 = 5\)</span>, suy ra <span class="math">\(x_3 = 1\)</span>.<br />
+Từ (3) tiếp theo ta có <span class="math">\(x_2 = 1\)</span>.</p>
+<p>Do đó, <span class="math">\((1, 1, 1)\)</span> là nghiệm duy nhất và cũng là nghiệm duy nhất có thể của hệ (có thể kiểm tra lại bằng cách thay <span class="math">\((1, 1, 1)\)</span> vào hệ phương trình).</p>
+<hr />
+<p>Xét ví dụ thứ ba:</p>
+<div class="math">
+\[
+\begin{aligned}
+x_1 + x_2 + x_3 &amp;= 3 \quad (1) \\
+x_1 - x_2 + 2x_3 &amp;= 2 \quad (2) \\
+2x_1 + 3x_3 &amp;= 5 \quad (3)
+\end{aligned}
+\tag{2.6}
+\]</div>
+<p>Vì <span class="math">\((1) + (2) = (3)\)</span>, nên phương trình thứ ba là <strong>dư thừa</strong> và có thể loại bỏ.<br />
+Từ (1) và (2) ta thu được</p>
+<div class="math">
+\[
+2x_1 = 5 - 3x_3, \qquad 2x_2 = 1 + x_3.
+\]</div>
+<p>Đặt <span class="math">\(x_3 = a \in \mathbb{R}\)</span> là một <strong>biến tự do</strong>, khi đó mọi bộ ba</p>
+<div class="math">
+\[
+\left(
+\frac{5}{2} - \frac{3}{2}a,\;
+\frac{1}{2} + \frac{1}{2}a,\;
+a
+\right),
+\quad a \in \mathbb{R}
+\]</div>
+<p>đều là nghiệm của hệ phương trình.</p>
+<p>Nói chung, đối với một hệ phương trình tuyến tính với các hệ số thực, ta sẽ thu được <strong>hoặc không có nghiệm</strong>, <strong>hoặc đúng một nghiệm</strong>, <strong>hoặc vô số nghiệm</strong>.<br />
+Hồi quy tuyến tính (Chương 9) giải quyết một biến thể của Ví dụ 2.1 trong trường hợp ta <strong>không thể giải trực tiếp</strong> hệ phương trình tuyến tính.</p>
+<hr />
+<div class="alert alert-info" role="alert">
+<div class="d-flex align-items-center">
+<i class="bi-info-circle-fill flex-shrink-0 me-2"aria-label="Info:"></i>
+<h5>Info:</h5>
+</div>
+<p><strong>Diễn giải hình học của các hệ phương trình tuyến tính</strong></p>
+<p>Trong một hệ phương trình tuyến tính với hai biến <span class="math">\(x_1, x_2\)</span>, mỗi phương trình tuyến tính xác định một <strong>đường thẳng</strong> trên mặt phẳng <span class="math">\(x_1x_2\)</span>. Vì nghiệm của hệ phương trình phải thỏa mãn <strong>tất cả</strong> các phương trình đồng thời, nên <strong>tập nghiệm</strong> chính là <strong>giao</strong> của các đường thẳng này.</p>
+<p>Tập giao đó có thể là:</p>
+<ul>
+<li>một <strong>đường thẳng</strong> (nếu các phương trình mô tả cùng một đường),</li>
+<li>một <strong>điểm</strong>,</li>
+<li>hoặc <strong>rỗng</strong> (khi các đường thẳng song song).</li>
+</ul>
+<p>Một minh họa được cho trong Hình 2.3 với hệ phương trình</p>
+<div class="math">
+\[
+\begin{aligned}
+4x_1 + 4x_2 &amp;= 5 \\
+2x_1 - 4x_2 &amp;= 1
+\end{aligned}
+\tag{2.8}
+\]</div>
+<p>trong đó không gian nghiệm là điểm <span class="math">\((x_1, x_2) = \left(1, \frac{1}{4}\right)\)</span>.</p>
+<p><figure><img src="/images/Mathematics-for-Machine-Learning/_page_21_Figure_1.png" alt="Hình 2.3: Không gian nghiệm của một hệ gồm hai phương trình tuyến tính với hai biến có thể được diễn giải theo hình học như "  style="max-width:100%;height:auto;" /><figcaption style="margin-left:auto;margin-right:auto;font-style:italic;text-align:center;">Hình 2.3: Không gian nghiệm của một hệ gồm hai phương trình tuyến tính với hai biến có thể được diễn giải theo hình học như </figcaption></figure></p>
+<p>Tương tự, với <strong>ba biến</strong>, mỗi phương trình tuyến tính xác định một <strong>mặt phẳng</strong> trong không gian ba chiều. Khi lấy giao của các mặt phẳng này, tức là thỏa mãn tất cả các phương trình cùng lúc, ta có thể thu được một tập nghiệm là:</p>
+<ul>
+<li>một <strong>mặt phẳng</strong>,</li>
+<li>một <strong>đường thẳng</strong>,</li>
+<li>một <strong>điểm</strong>,</li>
+<li>hoặc <strong>rỗng</strong> (khi các mặt phẳng không có giao chung).</li>
+</ul>
+</div>
+<div class="alert alert-info" role="alert">
+<div class="d-flex align-items-center">
+<i class="bi-info-circle-fill flex-shrink-0 me-2"aria-label="Info:"></i>
+<h5>Info:</h5>
+</div>
+<p><strong>Dạng ma trận của hệ phương trình tuyến tính</strong></p>
+<p>Để tiếp cận việc giải các hệ phương trình tuyến tính một cách có hệ thống, ta sẽ giới thiệu một ký hiệu gọn gàng và hữu ích. Ta gom các hệ số <span class="math">\(a_{ij}\)</span> thành các vectơ, rồi gom các vectơ đó thành <strong>ma trận</strong>. Nói cách khác, ta viết hệ phương trình trong (2.3) dưới dạng:</p>
+<div class="math">
+\[
+\begin{bmatrix}
+a_{11} \\
+\vdots \\
+a_{m1}
+\end{bmatrix} x_1
++
+\begin{bmatrix}
+a_{12} \\
+\vdots \\
+a_{m2}
+\end{bmatrix} x_2
++ \cdots +
+\begin{bmatrix}
+a_{1n} \\
+\vdots \\
+a_{mn}
+\end{bmatrix} x_n
+=
+\begin{bmatrix}
+b_1 \\
+\vdots \\
+b_m
+\end{bmatrix}
+\tag{2.9}
+\]</div>
+<p>Tương đương với</p>
+<div class="math">
+\[
+\begin{bmatrix}
+a_{11} &amp; \cdots &amp; a_{1n} \\
+\vdots &amp; \ddots &amp; \vdots \\
+a_{m1} &amp; \cdots &amp; a_{mn}
+\end{bmatrix}
+\begin{bmatrix}
+x_1 \\
+\vdots \\
+x_n
+\end{bmatrix}
+=
+\begin{bmatrix}
+b_1 \\
+\vdots \\
+b_m
+\end{bmatrix}
+\tag{2.10}
+\]</div>
+<p>Trong phần tiếp theo, chúng ta sẽ xem xét kỹ hơn các ma trận này và định nghĩa các quy tắc tính toán. Chúng ta sẽ quay lại việc giải các hệ phương trình tuyến tính ở Mục 2.3.</p>
+</div>
+<h2 id="ma-tran">2.2 Ma trận</h2>
+<p><strong>Ma trận</strong> (matrix) là cách gọn để biểu diễn hệ tuyến tính và các ánh xạ tuyến tính (linear mappings) (hàm tuyến tính).</p>
+<div class="alert alert-info" role="alert">
+<div class="d-flex align-items-center">
+<i class="bi-info-circle-fill flex-shrink-0 me-2"aria-label="Info:"></i>
+<h5>Info:</h5>
+</div>
+<p><strong>Định nghĩa 2.1 Ma trận</strong></p>
+<p>Với m,n <span class="math">\(\in\)</span> <span class="math">\(\mathbb{N}\)</span>, một <strong>ma trận</strong> thực kích thước <span class="math">\(m \times n\)</span> là một bảng số <span class="math">\(a_{ij}\)</span> sắp xếp thành m hàng và n cột:</p>
+</div>
+<div class="math">
+\[
+A =
+\begin{bmatrix}
+a_{11} &amp; a_{12} &amp; \cdots &amp; a_{1n} \\
+a_{21} &amp; a_{22} &amp; \cdots &amp; a_{2n} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mn}
+\end{bmatrix},
+\qquad a_{ij} \in \mathbb{R}.
+\]</div>
+<p><span class="math">\(\mathbb{R}^{m \times n}\)</span> là tập hợp tất cả các ma trận kích thước <span class="math">\((m, n)\)</span> với giá trị thực.<br />
+Một ma trận <span class="math">\(A \in \mathbb{R}^{m \times n}\)</span> cũng có thể được biểu diễn tương đương như một vectơ <span class="math">\(a \in \mathbb{R}^{mn}\)</span> bằng cách <strong>xếp chồng tất cả <span class="math">\(n\)</span> cột của ma trận lại thành một vectơ dài</strong>.</p>
+<p>Theo quy ước, <strong>ma trận</strong> kích thước <span class="math">\(1 \times n\)</span> được gọi là <strong>vectơ</strong> hàng, còn <strong>ma trận</strong>  <span class="math">\(m \times 1\)</span> được gọi là <strong>vectơ</strong> cột.</p>
+<h3 id="cong-va-nhan-ma-tran">2.2.1 Cộng và nhân ma trận</h3>
+<p>Tổng của hai ma trận <span class="math">\(A \in \mathbb{R}^{m \times n}\)</span>, <span class="math">\(B \in \mathbb{R}^{m \times n}\)</span> được định nghĩa là phép cộng <strong>theo từng phần tử</strong>, tức là</p>
+<div class="math">
+\[
+A + B :=
+\begin{bmatrix}
+a_{11} + b_{11} &amp; \cdots &amp; a_{1n} + b_{1n} \\
+\vdots &amp; \ddots &amp; \vdots \\
+a_{m1} + b_{m1} &amp; \cdots &amp; a_{mn} + b_{mn}
+\end{bmatrix}
+\in \mathbb{R}^{m \times n}.
+\tag{2.12}
+\]</div>
+<p>Với các ma trận <span class="math">\(A \in \mathbb{R}^{m \times n}\)</span>, <span class="math">\(B \in \mathbb{R}^{n \times k}\)</span>, các phần tử <span class="math">\(c_{ij}\)</span> của tích ma trận <span class="math">\(C = AB \in \mathbb{R}^{m \times k}\)</span> được tính bởi</p>
+<div class="math">
+\[
+c_{ij} = \sum_{l=1}^{n} a_{il} b_{lj}, \qquad i = 1,\ldots,m,\; j = 1,\ldots,k.
+\tag{2.13}
+\]</div>
+<p>Điều này có nghĩa là để tính phần tử <span class="math">\(c_{ij}\)</span>, ta nhân các phần tử của <strong>hàng thứ <span class="math">\(i\)</span> của <span class="math">\(A\)</span></strong> với <strong>cột thứ <span class="math">\(j\)</span> của <span class="math">\(B\)</span></strong> rồi cộng chúng lại. Sau này, trong Mục 3.2, ta sẽ gọi phép toán này là <strong>tích vô hướng</strong> của hàng và cột tương ứng. Trong những trường hợp cần nhấn mạnh rằng ta đang thực hiện phép nhân, ta dùng ký hiệu <span class="math">\(A \cdot B\)</span> để chỉ phép nhân.</p>
+<p><strong>Nhận xét.</strong> Ma trận chỉ có thể nhân được nếu các kích thước &quot;kề nhau&quot; phù hợp. Ví dụ, một ma trận <span class="math">\(n \times k\)</span> có thể nhân với một ma trận <span class="math">\(k \times m\)</span> (từ bên trái):</p>
+<div class="math">
+\[
+\underbrace{A}_{n \times k} \;
+\underbrace{B}_{k \times m}
+=
+\underbrace{C}_{n \times m}.
+\tag{2.14}
+\]</div>
+<p>Tích <span class="math">\(BA\)</span> không được xác định nếu <span class="math">\(m \ne n\)</span> vì các kích thước kề nhau không khớp.</p>
+<p><strong>Nhận xét.</strong> Phép nhân ma trận <strong>không</strong> được định nghĩa theo kiểu nhân từng phần tử, tức là nhìn chung
+<span class="math">\(c_{ij} \ne a_{ij} b_{ij}\)</span> (kể cả khi kích thước của <span class="math">\(A, B\)</span> phù hợp). Kiểu nhân theo từng phần tử này thường xuất hiện trong các ngôn ngữ lập trình khi nhân các mảng (đa chiều) với nhau và được gọi là <strong>tích Hadamard</strong>.</p>
+<p><strong>Ví dụ 2.3</strong></p>
+<p>Với</p>
+<div class="math">
+\[
+A =
+\begin{bmatrix}
+1 &amp; 2 &amp; 3 \\
+3 &amp; 2 &amp; 1
+\end{bmatrix}
+\in \mathbb{R}^{2 \times 3},
+\qquad
+B =
+\begin{bmatrix}
+0 &amp; 2 \\
+1 &amp; -1 \\
+0 &amp; 1
+\end{bmatrix}
+\in \mathbb{R}^{3 \times 2},
+\]</div>
+<p>ta thu được</p>
+<div class="math">
+\[
+AB =
+\begin{bmatrix}
+1 &amp; 2 &amp; 3 \\
+3 &amp; 2 &amp; 1
+\end{bmatrix}
+\begin{bmatrix}
+0 &amp; 2 \\
+1 &amp; -1 \\
+0 &amp; 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+2 &amp; 3 \\
+2 &amp; 5
+\end{bmatrix}
+\in \mathbb{R}^{2 \times 2},
+\tag{2.15}
+\]</div>
+<p>và</p>
+<div class="math">
+\[
+BA =
+\begin{bmatrix}
+0 &amp; 2 \\
+1 &amp; -1 \\
+0 &amp; 1
+\end{bmatrix}
+\begin{bmatrix}
+1 &amp; 2 &amp; 3 \\
+3 &amp; 2 &amp; 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+6 &amp; 4 &amp; 2 \\
+-2 &amp; 0 &amp; 2 \\
+3 &amp; 2 &amp; 1
+\end{bmatrix}
+\in \mathbb{R}^{3 \times 3}.
+\tag{2.16}
+\]</div>
+<p>Từ ví dụ này, ta thấy phép nhân ma trận <strong>không giao hoán</strong>, tức là <span class="math">\(AB \ne BA\)</span>.</p>
+<div class="alert alert-info" role="alert">
+<div class="d-flex align-items-center">
+<i class="bi-info-circle-fill flex-shrink-0 me-2"aria-label="Info:"></i>
+<h5>Info:</h5>
+</div>
+<p><strong>Định nghĩa 2.2 Ma trận đơn vị</strong></p>
+<p>Trong <span class="math">\(\mathbb{R}^{n \times n}\)</span>, ta định nghĩa <strong>ma trận đơn vị</strong></p>
+<div class="math">
+\[
+I_n :=
+\begin{bmatrix}
+1 &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; 1 &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; 1
+\end{bmatrix}
+\in \mathbb{R}^{n \times n},
+\tag{2.17}
+\]</div>
+<p>là ma trận <span class="math">\(n \times n\)</span> có các phần tử trên đường chéo chính bằng 1 và các phần tử còn lại bằng 0.</p>
+</div>
+<p>Một số tính chất cơ bản:</p>
+<p><strong>Tính kết hợp</strong></p>
+<div class="math">
+\[
+(AB)C = A(BC),
+\tag{2.18}
+\]</div>
+<p><strong>Tính phân phối</strong></p>
+<div class="math">
+\[
+(A + B)C = AC + BC, \qquad A(C + D) = AC + AD,
+\tag{2.19}
+\]</div>
+<p><strong>Nhân với ma trận đơn vị</strong></p>
+<div class="math">
+\[
+I_m A = A I_n = A.
+\tag{2.20}
+\]</div>
+<p>Lưu ý rằng <span class="math">\(I_m \ne I_n\)</span> khi <span class="math">\(m \ne n\)</span>.</p>
+<hr />
+<h3 id="ma-tran-nghich-ao-va-chuyen-vi">2.2.2 Ma trận nghịch đảo và chuyển vị</h3>
+<div class="alert alert-info" role="alert">
+<div class="d-flex align-items-center">
+<i class="bi-info-circle-fill flex-shrink-0 me-2"aria-label="Info:"></i>
+<h5>Info:</h5>
+</div>
+<p><strong>Định nghĩa 2.3 Ma trận nghịch đảo</strong></p>
+<p>Xét một ma trận vuông <span class="math">\(A \in \mathbb{R}^{n \times n}\)</span>. Nếu tồn tại ma trận <span class="math">\(B \in \mathbb{R}^{n \times n}\)</span> sao cho</p>
+<div class="math">
+\[
+AB = I_n = BA,
+\]</div>
+<p>thì <span class="math">\(B\)</span> được gọi là <strong>ma trận nghịch đảo</strong> của <span class="math">\(A\)</span> và ký hiệu là <span class="math">\(A^{-1}\)</span>.</p>
+</div>
+<p>Không phải mọi ma trận <span class="math">\(A\)</span> đều có nghịch đảo. Nếu <span class="math">\(A^{-1}\)</span> tồn tại thì <span class="math">\(A\)</span> được gọi là <strong>khả nghịch/không suy biến</strong>; ngược lại, <span class="math">\(A\)</span> là <strong>suy biến/không khả nghịch</strong>. Khi tồn tại, nghịch đảo là <strong>duy nhất</strong>.</p>
+<div class="alert alert-info" role="alert">
+<div class="d-flex align-items-center">
+<i class="bi-info-circle-fill flex-shrink-0 me-2"aria-label="Info:"></i>
+<h5>Info:</h5>
+</div>
+<p><strong>Nhận xét (Tồn tại nghịch đảo của ma trận <span class="math">\(2 \times 2\)</span>).</strong><br />
+Xét</p>
+<div class="math">
+\[
+A :=
+\begin{bmatrix}
+a_{11} &amp; a_{12} \\
+a_{21} &amp; a_{22}
+\end{bmatrix}
+\in \mathbb{R}^{2 \times 2}.
+\tag{2.21}
+\]</div>
+<p>Nếu ta nhân <span class="math">\(A\)</span> với</p>
+<div class="math">
+\[
+A' :=
+\begin{bmatrix}
+a_{22} &amp; -a_{12} \\
+-a_{21} &amp; a_{11}
+\end{bmatrix},
+\tag{2.22}
+\]</div>
+<p>ta thu được</p>
+<div class="math">
+\[
+AA' =
+\begin{bmatrix}
+a_{11}a_{22} - a_{12}a_{21} &amp; 0 \\
+0 &amp; a_{11}a_{22} - a_{12}a_{21}
+\end{bmatrix}
+=
+(a_{11}a_{22} - a_{12}a_{21}) I.
+\tag{2.23}
+\]</div>
+<p>Do đó,</p>
+<div class="math">
+\[
+A^{-1} =
+\frac{1}{a_{11}a_{22} - a_{12}a_{21}}
+\begin{bmatrix}
+a_{22} &amp; -a_{12} \\
+-a_{21} &amp; a_{11}
+\end{bmatrix}
+\tag{2.24}
+\]</div>
+<p><strong>khi và chỉ khi</strong> <span class="math">\(a_{11}a_{22} - a_{12}a_{21} \ne 0\)</span>.</p>
+</div>
+<p><strong>Ví dụ 2.4 (Ma trận nghịch đảo)</strong></p>
+<p>Hai ma trận</p>
+<div class="math">
+\[
+A =
+\begin{bmatrix}
+1 &amp; 2 &amp; 1 \\
+4 &amp; 4 &amp; 5 \\
+6 &amp; 7 &amp; 7
+\end{bmatrix},
+\qquad
+B =
+\begin{bmatrix}
+-7 &amp; -7 &amp; 6 \\
+2 &amp; 1 &amp; -1 \\
+4 &amp; 5 &amp; -4
+\end{bmatrix}
+\tag{2.25}
+\]</div>
+<p>là nghịch đảo của nhau vì <span class="math">\(AB = I = BA\)</span>.</p>
+<div class="alert alert-info" role="alert">
+<div class="d-flex align-items-center">
+<i class="bi-info-circle-fill flex-shrink-0 me-2"aria-label="Info:"></i>
+<h5>Info:</h5>
+</div>
+<p><strong>Định nghĩa 2.4 (Chuyển vị)</strong></p>
+<p>Với <span class="math">\(A \in \mathbb{R}^{m \times n}\)</span>, ma trận <span class="math">\(B \in \mathbb{R}^{n \times m}\)</span> thỏa <span class="math">\(b_{ij} = a_{ji}\)</span> được gọi là <strong>ma trận chuyển vị</strong> của <span class="math">\(A\)</span>, ký hiệu là <span class="math">\(A^\top\)</span>.</p>
+<p>Các tính chất quan trọng:</p>
+<div class="math">
+\[
+AA^{-1} = I = A^{-1}A,
+\tag{2.26}
+\]</div>
+<div class="math">
+\[
+(AB)^{-1} = B^{-1} A^{-1},
+\tag{2.27}
+\]</div>
+<div class="math">
+\[
+(A + B)^{-1} \ne A^{-1} + B^{-1},
+\tag{2.28}
+\]</div>
+<div class="math">
+\[
+(A^\top)^\top = A,
+\tag{2.29}
+\]</div>
+<div class="math">
+\[
+(AB)^\top = B^\top A^\top,
+\tag{2.30}
+\]</div>
+<div class="math">
+\[
+(A + B)^\top = A^\top + B^\top.
+\tag{2.31}
+\]</div>
+</div>
+<div class="alert alert-info" role="alert">
+<div class="d-flex align-items-center">
+<i class="bi-info-circle-fill flex-shrink-0 me-2"aria-label="Info:"></i>
+<h5>Info:</h5>
+</div>
+<p><strong>Định nghĩa 2.5 (Ma trận đối xứng)</strong></p>
+<p>Một ma trận <span class="math">\(A \in \mathbb{R}^{n \times n}\)</span> được gọi là <strong>đối xứng</strong> nếu</p>
+<div class="math">
+\[
+A = A^\top.
+\]</div>
+<p>Chỉ các ma trận vuông mới có thể là đối xứng. Nếu <span class="math">\(A\)</span> khả nghịch thì <span class="math">\(A^\top\)</span> cũng khả nghịch và</p>
+<div class="math">
+\[
+(A^{-1})^\top = (A^\top)^{-1} = A^{-\top}.
+\]</div>
+<p><strong>Nhận xét.</strong> Tổng của hai ma trận đối xứng luôn đối xứng, nhưng tích của chúng nói chung <strong>không</strong> đối xứng:</p>
+<div class="math">
+\[
+\begin{bmatrix}
+1 &amp; 0 \\
+0 &amp; 0
+\end{bmatrix}
+\begin{bmatrix}
+1 &amp; 1 \\
+1 &amp; 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 &amp; 1 \\
+0 &amp; 0
+\end{bmatrix}.
+\tag{2.32}
+\]</div>
+</div>
+<h3 id="nhan-ma-tran-voi-mot-so-vo-huong">2.2.3 Nhân ma trận với một số vô hướng</h3>
+<p>Với <span class="math">\(A \in \mathbb{R}^{m \times n}\)</span> và <span class="math">\(\lambda \in \mathbb{R}\)</span>, ta có <span class="math">\(\lambda A = K\)</span> với <span class="math">\(K_{ij} = \lambda a_{ij}\)</span>. Tức là <span class="math">\(\lambda\)</span> <strong>co giãn</strong> mọi phần tử của <span class="math">\(A\)</span>.</p>
+<p>Các tính chất:</p>
+<p><strong>Tính kết hợp</strong></p>
+<div class="math">
+\[
+(\lambda \psi) C = \lambda (\psi C),
+\]</div>
+<div class="math">
+\[
+\lambda (BC) = (\lambda B)C = B(\lambda C) = (BC)\lambda.
+\]</div>
+<p><strong>Tính phân phối</strong></p>
+<div class="math">
+\[
+(\lambda + \psi) C = \lambda C + \psi C,
+\]</div>
+<div class="math">
+\[
+\lambda (B + C) = \lambda B + \lambda C.
+\]</div>
+<p><strong>Ví dụ 2.5 (Tính phân phối)</strong></p>
+<p>Cho</p>
+<div class="math">
+\[
+C :=
+\begin{bmatrix}
+1 &amp; 2 \\
+3 &amp; 4
+\end{bmatrix},
+\tag{2.33}
+\]</div>
+<p>với mọi <span class="math">\(\lambda, \psi \in \mathbb{R}\)</span> ta có</p>
+<div class="math">
+\[
+(\lambda + \psi) C =
+\begin{bmatrix}
+\lambda + \psi &amp; 2\lambda + 2\psi \\
+3\lambda + 3\psi &amp; 4\lambda + 4\psi
+\end{bmatrix}
+= \lambda C + \psi C.
+\tag{2.34}
+\]</div>
+<h3 id="bieu-dien-gon-cua-he-phuong-trinh-tuyen-tinh">2.2.4 Biểu diễn gọn của hệ phương trình tuyến tính</h3>
+<p>Xét hệ</p>
+<div class="math">
+\[
+\begin{aligned}
+2x_1 + 3x_2 + 5x_3 &amp;= 1 \\
+4x_1 - 2x_2 - 7x_3 &amp;= 8 \\
+9x_1 + 5x_2 - 3x_3 &amp;= 2
+\end{aligned}
+\tag{2.35}
+\]</div>
+<p>Sử dụng quy tắc nhân ma trận, ta có thể viết gọn hệ này dưới dạng</p>
+<div class="math">
+\[
+\begin{bmatrix}
+2 &amp; 3 &amp; 5 \\
+4 &amp; -2 &amp; -7 \\
+9 &amp; 5 &amp; -3
+\end{bmatrix}
+\begin{bmatrix}
+x_1 \\
+x_2 \\
+x_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 \\
+8 \\
+2
+\end{bmatrix}.
+\tag{2.36}
+\]</div>
+<p>Nói chung, một hệ phương trình tuyến tính có thể được biểu diễn gọn dưới dạng <strong><span class="math">\(Ax = b\)</span></strong>, và tích <span class="math">\(Ax\)</span> là một tổ hợp tuyến tính của các cột của <span class="math">\(A\)</span>. Chúng ta sẽ thảo luận chi tiết hơn về tổ hợp tuyến tính trong Mục 2.5.</p>
+<h2 id="giai-he-phuong-trinh-tuyen-tinh">2.3 Giải hệ phương trình tuyến tính</h2>
+<p>Trong (2.3), chúng ta đã giới thiệu dạng tổng quát của một hệ phương trình, tức là</p>
+<div class="math">
+\[
+\begin{aligned}
+a_{11}x_1 + \cdots + a_{1n}x_n &amp;= b_1 \\
+\vdots &amp; \vdots \\
+a_{m1}x_1 + \cdots + a_{mn}x_n &amp;= b_m
+\end{aligned}
+\tag{2.37}
+\]</div>
+<p>trong đó <span class="math">\(a_{ij} \in \mathbb{R}\)</span> và <span class="math">\(b_i \in \mathbb{R}\)</span> là các hằng số đã biết, còn <span class="math">\(x_j\)</span> là các ẩn số,
+với <span class="math">\(i = 1,\ldots,m\)</span>, <span class="math">\(j = 1,\ldots,n\)</span>.</p>
+<p>Cho đến nay, chúng ta đã thấy rằng ma trận có thể được dùng như một cách gọn gàng để biểu diễn các hệ phương trình tuyến tính, sao cho ta có thể viết</p>
+<div class="math">
+\[
+Ax = b
+\tag{2.10}
+\]</div>
+<h3 id="nghiem-rieng-va-nghiem-tong-quat">2.3.1 Nghiệm riêng và nghiệm tổng quát</h3>
+<p>Xét hệ phương trình</p>
+<div class="math">
+\[
+\begin{bmatrix}
+1 &amp; 0 &amp; 8 &amp; -4 \\
+0 &amp; 1 &amp; 2 &amp; 12
+\end{bmatrix}
+\begin{bmatrix}
+x_1 \\ x_2 \\ x_3 \\ x_4
+\end{bmatrix}
+=
+\begin{bmatrix}
+42 \\ 8
+\end{bmatrix}
+\tag{2.38}
+\]</div>
+<p>Một nghiệm của hệ là</p>
+<div class="math">
+\[
+x =
+\begin{bmatrix}
+42 \\ 8 \\ 0 \\ 0
+\end{bmatrix}
+\]</div>
+<p>Nghiệm này được gọi là <strong>nghiệm riêng</strong> (hay <strong>nghiệm đặc biệt</strong>).</p>
+<h3 id="dang-bac-thang-theo-hang-row-echelon-form">2.3.2 Dạng bậc thang theo hàng (Row-Echelon Form)</h3>
+<p>Một ma trận được gọi là ở <strong>dạng bậc thang theo hàng (REF)</strong> nếu:</p>
+<ol>
+<li>Tất cả các hàng chỉ gồm số 0 nằm ở cuối ma trận.</li>
+<li>Hệ số khác 0 đầu tiên (pivot) của mỗi hàng nằm <strong>bên phải</strong> pivot của hàng phía trên.</li>
+</ol>
+<h3 id="dang-bac-thang-rut-gon-theo-hang-reduced-row-echelon-form">2.3.3 Dạng bậc thang rút gọn theo hàng (Reduced Row-Echelon Form)</h3>
+<div class="alert alert-info" role="alert">
+<div class="d-flex align-items-center">
+<i class="bi-info-circle-fill flex-shrink-0 me-2"aria-label="Info:"></i>
+<h5>Info:</h5>
+</div>
+<p>Một ma trận ở <strong>dạng bậc thang rút gọn theo hàng (RREF)</strong> nếu:</p>
+<ol>
+<li>Nó đã ở dạng REF.</li>
+<li>Mỗi pivot bằng 1.</li>
+<li>Pivot là phần tử khác 0 duy nhất trong cột của nó.</li>
+</ol>
+</div>
+<p><strong>Ví dụ (Dạng bậc thang rút gọn theo hàng)</strong></p>
+<div class="math">
+\[
+A =
+\begin{bmatrix}
+1 &amp; 3 &amp; 0 &amp; 0 &amp; 3 \\
+0 &amp; 0 &amp; 1 &amp; 0 &amp; 9 \\
+0 &amp; 0 &amp; 0 &amp; 1 &amp; -4
+\end{bmatrix}
+\tag{2.49}
+\]</div>
+<h3 id="nghiem-tong-quat-cua-he-thuan-nhat">2.3.4 Nghiệm tổng quát của hệ thuần nhất</h3>
+<p>Mọi nghiệm của hệ <span class="math">\(Ax = 0\)</span>, với <span class="math">\(x \in \mathbb{R}^5\)</span>, được cho bởi</p>
+<div class="math">
+\[
+\left\{
+x = \lambda_1
+\begin{bmatrix}
+3 \\ -1 \\ 0 \\ 0 \\ 0
+\end{bmatrix}
++
+\lambda_2
+\begin{bmatrix}
+3 \\ 0 \\ 9 \\ -4 \\ -1
+\end{bmatrix}
+\;\middle|\;
+\lambda_1, \lambda_2 \in \mathbb{R}
+\right\}
+\tag{2.50}
+\]</div>
+<p><strong>Mẹo &quot;Minus-1&quot;</strong></p>
+<p>Trong phần này, chúng ta giới thiệu một <strong>mẹo thực hành</strong> để đọc ra nghiệm <span class="math">\(x\)</span> của một <strong>hệ phương trình tuyến tính thuần nhất</strong></p>
+<div class="math">
+\[
+Ax = 0,
+\]</div>
+<p>trong đó <span class="math">\(A \in \mathbb{R}^{k \times n}\)</span> và <span class="math">\(x \in \mathbb{R}^n\)</span>.</p>
+<p>Trước hết, ta giả sử rằng <span class="math">\(A\)</span> đang ở <strong>dạng bậc thang rút gọn theo hàng</strong> (reduced row-echelon form – RREF) và <strong>không có hàng nào toàn số 0</strong>, tức là</p>
+<div class="math">
+\[
+A =
+\begin{bmatrix}
+0 &amp; \cdots &amp; 0 &amp; 1 &amp; * &amp; \cdots &amp; * &amp; 0 &amp; * &amp; \cdots &amp; * &amp; 0 &amp; * &amp; \cdots &amp; * \\
+\vdots &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; \\
+0 &amp; \cdots &amp; 0 &amp; 0 &amp; \cdots &amp; 0 &amp; 1 &amp; * &amp; \cdots &amp; * \\
+\vdots &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp; \\
+0 &amp; \cdots &amp; 0 &amp; 0 &amp; \cdots &amp; 0 &amp; 0 &amp; \cdots &amp; 0 &amp; 1 &amp; * &amp; \cdots &amp; *
+\end{bmatrix},
+\tag{2.51}
+\]</div>
+<p>trong đó <span class="math">\(*\)</span> là các số thực bất kỳ, với các ràng buộc sau:</p>
+<ul>
+<li>Phần tử khác 0 đầu tiên trong mỗi hàng phải bằng 1 (pivot).</li>
+<li>Mọi phần tử khác trong cột chứa pivot đều bằng 0.</li>
+</ul>
+<p>Các cột <span class="math">\(j_1,\ldots,j_k\)</span> chứa các pivot (được đánh dấu đậm trong sách) chính là các <strong>vector đơn vị chuẩn</strong></p>
+<div class="math">
+\[
+e_1,\ldots,e_k \in \mathbb{R}^k.
+\]</div>
+<p>Tiếp theo, ta <strong>mở rộng ma trận này thành một ma trận vuông <span class="math">\(n \times n\)</span></strong>, ký hiệu là <span class="math">\(\tilde{A}\)</span>, bằng cách thêm <span class="math">\(n-k\)</span> hàng có dạng</p>
+<div class="math">
+\[
+[\,0 \;\cdots\; 0 \; -1 \; 0 \;\cdots\; 0\,]
+\tag{2.52}
+\]</div>
+<p>sao cho <strong>đường chéo chính của ma trận mở rộng <span class="math">\(\tilde{A}\)</span> chỉ chứa 1 hoặc −1</strong>.</p>
+<p>Khi đó, <strong>các cột của <span class="math">\(\tilde{A}\)</span> có −1 nằm trên đường chéo chính chính là các nghiệm của hệ thuần nhất</strong></p>
+<div class="math">
+\[
+Ax = 0.
+\]</div>
+<p>Chính xác hơn, các cột này tạo thành <strong>một cơ sở</strong> (xem Mục 2.6.1) của <strong>không gian nghiệm</strong> của <span class="math">\(Ax = 0\)</span>, không gian này về sau sẽ được gọi là <strong>kernel</strong> hay <strong>null space</strong> (xem Mục 2.7.3).</p>
+<p><strong>Ví dụ 2.8 (Mẹo Minus-1)</strong></p>
+<p>Xét lại ma trận trong (2.49), vốn đã ở dạng RREF:</p>
+<div class="math">
+\[
+A =
+\begin{bmatrix}
+1 &amp; 3 &amp; 0 &amp; 0 &amp; 3 \\
+0 &amp; 0 &amp; 1 &amp; 0 &amp; 9 \\
+0 &amp; 0 &amp; 0 &amp; 1 &amp; -4
+\end{bmatrix}.
+\tag{2.53}
+\]</div>
+<p>Ta mở rộng ma trận này thành ma trận <span class="math">\(5 \times 5\)</span> bằng cách thêm các hàng dạng (2.52) tại những vị trí mà đường chéo chính chưa có pivot, và thu được</p>
+<div class="math">
+\[
+\tilde{A} =
+\begin{bmatrix}
+1 &amp; 3 &amp; 0 &amp; 0 &amp; 3 \\
+0 &amp; -1 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 1 &amp; 0 &amp; 9 \\
+0 &amp; 0 &amp; 0 &amp; 1 &amp; -4 \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; -1
+\end{bmatrix}.
+\tag{2.54}
+\]</div>
+<p>Từ dạng này, ta <strong>có thể đọc ngay nghiệm của <span class="math">\(Ax = 0\)</span></strong> bằng cách lấy các cột của <span class="math">\(\tilde{A}\)</span> có phần tử −1 trên đường chéo chính:</p>
+<div class="math">
+\[
+\left\{
+x \in \mathbb{R}^5 :
+x =
+\lambda_1
+\begin{bmatrix}
+3 \\ -1 \\ 0 \\ 0 \\ 0
+\end{bmatrix}
++
+\lambda_2
+\begin{bmatrix}
+3 \\ 0 \\ 9 \\ -4 \\ -1
+\end{bmatrix},
+\;
+\lambda_1,\lambda_2 \in \mathbb{R}
+\right\}
+\tag{2.55}
+\]</div>
+<p>Kết quả này <strong>hoàn toàn trùng với nghiệm trong (2.50)</strong> mà trước đó ta thu được bằng &quot;trực giác&quot;.</p>
+<h3 id="tinh-ma-tran-nghich-ao">2.3.5 Tính ma trận nghịch đảo</h3>
+<p>Để tính ma trận nghịch đảo <span class="math">\(A^{-1}\)</span> của <span class="math">\(A \in \mathbb{R}^{n \times n}\)</span>, ta cần tìm một ma trận <span class="math">\(X\)</span> sao cho</p>
+<div class="math">
+\[
+AX = I_n.
+\]</div>
+<p>Khi đó <span class="math">\(X = A^{-1}\)</span>. Ta có thể xem đây là một hệ phương trình tuyến tính đồng thời</p>
+<div class="math">
+\[
+AX = I_n,
+\]</div>
+<p>trong đó</p>
+<div class="math">
+\[
+X = [x_1 \mid \cdots \mid x_n].
+\]</div>
+<p>Sử dụng ký hiệu <strong>ma trận mở rộng</strong>, ta có</p>
+<div class="math">
+\[
+\left[ A \mid I_n \right]
+\;\Longrightarrow\;
+\left[ I_n \mid A^{-1} \right].
+\tag{2.56}
+\]</div>
+<p>Điều này có nghĩa là: <strong>nếu đưa hệ phương trình mở rộng về dạng bậc thang rút gọn theo hàng, ta có thể đọc ra trực tiếp ma trận nghịch đảo ở vế phải</strong>. Do đó, việc tìm ma trận nghịch đảo tương đương với việc giải các hệ phương trình tuyến tính.</p>
+
+</div>

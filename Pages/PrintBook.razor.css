@@ -1,0 +1,436 @@
+/* PrintBook page styles */
+.print-book-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+/* Loading state */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    gap: 1rem;
+}
+
+.loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--border-color);
+    border-top-color: var(--accent-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-progress {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Print header (visible on screen, hidden when printing) */
+.print-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.print-header h1 {
+    font-size: 2rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.print-header p {
+    color: var(--text-muted);
+    margin: 0 0 1.5rem 0;
+}
+
+.print-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn-print,
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.btn-print {
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+}
+
+.btn-print:hover {
+    background: var(--accent-secondary);
+    transform: translateY(-2px);
+}
+
+.btn-back {
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-back:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+/* Preview section */
+.print-preview {
+    margin-top: 2rem;
+}
+
+.print-preview h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.chapters-preview {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.preview-item {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    gap: 1rem;
+}
+
+.preview-item:last-child {
+    border-bottom: none;
+}
+
+.preview-number {
+    color: var(--accent-primary);
+    font-weight: 500;
+    min-width: 80px;
+}
+
+.preview-title {
+    color: var(--text-secondary);
+}
+
+/* Book cover (visible only when printing) */
+.book-cover {
+    display: none;
+}
+
+/* Table of Contents */
+.print-toc {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+
+.print-toc h2 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+}
+
+.print-toc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.print-toc li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    gap: 1rem;
+}
+
+.print-toc li:last-child {
+    border-bottom: none;
+}
+
+.toc-number {
+    color: var(--accent-primary);
+    font-weight: 500;
+    min-width: 80px;
+}
+
+.toc-title {
+    color: var(--text-secondary);
+}
+
+/* Chapter content */
+.print-chapter {
+    margin-bottom: 4rem;
+    padding-bottom: 3rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.print-chapter:last-child {
+    border-bottom: none;
+}
+
+.chapter-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.chapter-label {
+    display: block;
+    color: var(--accent-primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.chapter-title {
+    font-size: 1.75rem;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.chapter-content {
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+.chapter-content h2 {
+    font-size: 1.4rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.chapter-content h3 {
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.chapter-content p {
+    margin-bottom: 1rem;
+}
+
+.chapter-content img {
+    max-width: 100%;
+    height: auto;
+    margin: 1.5rem 0;
+}
+
+.content-error {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Print-only class */
+.print-only {
+    display: none;
+}
+
+/* ===========================================
+   PRINT STYLES
+   =========================================== */
+@media print {
+    /* Reset page */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    body {
+        background: white !important;
+        color: black !important;
+        font-size: 11pt;
+        line-height: 1.5;
+    }
+
+    /* Hide non-print elements */
+    .no-print,
+    .print-header {
+        display: none !important;
+    }
+
+    /* Show print-only elements */
+    .print-only {
+        display: block !important;
+    }
+
+    /* Book cover for printing */
+    .book-cover {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+        page-break-after: always;
+    }
+
+    .book-cover h1 {
+        font-size: 28pt;
+        margin-bottom: 1rem;
+        color: black;
+    }
+
+    .book-cover .book-meta {
+        font-size: 14pt;
+        color: #666;
+    }
+
+    .book-cover .book-source {
+        font-size: 12pt;
+        color: #888;
+        margin-top: 2rem;
+    }
+
+    /* Page layout */
+    .print-book-page {
+        max-width: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Table of Contents */
+    .print-toc {
+        background: none;
+        border: none;
+        padding: 0;
+        page-break-after: always;
+    }
+
+    .print-toc h2 {
+        font-size: 18pt;
+        border-bottom: 2px solid #333;
+        padding-bottom: 0.5rem;
+    }
+
+    .print-toc li {
+        border-bottom-color: #ddd;
+    }
+
+    .toc-number {
+        color: #333;
+    }
+
+    .toc-title {
+        color: #333;
+    }
+
+    /* Chapter styles for printing */
+    .print-chapter {
+        page-break-before: always;
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 0;
+    }
+
+    .print-chapter:first-of-type {
+        page-break-before: auto;
+    }
+
+    .chapter-header {
+        border-bottom-color: #ddd;
+    }
+
+    .chapter-label {
+        color: #666;
+    }
+
+    .chapter-title {
+        font-size: 20pt;
+        color: black;
+    }
+
+    .chapter-content {
+        color: #333;
+    }
+
+    .chapter-content h2 {
+        font-size: 16pt;
+        color: black;
+        page-break-after: avoid;
+    }
+
+    .chapter-content h3 {
+        font-size: 14pt;
+        color: black;
+        page-break-after: avoid;
+    }
+
+    .chapter-content p {
+        orphans: 3;
+        widows: 3;
+    }
+
+    .chapter-content img {
+        max-width: 80%;
+        page-break-inside: avoid;
+    }
+
+    .chapter-content pre,
+    .chapter-content code {
+        background: #f5f5f5 !important;
+        color: #333 !important;
+        page-break-inside: avoid;
+    }
+
+    .chapter-content table {
+        page-break-inside: avoid;
+    }
+
+    /* Alert boxes */
+    .chapter-content .alert {
+        border: 1px solid #ddd;
+        background: #f9f9f9 !important;
+        page-break-inside: avoid;
+    }
+
+    /* Remove unnecessary elements from content */
+    .chapter-content .LatexContainer,
+    .chapter-content .MermaidContainer {
+        page-break-inside: avoid;
+    }
+
+    /* Links */
+    a {
+        color: black !important;
+        text-decoration: underline;
+    }
+
+    a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 9pt;
+        color: #666;
+    }
+
+    /* Page margins */
+    @page {
+        margin: 2cm;
+        size: A4;
+    }
+
+    @page :first {
+        margin-top: 0;
+    }
+}

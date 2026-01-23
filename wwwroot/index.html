@@ -464,6 +464,92 @@
             setTimeout(initCodeBlocks, 100);
         });
         codeObserver.observe(document.body, { childList: true, subtree: true });
+
+        // Load chapter content for printing via iframe
+        window.loadChapterContent = function (url) {
+            return new Promise((resolve, reject) => {
+                const iframe = document.getElementById('content-loader');
+                if (!iframe) {
+                    // Create iframe if not exists
+                    const newIframe = document.createElement('iframe');
+                    newIframe.id = 'content-loader';
+                    newIframe.style.cssText = 'display:none; position:absolute; left:-9999px; width:1024px; height:768px;';
+                    document.body.appendChild(newIframe);
+                }
+
+                const loader = document.getElementById('content-loader');
+                let timeoutId = null;
+                let checkInterval = null;
+
+                const cleanup = () => {
+                    if (timeoutId) clearTimeout(timeoutId);
+                    if (checkInterval) clearInterval(checkInterval);
+                    loader.onload = null;
+                    loader.onerror = null;
+                };
+
+                loader.onload = () => {
+                    // Wait for Blazor to render content
+                    let attempts = 0;
+                    const maxAttempts = 50; // 5 seconds max
+
+                    checkInterval = setInterval(() => {
+                        attempts++;
+                        try {
+                            const iframeDoc = loader.contentDocument || loader.contentWindow.document;
+                            const content = iframeDoc.querySelector('.content');
+
+                            if (content && content.innerHTML.trim().length > 100) {
+                                cleanup();
+                                // Clone and clean content
+                                let html = content.innerHTML;
+                                // Remove navigation elements that might be inside content
+                                const tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = html;
+                                // Remove any nested scripts
+                                tempDiv.querySelectorAll('script').forEach(s => s.remove());
+                                // Remove chapter navigation
+                                tempDiv.querySelectorAll('.chapter-navigation, .ChapterNavigation').forEach(n => n.remove());
+                                resolve(tempDiv.innerHTML);
+                            } else if (attempts >= maxAttempts) {
+                                cleanup();
+                                resolve('<p>Timeout loading content.</p>');
+                            }
+                        } catch (e) {
+                            if (attempts >= maxAttempts) {
+                                cleanup();
+                                reject(e);
+                            }
+                        }
+                    }, 100);
+                };
+
+                loader.onerror = (e) => {
+                    cleanup();
+                    reject(new Error('Failed to load iframe'));
+                };
+
+                // Overall timeout
+                timeoutId = setTimeout(() => {
+                    cleanup();
+                    resolve('<p>Timeout loading content.</p>');
+                }, 10000);
+
+                loader.src = url;
+            });
+        };
+
+        // Helper to typeset MathJax for dynamically injected print content
+        window.printbookTypeset = function () {
+            try {
+                if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
+                    return MathJax.typesetPromise();
+                }
+            } catch (e) {
+                console.warn('printbookTypeset failed', e);
+            }
+            return Promise.resolve();
+        };
     </script>
 
     <!-- Prism.js -->
