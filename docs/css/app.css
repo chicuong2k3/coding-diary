@@ -1,5 +1,9 @@
 /* Theme Variables */
 :root {
+    /* Layout */
+    --sidebar-width: 280px;
+    /* Table border used for better contrast in tables */
+    --table-border: rgba(255, 255, 255, 0.08);
     /* Dark theme (default) */
     --bg-primary: #0b0b0b;
     --bg-secondary: #0a0a0a;
@@ -35,6 +39,8 @@
 
 /* Light theme */
 [data-theme="light"] {
+    --sidebar-width: 280px;
+    --table-border: rgba(0, 0, 0, 0.08);
     --bg-primary: #ffffff;
     --bg-secondary: #f8f9fa;
     --bg-tertiary: #f1f3f4;
@@ -901,10 +907,9 @@ html {
    Table of Contents
    ======================================== */
 .toc-wrapper {
-    position: sticky;
-    top: 100px;
+    position: relative;
     background: var(--bg-card);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--table-border);
     border-radius: 12px;
     padding: 1rem;
     max-height: calc(100vh - 150px);
@@ -1512,5 +1517,274 @@ html {
 
     .related-posts-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ===== Table Styles (responsive + dark/light mode) ===== */
+
+/* Table container for overflow handling */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Base table styles - applies to all tables in content */
+.content table,
+.markdown-body table,
+article table,
+table.doc-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--bg-card) !important;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 1.5rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--table-border);
+}
+
+/* Ensure cells don't show white backgrounds in dark theme */
+.content table th,
+.content table td,
+.markdown-body table th,
+.markdown-body table td,
+article table th,
+article table td,
+table.doc-table th,
+table.doc-table td {
+    background-color: transparent !important;
+}
+
+/* Table header */
+.content table th,
+.markdown-body table th,
+article table th,
+table.doc-table th {
+    padding: 0.875rem 1rem;
+    text-align: left;
+    vertical-align: middle;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: color-mix(in hsl, var(--accent-bg) 80%, rgba(0,0,0,0) 20%);
+    color: var(--accent-primary);
+    border-bottom: 2px solid var(--table-border);
+}
+
+/* Table cells */
+.content table td,
+.markdown-body table td,
+article table td,
+table.doc-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--table-border);
+    transition: background-color 0.15s ease;
+    color: var(--text-primary);
+}
+
+/* Remove bottom border from last row */
+.content table tbody tr:last-child td,
+.markdown-body table tbody tr:last-child td,
+article table tbody tr:last-child td,
+table.doc-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Zebra striping - dark mode */
+.content table tbody tr:nth-child(even),
+.markdown-body table tbody tr:nth-child(even),
+article table tbody tr:nth-child(even),
+table.doc-table tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Light mode zebra striping */
+[data-theme="light"] .content table tbody tr:nth-child(even),
+[data-theme="light"] .markdown-body table tbody tr:nth-child(even),
+[data-theme="light"] article table tbody tr:nth-child(even),
+[data-theme="light"] table.doc-table tbody tr:nth-child(even) {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+/* Row hover effect */
+.content table tbody tr:hover,
+.markdown-body table tbody tr:hover,
+article table tbody tr:hover,
+table.doc-table tbody tr:hover {
+    background: var(--bg-hover);
+}
+
+/* Caption */
+.content table caption,
+.markdown-body table caption,
+article table caption,
+table.doc-table caption {
+    caption-side: bottom;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-style: italic;
+}
+
+/* Code in tables */
+.content table code,
+.markdown-body table code,
+article table code,
+table.doc-table code {
+    font-size: 0.85em;
+    padding: 0.15rem 0.4rem;
+    white-space: nowrap;
+}
+
+/* Images in tables */
+.content table img,
+.markdown-body table img,
+article table img,
+table.doc-table img {
+    max-width: 150px;
+    height: auto;
+    border-radius: 6px;
+}
+
+/* Links in tables */
+.content table a,
+.markdown-body table a,
+article table a,
+table.doc-table a {
+    color: var(--accent-primary);
+    text-decoration: none;
+}
+
+.content table a:hover,
+.markdown-body table a:hover,
+article table a:hover,
+table.doc-table a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive table adjustments */
+@media (max-width: 768px) {
+    .content table,
+    .markdown-body table,
+    article table,
+    table.doc-table {
+        font-size: 0.85rem;
+        display: block;
+        overflow-x: auto;
+    }
+
+    .content table th,
+    .content table td,
+    .markdown-body table th,
+    .markdown-body table td,
+    article table th,
+    article table td,
+    table.doc-table th,
+    table.doc-table td {
+        padding: 0.6rem 0.75rem;
+        min-width: 100px;
+    }
+
+    .content table th,
+    .markdown-body table th,
+    article table th,
+    table.doc-table th {
+        font-size: 0.75rem;
+    }
+}
+
+/* ===========================================
+   GLOBAL PRINT STYLES
+   Hide site elements when printing from any page
+   =========================================== */
+@media print {
+    /* Hide site header, footer, sidebars, navigation */
+    .sakura-header,
+    .site-footer,
+    .home-footer,
+    .left-sidebar,
+    .toc-sidebar,
+    .floating-bookmark,
+    .search-container,
+    .hero,
+    .quote-section,
+    .posts-section,
+    .ChapterNavigation,
+    .chapter-navigation,
+    .prev-next-nav,
+    .btn-action,
+    .header-actions,
+    .main-nav,
+    .book-actions,
+    .sidebar-tags,
+    .no-print {
+        display: none !important;
+    }
+
+    /* Reset layout */
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
+    .site-content {
+        padding: 0 !important;
+    }
+
+    .page,
+    .sakura-page {
+        display: block !important;
+        padding: 0 !important;
+    }
+
+    .doc-main {
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: none !important;
+    }
+
+    .content {
+        padding: 0 !important;
+        color: black !important;
+    }
+
+    /* Typography for print */
+    h1, h2, h3, h4, h5, h6 {
+        color: black !important;
+        page-break-after: avoid;
+    }
+
+    p, li {
+        orphans: 3;
+        widows: 3;
+    }
+
+    img {
+        max-width: 100% !important;
+        page-break-inside: avoid;
+    }
+
+    pre, code, table {
+        page-break-inside: avoid;
+    }
+
+    /* Link handling */
+    a {
+        color: black !important;
+    }
+
+    /* Page setup */
+    @page {
+        margin: 2cm;
+        size: A4;
     }
 }
