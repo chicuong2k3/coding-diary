@@ -3,7 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Code Magic</title>
     <base href="/"/>
-    <link href="_framework/dotnet.cm6lsv5442.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-xNzm4YQr8CUYEEkTWaWyI+GSqzXJBgVGd4wo+zxTCi8="/>
+    <link href="_framework/dotnet.ve327t4ch8.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-x7jB6eQ6lUwKtO84nXX6hh/RGNDSWY7r7LJFeUR3FGc="/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
@@ -16,20 +16,20 @@
     <script type="importmap">{
   "imports": {
     "./_framework/blazor.webassembly.js": "./_framework/blazor.webassembly.66stpp682q.js",
-    "./_framework/dotnet.js": "./_framework/dotnet.cm6lsv5442.js",
-    "./_framework/dotnet.native.js": "./_framework/dotnet.native.reu89doxsd.js",
-    "./_framework/dotnet.runtime.js": "./_framework/dotnet.runtime.2tx45g8lli.js"
+    "./_framework/dotnet.native.js": "./_framework/dotnet.native.wrr3s1u3jw.js",
+    "./_framework/dotnet.runtime.js": "./_framework/dotnet.runtime.2tx45g8lli.js",
+    "./_framework/dotnet.js": "./_framework/dotnet.ve327t4ch8.js"
   },
   "scopes": {},
   "integrity": {
     "./_framework/blazor.webassembly.66stpp682q.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
     "./_framework/blazor.webassembly.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
-    "./_framework/dotnet.cm6lsv5442.js": "sha256-xNzm4YQr8CUYEEkTWaWyI+GSqzXJBgVGd4wo+zxTCi8=",
-    "./_framework/dotnet.js": "sha256-xNzm4YQr8CUYEEkTWaWyI+GSqzXJBgVGd4wo+zxTCi8=",
-    "./_framework/dotnet.native.js": "sha256-8whnkX/V6lwINjqCls0XU2bDmTzFJEuRSW6aJT5w0EQ=",
-    "./_framework/dotnet.native.reu89doxsd.js": "sha256-8whnkX/V6lwINjqCls0XU2bDmTzFJEuRSW6aJT5w0EQ=",
+    "./_framework/dotnet.js": "sha256-x7jB6eQ6lUwKtO84nXX6hh/RGNDSWY7r7LJFeUR3FGc=",
+    "./_framework/dotnet.native.js": "sha256-pHATP1UYfVbgkubj/zSgOMTH5p50o8sWVxiheNxMVnA=",
+    "./_framework/dotnet.native.wrr3s1u3jw.js": "sha256-pHATP1UYfVbgkubj/zSgOMTH5p50o8sWVxiheNxMVnA=",
     "./_framework/dotnet.runtime.2tx45g8lli.js": "sha256-2lZh9yO0fnzm3Xt7yV+Kox3DH3nK7L8hDhm84VT1xco=",
-    "./_framework/dotnet.runtime.js": "sha256-2lZh9yO0fnzm3Xt7yV+Kox3DH3nK7L8hDhm84VT1xco="
+    "./_framework/dotnet.runtime.js": "sha256-2lZh9yO0fnzm3Xt7yV+Kox3DH3nK7L8hDhm84VT1xco=",
+    "./_framework/dotnet.ve327t4ch8.js": "sha256-x7jB6eQ6lUwKtO84nXX6hh/RGNDSWY7r7LJFeUR3FGc="
   }
 }</script>
 
@@ -91,14 +91,15 @@ Lưu ý rằng đa thức rất khác với vectơ hình học. Trong khi vectơ
 <p>là một bộ ba số. Khi cộng hai vectơ <span class="math">\(\mathbf{a}, \mathbf{b} \in \mathbb{R}^n\)</span> theo từng thành phần, ta thu được một vectơ khác <span class="math">\(\mathbf{c} \in \mathbb{R}^n\)</span>. Tương tự, khi nhân <span class="math">\(\mathbf{a} \in \mathbb{R}^n\)</span> với một số vô hướng <span class="math">\(\lambda \in \mathbb{R}\)</span>, ta thu được vectơ đã được co giãn <span class="math">\(\lambda \mathbf{a} \in \mathbb{R}^n\)</span>.</p>
 <p>Việc xem vectơ như các phần tử của <span class="math">\(\mathbb{R}^n\)</span> còn có một lợi ích khác: nó tương ứng khá tự nhiên với các mảng số thực trên máy tính. Nhiều ngôn ngữ lập trình hỗ trợ các phép toán trên mảng, cho phép triển khai thuận tiện các thuật toán liên quan đến phép toán vectơ. Tuy nhiên, cần cẩn thận kiểm tra xem các phép toán trên mảng đó có thực sự tương ứng với các phép toán vectơ hay không khi cài đặt trên máy tính.</p>
 <p>Đại số tuyến tính tập trung vào những điểm tương đồng giữa các khái niệm vectơ này: ta có thể cộng chúng và nhân chúng với các số vô hướng. Trong cuốn sách này, chúng tôi chủ yếu tập trung vào các vectơ trong <span class="math">\(\mathbb{R}^n\)</span>, vì hầu hết các thuật toán trong đại số tuyến tính đều được xây dựng trong <span class="math">\(\mathbb{R}^n\)</span>.</p>
-<p>Ở Chương 8, ta sẽ thấy rằng dữ liệu thường được biểu diễn dưới dạng các vectơ trong <span class="math">\(\mathbb{R}^n\)</span>. Trong sách này, chúng tôi tập trung vào các không gian vectơ hữu hạn chiều (finite-dimensional vector spaces); trong trường hợp đó, tồn tại một sự tương ứng 1:1 giữa bất kỳ loại vectơ nào và <span class="math">\(\mathbb{R}^n\)</span>. Khi thuận tiện, chúng tôi sẽ sử dụng trực giác về vectơ hình học và xem xét các thuật toán dựa trên mảng.</p>
-<p>Một khái niệm quan trọng là <strong>tính đóng</strong> (closure) của một tập: bắt đầu từ một tập <strong>vectơ</strong> nhỏ và thực hiện các phép cộng/tỉ lệ, tập các vectơ (set of vectors) có thể sinh ra là gì? Câu trả lời dẫn đến khái niệm không gian <strong>vectơ</strong> (vector space). Không gian <strong>vectơ</strong> và các tính chất của nó là nền tảng cho nhiều phép toán trong máy học.</p>
-<p>Phần còn lại của chương bày các khái niệm cơ bản: <strong>hệ phương trình tuyến tính</strong> (system of linear equations), <strong>ma trận</strong> (matrix) và các phép toán trên <strong>ma trận</strong> (matrix), <strong>không gian nghiệm</strong> (solution space), <strong>cơ sở</strong> (basis) và các phép biến đổi cần thiết cho các ứng dụng máy học.</p>
+<p>Ở Chương 8, ta sẽ thấy rằng dữ liệu thường được biểu diễn dưới dạng các vectơ trong <span class="math">\(\mathbb{R}^n\)</span>. Trong sách này, chúng tôi tập trung vào các không gian vectơ hữu hạn chiều (finite-dimensional vector spaces); trong trường hợp đó, tồn tại một sự tương ứng 1:1 giữa bất kỳ loại vectơ nào và <span class="math">\(\mathbb{R}^n\)</span>. Khi thuận tiện, chúng tôi sẽ sử dụng trực giác về vectơ hình học và xem xét các thuật toán dựa trên mảng.
+vector
+Một khái niệm quan trọng là <strong>tính đóng</strong> (closure) của một tập: bắt đầu từ một tập <strong>vectơ đơn vị</strong> (unit vector) và thực hiện các phép cộng/tỉ lệ, tập các vectơ (set of vectors) có thể sinh ra là gì? Câu trả lời dẫn đến khái niệm không gian <strong>vectơ</strong> (vector space). Không gian <strong>vectơ</strong> và các tính chất của nó là nền tảng cho nhiều phép toán trong máy học.</p>
+<p>Phần còn lại của chương bày các khái niệm cơ bản: <strong>hệ phương trình tuyến tính</strong> (system of linear equations), <strong>ma trận</strong> (matrix) và các phép toán trên <strong>ma trận</strong>, <strong>không gian nghiệm</strong> (solution space), <strong>cơ sở</strong> (basis) và các phép biến đổi cần thiết cho các ứng dụng máy học.</p>
 <p><figure><img src="/images/Mathematics-for-Machine-Learning/_page_19_Figure_1.png" alt="Hình 2.2: Sơ đồ tư duy (mind map) về các khái niệm được giới thiệu trong chương này, cùng với vị trí mà chúng được sử dụng ở các phần khác của cuốn sách." style="max-width:100%;height:auto;"><figcaption style="margin-left:auto;margin-right:auto;font-style:italic;text-align:center;">Hình 2.2: Sơ đồ tư duy (mind map) về các khái niệm được giới thiệu trong chương này, cùng với vị trí mà chúng được sử dụng ở các phần khác của cuốn sách.</figcaption></figure></p>
 <h2 id="he-phuong-trinh-tuyen-tinh-system-of-linear-equations">2.1 Hệ phương trình tuyến tính (system of linear equations)</h2>
 <p><strong>Hệ phương trình tuyến tính</strong> (system of linear equations) là trung tâm của <strong>đại số tuyến tính</strong>. Nhiều bài toán thực tế có thể được mô tả dưới dạng <strong>hệ phương trình tuyến tính</strong>, và <strong>đại số tuyến tính</strong> cung cấp công cụ để phân tích và giải các hệ này.</p>
 <p><strong>Ví dụ 2.1 (Bài toán phân phối tài nguyên).</strong></p>
-<p>Giả sử một công ty sản xuất n sản phẩm <span class="math">\(N^1, ..., N^n\)</span> bằng cách sử dụng m loại tài nguyên <span class="math">\(R^1, ..., R^m\)</span>. Để sản xuất một đơn vị sản phẩm <span class="math">\(N^j\)</span> cần <span class="math">\(a_{ij}\)</span> đơn vị tài nguyên <span class="math">\(R^i\)</span> <span class="math">\((i = 1,...,m; j = 1,...,n)\)</span>. Nếu có <span class="math">\(b^i\)</span> đơn vị tài nguyên <span class="math">\(R^i\)</span> sẵn có, ta muốn tìm số lượng <span class="math">\(x^1,...,x^n\)</span> sản phẩm để sử dụng tối ưu tài nguyên, lý tưởng là không dư thừa.</p>
+<p>Giả sử một công ty sản xuất n sản phẩm <span class="math">\(N^1, ..., N^n\)</span> bằng cách sử dụng m loại tài nguyên <span class="math">\(R^1, ..., R^m\)</span>. Để sản xuất một đơn vị sản phẩm <span class="math">\(N^j\)</span> cần <span class="math">\(a_{ij}\)</span> đơn vị tài nguyên <span class="math">\(R^i\)</span> <span class="math">\((i = 1,...,m; j = 1,...,n)\)</span>. Nếu có <span class="math">\(b^i\)</span> đơn vị tài nguyên <span class="math">\(R^i\)</span> sẵn có, ta muốn tìm số lượng <span class="math">\(x_1,...,x_n\)</span> sản phẩm để sử dụng tối ưu tài nguyên, lý tưởng là không dư thừa.</p>
 <p>Việc tiêu thụ tài nguyên <span class="math">\(R^i\)</span> bởi kế hoạch sản xuất <span class="math">\(x_1,...,x_n\)</span> là:</p>
 <div class="math">
 \[
@@ -190,7 +191,7 @@ Hồi quy tuyến tính (Chương 9) giải quyết một biến thể của Ví
 \tag{2.8}
 \]</div>
 <p>trong đó không gian nghiệm là điểm <span class="math">\((x_1, x_2) = \left(1, \frac{1}{4}\right)\)</span>.</p>
-<p><figure><img src="/images/Mathematics-for-Machine-Learning/_page_21_Figure_1.png" alt="Hình 2.3: Không gian nghiệm của một hệ gồm hai phương trình tuyến tính với hai biến có thể được diễn giải theo hình học như " style="max-width:100%;height:auto;"><figcaption style="margin-left:auto;margin-right:auto;font-style:italic;text-align:center;">Hình 2.3: Không gian nghiệm của một hệ gồm hai phương trình tuyến tính với hai biến có thể được diễn giải theo hình học như </figcaption></figure></p>
+<p><figure><img src="/images/Mathematics-for-Machine-Learning/_page_21_Figure_1.png" alt="Hình 2.3: Không gian nghiệm của một hệ gồm hai phương trình tuyến tính với hai biến có thể được diễn giải theo hình học như giao điểm của hai đường thẳng. Mỗi phương trình tuyến tính tương ứng với một đường thẳng." style="max-width:100%;height:auto;"><figcaption style="margin-left:auto;margin-right:auto;font-style:italic;text-align:center;">Hình 2.3: Không gian nghiệm của một hệ gồm hai phương trình tuyến tính với hai biến có thể được diễn giải theo hình học như giao điểm của hai đường thẳng. Mỗi phương trình tuyến tính tương ứng với một đường thẳng.</figcaption></figure></p>
 <p>Tương tự, với <strong>ba biến</strong>, mỗi phương trình tuyến tính xác định một <strong>mặt phẳng</strong> trong không gian ba chiều. Khi lấy giao của các mặt phẳng này, tức là thỏa mãn tất cả các phương trình cùng lúc, ta có thể thu được một tập nghiệm là:</p>
 <ul><li>một <strong>mặt phẳng</strong>,</li>
 <li>một <strong>đường thẳng</strong>,</li>
@@ -254,7 +255,7 @@ b_m
 <div class="alert alert-info" role="alert"><div class="d-flex align-items-center"><i class="bi-info-circle-fill flex-shrink-0 me-2" aria-label="Info:"></i>
 <h5>Info:</h5></div>
 <p><strong>Định nghĩa 2.1 Ma trận</strong></p>
-<p>Với m,n <span class="math">\(\in\)</span> <span class="math">\(\mathbb{N}\)</span>, một <strong>ma trận</strong> thực kích thước <span class="math">\(m \times n\)</span> là một bảng số <span class="math">\(a_{ij}\)</span> sắp xếp thành m hàng và n cột:</p></div>
+<p>Với m,n <span class="math">\(\in\)</span> <span class="math">\(\mathbb{N}\)</span>, một <strong>ma trận</strong> thực kích thước <span class="math">\(m \times n\)</span> là một bảng số <span class="math">\(a_{ij}\)</span> sắp xếp thành m hàng và n cột:</p>
 <div class="math">
 \[
 A =
@@ -265,7 +266,7 @@ a_{21} &amp; a_{22} &amp; \cdots &amp; a_{2n} \\
 a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mn}
 \end{bmatrix},
 \qquad a_{ij} \in \mathbb{R}.
-\]</div>
+\]</div></div>
 <p><span class="math">\(\mathbb{R}^{m \times n}\)</span> là tập hợp tất cả các ma trận kích thước <span class="math">\((m, n)\)</span> với giá trị thực.<br>
 Một ma trận <span class="math">\(A \in \mathbb{R}^{m \times n}\)</span> cũng có thể được biểu diễn tương đương như một vectơ <span class="math">\(a \in \mathbb{R}^{mn}\)</span> bằng cách <strong>xếp chồng tất cả <span class="math">\(n\)</span> cột của ma trận lại thành một vectơ dài</strong>.</p>
 <p>Theo quy ước, <strong>ma trận</strong> kích thước <span class="math">\(1 \times n\)</span> được gọi là <strong>vectơ</strong> hàng, còn <strong>ma trận</strong>  <span class="math">\(m \times 1\)</span> được gọi là <strong>vectơ</strong> cột.</p>

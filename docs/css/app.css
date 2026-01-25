@@ -37,6 +37,14 @@
     --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.5);
 }
 
+:root {
+    --sakura-font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    --sidebar-width: 280px;
+    --header-height: 52px;
+    --hero-bg-duration: 10s;
+    --hero-bg-height: 720px; /* 50% of viewport = half screen */
+}
+
 /* Light theme */
 [data-theme="light"] {
     --sidebar-width: 280px;
@@ -81,6 +89,16 @@ html, body {
     color: var(--text-secondary);
     line-height: 1.6;
     transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html {
+    /* Prevent horizontal scroll only */
+    overflow-x: hidden;
+}
+
+body {
+    /* CRITICAL: overflow must be visible for sticky to work */
+    overflow: visible;
 }
 
 * {
@@ -901,6 +919,34 @@ html {
 /* Hide Blake's auto-generated alert headers */
 .alert .d-flex.align-items-center {
     display: none !important;
+}
+
+/* ========================================
+   Sticky Sidebars (Global Rules)
+   ======================================== */
+.left-sidebar,
+.toc-sidebar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 72px; /* header height + offset */
+    -webkit-align-self: flex-start;
+    align-self: flex-start;
+    height: -webkit-fit-content;
+    height: fit-content;
+    max-height: calc(100vh - 100px);
+    -webkit-overflow-scrolling: touch;
+    z-index: 10;
+}
+
+.page,
+.sakura-page {
+    -webkit-align-items: flex-start;
+    align-items: flex-start;
+    overflow: visible;
+}
+
+.site-content {
+    overflow: visible !important;
 }
 
 /* ========================================
