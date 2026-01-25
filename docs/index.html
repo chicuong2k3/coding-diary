@@ -1,0 +1,626 @@
+<!DOCTYPE html><html lang="en"><head>
+  <base href="/coding-diary/" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Code Magic</title>
+    
+    <link href="_framework/dotnet.843ddp83tm.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-+D33KhLQtkaWqa4emHX15BCbyXT4ZbTo0CPzEcGp3Bs="/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/app.css"/>
+    <link rel="icon" type="image/png" href="favicon.png"/>
+    <link href="DocumentationWeb.styles.css" rel="stylesheet"/>
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+    <script type="importmap">{
+  "imports": {
+    "./_framework/blazor.webassembly.js": "./_framework/blazor.webassembly.66stpp682q.js",
+    "./_framework/dotnet.js": "./_framework/dotnet.843ddp83tm.js",
+    "./_framework/dotnet.native.js": "./_framework/dotnet.native.wrr3s1u3jw.js",
+    "./_framework/dotnet.runtime.js": "./_framework/dotnet.runtime.2tx45g8lli.js"
+  },
+  "scopes": {},
+  "integrity": {
+    "./_framework/blazor.webassembly.66stpp682q.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
+    "./_framework/blazor.webassembly.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
+    "./_framework/dotnet.843ddp83tm.js": "sha256-+D33KhLQtkaWqa4emHX15BCbyXT4ZbTo0CPzEcGp3Bs=",
+    "./_framework/dotnet.js": "sha256-+D33KhLQtkaWqa4emHX15BCbyXT4ZbTo0CPzEcGp3Bs=",
+    "./_framework/dotnet.native.js": "sha256-pHATP1UYfVbgkubj/zSgOMTH5p50o8sWVxiheNxMVnA=",
+    "./_framework/dotnet.native.wrr3s1u3jw.js": "sha256-pHATP1UYfVbgkubj/zSgOMTH5p50o8sWVxiheNxMVnA=",
+    "./_framework/dotnet.runtime.2tx45g8lli.js": "sha256-2lZh9yO0fnzm3Xt7yV+Kox3DH3nK7L8hDhm84VT1xco=",
+    "./_framework/dotnet.runtime.js": "sha256-2lZh9yO0fnzm3Xt7yV+Kox3DH3nK7L8hDhm84VT1xco="
+  }
+}</script>
+
+<!-- %%-PRERENDERING-HEADOUTLET-BEGIN-%% -->
+
+<!-- %%-PRERENDERING-HEADOUTLET-END-%% -->
+</head>
+
+<body>
+    <div id="app">
+<!-- %%-PRERENDERING-BEGIN-%% -->
+<div class="site-content" b-qjr5eoji3o><header class="sakura-header" b-qjr5eoji3o><div class="sakura-header-inner" b-qjr5eoji3o><div class="brand-wrap" b-qjr5eoji3o><a class="brand" href b-qjr5eoji3o>Code Magic</a></div>
+
+            <nav class="main-nav" aria-label="Primary" b-qjr5eoji3o><ul b-qjr5eoji3o><li b-qjr5eoji3o><a href b-qjr5eoji3o>Trang chủ</a></li>
+                    <li b-qjr5eoji3o><a href="book" b-qjr5eoji3o>Thư viện sách</a></li>
+                    <li b-qjr5eoji3o><a href="bookmarks" b-qjr5eoji3o>Đánh dấu</a></li>
+                    <li b-qjr5eoji3o><a href="about" b-qjr5eoji3o>Giới thiệu</a></li></ul></nav>
+
+            <div class="header-actions" b-qjr5eoji3o><div class="icon-row" b-qjr5eoji3o><button class="icon btn-ghost" title="Toggle theme" b-qjr5eoji3o><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" b-qjr5eoji3o><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" b-qjr5eoji3o></path></svg></button>
+                    <a class="icon btn-ghost" href="https://github.com/chicuong2k3" target="_blank" title="GitHub" b-qjr5eoji3o><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" b-qjr5eoji3o><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" b-qjr5eoji3o></path></svg></a>
+                    <button class="icon btn-ghost search-btn" title="Search" b-qjr5eoji3o><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" b-qjr5eoji3o><circle cx="11" cy="11" r="8" b-qjr5eoji3o></circle>
+                            <path d="m21 21-4.35-4.35" b-qjr5eoji3o></path></svg></button></div></div></div></header><section class="hero hero-compact" b-qjr5eoji3o><div class="hero-bg" role="img" aria-hidden="true" b-qjr5eoji3o><span class="bg-layer" style="background-image: url('/images/Kaguya_Shinomiya_Exceptional_C.png');" b-qjr5eoji3o></span>
+                <span class="bg-layer" style="background-image: url('/images/Felix_Argyle_Scared_By_JavaScript_The_Good_Parts.png');" b-qjr5eoji3o></span>
+                <span class="bg-layer" style="background-image: url('/images/Kobayashi_Holds_9_Algorithms_That_Changed_The_World.png');" b-qjr5eoji3o></span>
+                <span class="bg-layer" style="background-image: url('/images/Minori_Hanasato_Programming_Rust.png');" b-qjr5eoji3o></span>
+                <span class="bg-layer" style="background-image: url('/images/Professor_Shinonome_Finds_SICP.jpg');" b-qjr5eoji3o></span></div>
+            <div class="hero-inner" b-qjr5eoji3o><div class="hero-title" b-qjr5eoji3o>Code Magic</div></div></section><section class="quote-section" b-qjr5eoji3o><div class="featured-quote" b-qjr5eoji3o><p class="m-0" b-qjr5eoji3o>"Nothing is hidden that will not be revealed."</p></div></section><section class="posts-section" b-qjr5eoji3o><div class="posts-header" b-qjr5eoji3o><h2 b-qjr5eoji3o>Thư viện sách</h2>
+                <p b-qjr5eoji3o>Danh sách sách đã và đang dịch</p></div>
+            <div class="books-grid" b-qjr5eoji3o><a href="book/mathematics-for-machine-learning" class="book-card" b-qjr5eoji3o><div class="book-card-inner" b-qjr5eoji3o><div class="book-icon" b-qjr5eoji3o><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" b-qjr5eoji3o><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" b-qjr5eoji3o></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" b-qjr5eoji3o></path></svg></div>
+                            <div class="book-card-body" b-qjr5eoji3o><h3 b-qjr5eoji3o>MATHEMATICS FOR MACHINE LEARNING</h3>
+                                <div class="book-meta" b-qjr5eoji3o><span class="chapter-count" b-qjr5eoji3o>3 chương</span>
+                                    <span class="latest-update" b-qjr5eoji3o>Cập nhật:
+                                        22/01/2025</span></div>
+                                <p class="latest-chapter" b-qjr5eoji3o>Chương mới nhất: Ch&#x1B0;&#x1A1;ng 2: &#x110;&#x1EA1;i s&#x1ED1; tuy&#x1EBF;n t&#xED;nh (Linear algebra)</p></div></div></a></div></section><footer class="home-footer site-footer" b-qjr5eoji3o><div class="footer-inner" b-qjr5eoji3o><div class="footer-left" b-qjr5eoji3o><p b-qjr5eoji3o>&#xA9; 2026 Code Magic. All rights reserved.</p></div>
+            <div class="footer-right" b-qjr5eoji3o><nav class="footer-nav" aria-label="Footer" b-qjr5eoji3o><a href="about" b-qjr5eoji3o>Giới thiệu</a>
+                    <span class="dot" b-qjr5eoji3o>·</span>
+                    <a href="sitemap" b-qjr5eoji3o>Sitemap</a>
+                    <span class="dot" b-qjr5eoji3o>·</span>
+                    <a href="https://github.com/chicuong2k3" target="_blank" rel="noopener" b-qjr5eoji3o>GitHub</a></nav></div></div></footer>
+
+    <div class="search-container "><div class="search-overlay"></div>
+    <div class="search-modal"><div class="search-header"><svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path></svg>
+            <input value="" class="search-input" placeholder="T&#xEC;m ch&#x1B0;&#x1A1;ng, s&#xE1;ch..." />
+            <div class="search-kbd"><kbd>ESC</kbd></div>
+            <button class="search-close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg></button></div>
+
+        <div class="search-body"><div class="search-suggestions"><div class="suggestions-label">Sách phổ biến</div>
+                    <div class="tag-suggestions"><a href="book/mathematics-for-machine-learning" class="tag-suggestion">MATHEMATICS FOR MACHINE LEARNING</a></div></div></div>
+
+        <div class="search-footer"><div class="search-tips"><span><kbd>Enter</kbd> để tìm</span>
+                <span><kbd>ESC</kbd> để thoát</span></div></div></div></div></div>
+        <blazor-focus-on-navigate selector="h1"></blazor-focus-on-navigate>
+<!-- %%-PRERENDERING-END-%% -->
+</div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>
+
+    <script type="text/javascript">
+        // MathJax configuration - adjust delimiters as needed
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+
+    <script type="text/javascript" id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+        </script>
+
+    <!-- Polyfills + Mermaid dual-loader (module + nomodule fallback) -->
+    <script>
+        // Polyfills for older Safari (Element.matches / Element.closest)
+        if (!Element.prototype.matches) {
+            Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector || function (s) {
+                var matches = (this.document || this.ownerDocument).querySelectorAll(s), i = matches.length;
+                while (--i >= 0 && matches.item(i) !== this) { }
+                return i > -1;
+            };
+        }
+        if (!Element.prototype.closest) {
+            Element.prototype.closest = function (s) {
+                var el = this;
+                do {
+                    if (el.matches && el.matches(s)) return el;
+                    el = el.parentElement || el.parentNode;
+                } while (el !== null && el.nodeType === 1);
+                return null;
+            };
+        }
+
+        // Mermaid (ES module) for modern browsers
+    </script>
+
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        // Keep configuration minimal and safe for older engines
+        mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+
+        window._mermaid = mermaid;
+        window.renderMermaid = async function (srcId, containerId) {
+            const srcEl = document.getElementById(srcId);
+            const containerEl = document.getElementById(containerId);
+            if (!srcEl || !containerEl) return;
+
+            // Use textContent for maximum compatibility
+            const definition = srcEl.textContent.trim();
+            if (!definition) return;
+
+            try {
+                // mermaid.render may return { svg } or a string depending on build
+                const maybe = await mermaid.render('mermaid-' + Date.now(), definition);
+                if (maybe && maybe.svg) containerEl.innerHTML = maybe.svg;
+                else if (typeof maybe === 'string') containerEl.innerHTML = maybe;
+                else {
+                    containerEl.innerHTML = '<pre style="color:red;">Mermaid: unexpected render result</pre>';
+                    if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Mermaid unexpected render result', String(maybe));
+                }
+            } catch (e) {
+                containerEl.innerHTML = '<pre style="color:red;">Mermaid Error: ' + (e && e.message || e) + '</pre>';
+                if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Mermaid render failed', e && e.message ? e.message : String(e));
+            }
+        };
+    </script>
+
+    <!-- UMD/nombre module fallback for older Safari that doesn't fully support modules -->
+    <script nomodule="" src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <script nomodule="">
+        if (window.mermaid) {
+            window._mermaid = window.mermaid;
+            window._mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+
+            window.renderMermaid = function (srcId, containerId) {
+                const srcEl = document.getElementById(srcId);
+                const containerEl = document.getElementById(containerId);
+                if (!srcEl || !containerEl) return;
+                const definition = srcEl.textContent.trim();
+                if (!definition) return;
+
+                try {
+                    // Some UMD builds return svg string or { svg }, others use callback
+                    try {
+                        const result = window._mermaid.render('mermaid-' + Date.now(), definition);
+                        if (result && result.svg) containerEl.innerHTML = result.svg;
+                        else if (typeof result === 'string') containerEl.innerHTML = result;
+                        else {
+                            containerEl.innerHTML = '<pre style="color:red;">Mermaid: unexpected render result</pre>';
+                            if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Mermaid unexpected render result', String(result));
+                        }
+                    } catch (err) {
+                        // Try callback signature
+                        window._mermaid.render('mermaid-' + Date.now(), definition, function (svgCode) {
+                            containerEl.innerHTML = svgCode;
+                        });
+                    }
+                } catch (e) {
+                    containerEl.innerHTML = '<pre style="color:red;">Mermaid Error: ' + (e && e.message || e) + '</pre>';
+                    if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Mermaid render failed', e && e.message ? e.message : String(e));
+                }
+            };
+        }
+    </script>
+
+    <script src="_framework/blazor.webassembly.66stpp682q.js"></script>
+
+    <script>
+        // Small helper: detect old Safari / iOS (<=15)
+        window.isOldSafari = function () {
+            try {
+                var ua = navigator.userAgent || '';
+                // iOS Safari detection: look for 'OS 12_...' or similar
+                var iosMatch = ua.match(/OS (\d+)_/i);
+                if (iosMatch && iosMatch[1]) {
+                    var iosVer = parseInt(iosMatch[1], 10);
+                    return iosVer <= 15;
+                }
+
+                // Desktop Safari: contains 'Safari' and 'Version/X' and not Chrome/Chromium/Edge
+                if (/Safari/.test(ua) && !/Chrome|Chromium|CrMo|CriOS|Edg|OPR|Android/.test(ua)) {
+                    var verMatch = ua.match(/Version\/(\d+)\./i);
+                    if (verMatch && verMatch[1]) {
+                        var ver = parseInt(verMatch[1], 10);
+                        return ver <= 15;
+                    }
+                }
+            } catch (e) {
+                console.warn('isOldSafari detection failed', e);
+            }
+            return false;
+        };
+
+        // Display a friendly error UI for browser-caused problems (visible on the page)
+        window.showBrowserError = function (message, details) {
+            try {
+                var el = document.getElementById('blazor-error-ui');
+                if (!el) {
+                    el = document.createElement('div');
+                    el.id = 'blazor-error-ui';
+                    document.body.appendChild(el);
+                }
+
+                // Basic styling so it's visible even if site styles hide it
+                el.style.display = 'block';
+                el.style.position = 'fixed';
+                el.style.left = '8px';
+                el.style.right = '8px';
+                el.style.bottom = '8px';
+                el.style.zIndex = 99999;
+                el.style.background = '#fff6f6';
+                el.style.border = '1px solid #f5c2c2';
+                el.style.color = '#661414';
+                el.style.padding = '12px';
+                el.style.borderRadius = '8px';
+                el.style.boxShadow = '0 6px 18px rgba(0,0,0,0.08)';
+                el.style.maxHeight = '40vh';
+                el.style.overflow = 'auto';
+
+                var uaNote = window.isOldSafari && window.isOldSafari() ? '<div style="font-size:12px;color:#8a0000;margin-bottom:8px">Warning: Browser looks like an older Safari/iOS — some features may not work correctly.</div>' : '';
+
+                var detailsHtml = details ? ('<pre style="white-space:pre-wrap;margin:6px 0;padding:8px;background:#fff;border-radius:6px;border:1px solid #fee;max-height:200px;overflow:auto;">' + escapeHtml(details) + '</pre>') : '';
+
+                el.innerHTML = '<strong>Browser error detected</strong>' + uaNote + '<div style="margin-top:6px;word-break:break-word;">' + escapeHtml(message || 'Unknown browser error') + '</div>' + detailsHtml + '<div style="margin-top:8px;text-align:right;"><button id="blazor-error-dismiss" style="background:#fff;color:#661414;border:1px solid #f5c2c2;padding:6px 10px;border-radius:6px;cursor:pointer">Dismiss</button></div>';
+
+                var btn = document.getElementById('blazor-error-dismiss');
+                if (btn) btn.addEventListener('click', function () { el.style.display = 'none'; });
+
+                // helper to escape HTML to avoid breaking page
+                function escapeHtml(str) {
+                    if (!str) return '';
+                    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                }
+
+                // Also log to console for diagnostics
+                console.error('Browser error shown to user:', message, details);
+            } catch (e) {
+                console.error('showBrowserError failed', e);
+            }
+        };
+
+        // Global handlers: only surface UI error if we're on older Safari (user requested)
+        window.addEventListener('error', function (evt) {
+            try {
+                if (window.isOldSafari && window.isOldSafari()) {
+                    var details = (evt.filename ? evt.filename + ':' + evt.lineno + ':' + evt.colno + '\n' : '') + (evt.error && evt.error.stack ? evt.error.stack : '');
+                    window.showBrowserError(evt.message || 'Script error', details);
+                }
+            } catch (e) {
+                // ignore
+            }
+        });
+
+        window.addEventListener('unhandledrejection', function (evt) {
+            try {
+                if (window.isOldSafari && window.isOldSafari()) {
+                    var reason = evt.reason && (evt.reason.message || evt.reason) ? (evt.reason.message || String(evt.reason)) : 'Unhandled rejection';
+                    var stack = evt.reason && evt.reason.stack ? evt.reason.stack : '';
+                    window.showBrowserError('Unhandled promise rejection: ' + reason, stack);
+                }
+            } catch (e) {
+                // ignore
+            }
+        });
+
+        // Smooth scroll to heading
+        window.scrollToHeading = function (id) {
+            const element = document.getElementById(id);
+            if (element) {
+                const headerOffset = 100;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        };
+
+        // Table of Contents functionality
+        window.initToc = function (dotNetRef) {
+            let currentObserver = null;
+            let scrollHandler = null;
+
+            const updateToc = () => {
+                const content = document.querySelector('.content');
+                if (!content) return;
+
+                const headings = content.querySelectorAll('h1, h2, h3');
+                const items = [];
+
+                headings.forEach((heading, index) => {
+                    // Ensure heading has an ID
+                    if (!heading.id) {
+                        heading.id = 'heading-' + index;
+                    }
+                    items.push({
+                        id: heading.id,
+                        text: heading.textContent.trim(),
+                        level: parseInt(heading.tagName.charAt(1))
+                    });
+                });
+
+                dotNetRef.invokeMethodAsync('UpdateTocItems', items);
+            };
+
+            // Initial update
+            setTimeout(updateToc, 100);
+
+            // Update on navigation/content changes
+            currentObserver = new MutationObserver(() => {
+                setTimeout(updateToc, 100);
+            });
+            currentObserver.observe(document.body, { childList: true, subtree: true });
+
+            // Track active heading on scroll with improved detection
+            let ticking = false;
+            scrollHandler = () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        const headings = document.querySelectorAll('.content h1, .content h2, .content h3');
+                        let activeId = null;
+                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        const viewportHeight = window.innerHeight;
+
+                        // Find the heading that's currently in view
+                        for (const heading of headings) {
+                            const rect = heading.getBoundingClientRect();
+                            const headingTop = rect.top + scrollTop;
+
+                            // Consider a heading active if it's within the top portion of viewport
+                            if (rect.top <= 150) {
+                                activeId = heading.id;
+                            }
+                        }
+
+                        // If at the very top, select first heading
+                        if (scrollTop < 100 && headings.length > 0) {
+                            activeId = headings[0].id;
+                        }
+
+                        // If at the very bottom, select last heading
+                        if ((window.innerHeight + scrollTop) >= document.body.offsetHeight - 50) {
+                            if (headings.length > 0) {
+                                activeId = headings[headings.length - 1].id;
+                            }
+                        }
+
+                        if (activeId) {
+                            dotNetRef.invokeMethodAsync('SetActiveHeading', activeId);
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            };
+
+            window.addEventListener('scroll', scrollHandler, { passive: true });
+
+            // Trigger initial scroll check
+            setTimeout(scrollHandler, 200);
+        };
+
+        // Copy code to clipboard (with execCommand fallback for older Safari)
+        window.copyCode = async function (button) {
+            if (!button) return;
+            const codeBlock = button.closest && button.closest('.code-block');
+            if (!codeBlock) return;
+            const codeEl = codeBlock.querySelector('code');
+            const text = codeEl ? (codeEl.textContent || codeEl.innerText || '') : '';
+            if (!text) return;
+
+            // Try navigator.clipboard first
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    showCopied(button);
+                    return;
+                } catch (e) {
+                    // fall through to fallback
+                    if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Clipboard API failed', e && e.message ? e.message : String(e));
+                }
+            }
+
+            // Fallback using textarea + execCommand
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                // Make element readonly to avoid iOS virtual keyboard
+                ta.setAttribute('readonly', '');
+                ta.style.position = 'absolute';
+                ta.style.left = '-9999px';
+                // For iOS selection support
+                document.body.appendChild(ta);
+
+                const range = document.createRange();
+                range.selectNodeContents(ta);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+                ta.select();
+
+                const successful = document.execCommand('copy');
+                document.body.removeChild(ta);
+
+                if (successful) {
+                    showCopied(button);
+                } else {
+                    throw new Error('execCommand failed');
+                }
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Copy to clipboard failed', err && err.message ? err.message : String(err));
+            }
+
+            function showCopied(btn) {
+                if (!btn) return;
+                btn.classList.add('copied');
+                const prev = btn.innerHTML;
+                btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = prev;
+                }, 2000);
+            }
+        };
+
+        // Initialize code blocks with copy button and syntax highlighting
+        window.initCodeBlocks = function () {
+            document.querySelectorAll('pre:not(.code-initialized)').forEach(pre => {
+                // Skip mermaid and special pre blocks
+                if (pre.closest('.mermaid-container') || pre.style.display === 'none') return;
+
+                pre.classList.add('code-initialized');
+
+                // Wrap in code-block container
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-block';
+
+                // Get language from code element class
+                const code = pre.querySelector('code');
+                let language = 'text';
+                if (code) {
+                    const langClass = Array.from(code.classList).find(c => c.startsWith('language-'));
+                    if (langClass) {
+                        language = langClass.replace('language-', '');
+                    }
+                }
+
+                // Create header with language label and copy button
+                const header = document.createElement('div');
+                header.className = 'code-header';
+                header.innerHTML = `
+                    <span class="code-lang">${language}</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                        </svg>
+                        Copy
+                    </button>
+                `;
+
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(header);
+                wrapper.appendChild(pre);
+            });
+
+            // Apply Prism highlighting
+            if (window.Prism) {
+                Prism.highlightAll();
+            }
+        };
+
+        // Run on page load and after Blazor navigation
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(initCodeBlocks, 500);
+        });
+
+        // Observe DOM changes for Blazor navigation
+        const codeObserver = new MutationObserver(() => {
+            setTimeout(initCodeBlocks, 100);
+        });
+        codeObserver.observe(document.body, { childList: true, subtree: true });
+
+        // Load chapter content for printing via iframe
+        window.loadChapterContent = function (url) {
+            return new Promise((resolve, reject) => {
+                const iframe = document.getElementById('content-loader');
+                if (!iframe) {
+                    // Create iframe if not exists
+                    const newIframe = document.createElement('iframe');
+                    newIframe.id = 'content-loader';
+                    newIframe.style.cssText = 'display:none; position:absolute; left:-9999px; width:1024px; height:768px;';
+                    document.body.appendChild(newIframe);
+                }
+
+                const loader = document.getElementById('content-loader');
+                let timeoutId = null;
+                let checkInterval = null;
+
+                const cleanup = () => {
+                    if (timeoutId) clearTimeout(timeoutId);
+                    if (checkInterval) clearInterval(checkInterval);
+                    loader.onload = null;
+                    loader.onerror = null;
+                };
+
+                loader.onload = () => {
+                    // Wait for Blazor to render content
+                    let attempts = 0;
+                    const maxAttempts = 50; // 5 seconds max
+
+                    checkInterval = setInterval(() => {
+                        attempts++;
+                        try {
+                            const iframeDoc = loader.contentDocument || loader.contentWindow.document;
+                            const content = iframeDoc.querySelector('.content');
+
+                            if (content && content.innerHTML.trim().length > 100) {
+                                cleanup();
+                                // Clone and clean content
+                                let html = content.innerHTML;
+                                // Remove navigation elements that might be inside content
+                                const tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = html;
+                                // Remove any nested scripts
+                                tempDiv.querySelectorAll('script').forEach(s => s.remove());
+                                // Remove chapter navigation
+                                tempDiv.querySelectorAll('.chapter-navigation, .ChapterNavigation').forEach(n => n.remove());
+                                resolve(tempDiv.innerHTML);
+                            } else if (attempts >= maxAttempts) {
+                                cleanup();
+                                resolve('<p>Timeout loading content.</p>');
+                            }
+                        } catch (e) {
+                            if (attempts >= maxAttempts) {
+                                cleanup();
+                                reject(e);
+                            }
+                        }
+                    }, 100);
+                };
+
+                loader.onerror = (e) => {
+                    cleanup();
+                    reject(new Error('Failed to load iframe'));
+                };
+
+                // Overall timeout
+                timeoutId = setTimeout(() => {
+                    cleanup();
+                    resolve('<p>Timeout loading content.</p>');
+                }, 10000);
+
+                loader.src = url;
+            });
+        };
+
+        // Helper to typeset MathJax for dynamically injected print content
+        window.printbookTypeset = function () {
+            try {
+                if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
+                    return MathJax.typesetPromise();
+                }
+            } catch (e) {
+                console.warn('printbookTypeset failed', e);
+            }
+            return Promise.resolve();
+        };
+    </script>
+
+    <!-- Prism.js -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-csharp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-razor.min.js"></script>
+
+
+</body></html>
