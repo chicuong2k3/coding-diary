@@ -57,9 +57,15 @@
             var bookmark = BookmarkService.GetBookmark(currentChapter.Slug);
             if (bookmark != null && bookmark.ScrollPosition > 0)
             {
-                // Small delay to ensure page content is fully rendered
-                await Task.Delay(150);
-                await JS.InvokeVoidAsync("window.scrollTo", 0, bookmark.ScrollPosition);
+                // Wait for page content to fully render
+                await Task.Delay(500);
+                // Use smooth scroll for better UX
+                await JS.InvokeVoidAsync("eval", $@"
+                    window.scrollTo({{
+                        top: {bookmark.ScrollPosition},
+                        behavior: 'instant'
+                    }});
+                ");
             }
         }
         catch

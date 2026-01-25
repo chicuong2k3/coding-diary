@@ -71,16 +71,11 @@
         InvokeAsync(StateHasChanged);
     }
 
-    private async Task NavigateToBookmark(BookmarkItem bookmark)
+    private void NavigateToBookmark(BookmarkItem bookmark)
     {
         var url = bookmark.Slug.TrimStart('/');
-        Navigation.NavigateTo(url);
-
-        if (bookmark.ScrollPosition > 0)
-        {
-            await Task.Delay(100);
-            await JS.InvokeVoidAsync("window.scrollTo", 0, bookmark.ScrollPosition);
-        }
+        // Navigate to the page - scroll position will be restored by FloatingBookmark component
+        Navigation.NavigateTo(url, forceLoad: true);
     }
 
     private async Task RemoveBookmark(string slug)

@@ -6,7 +6,7 @@ public static partial class GeneratedContentIndex
     {
         new PageModel
         {
-            Id = @"fe8c0fee-cae4-4a33-a05a-d8ce73bc431d",
+            Id = @"84017498-7b39-4185-8d1d-507ea695983d",
             Title = @"Chương 2: Đại số tuyến tính (Linear algebra)",
             Slug = @"/mathematics-for-machine-learning/chapter-2",
             Description = @"",
@@ -21,7 +21,7 @@ public static partial class GeneratedContentIndex
         },
         new PageModel
         {
-            Id = @"7876dcdb-e550-4ba6-8cbd-ba59f8e23b04",
+            Id = @"a49c262d-f2af-406b-bcd4-2f8788253f2a",
             Title = @"Lời tựa",
             Slug = @"/mathematics-for-machine-learning/forward",
             Description = @"Vai trò của toán học, tư duy nền tảng, và con đường tiếp cận machine learning một cách bài bản.",
@@ -36,7 +36,7 @@ public static partial class GeneratedContentIndex
         },
         new PageModel
         {
-            Id = @"7d6337d7-201d-41a5-829f-77f9d202335f",
+            Id = @"9c76e95f-c21d-4f76-9c3b-aa5322f8744f",
             Title = @"Chương 1: Giới thiệu",
             Slug = @"/mathematics-for-machine-learning/chapter-1",
             Description = @"",

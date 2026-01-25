@@ -7,9 +7,13 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
     <BlazorWasmPrerenderingDeleteLoadingContents>true</BlazorWasmPrerenderingDeleteLoadingContents>
+    <!-- Safari compatibility settings -->
     <WasmEnableSIMD>false</WasmEnableSIMD>
     <WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>
     <RunAOTCompilation>false</RunAOTCompilation>
+    <!-- Additional compatibility for older browsers -->
+    <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +24,7 @@
     <PackageReference Include="MermaidJS.Blazor" Version="2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.1" PrivateAssets="all" />
-  
+
     <PackageReference Include="Blake.Types" Version="*" />
 </ItemGroup>
 

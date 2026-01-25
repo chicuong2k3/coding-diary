@@ -1,15 +1,12 @@
-:root {
-    --sakura-font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-    --content-max-width: 900px;
-    --sidebar-width: 280px;
-    --max-site-width: 1400px;
-    --header-height: 52px;
-    --hero-bg-duration: 25s; /* Total duration for 5 images cycling */
-    --hero-bg-height: 80vh;
-}
+
 
 body, .page, article.content, .features-section, .hero-inner {
     font-family: var(--sakura-font), sans-serif;
+}
+
+/* Ensure sticky works - parent elements must not clip overflow */
+.site-content {
+    overflow: visible;
 }
 
 /* =============================================
@@ -189,7 +186,7 @@ body, .page, article.content, .features-section, .hero-inner {
 }
 
 .hero.hero-compact {
-    min-height: 420px;
+    min-height: var(--hero-bg-height);
 }
 
 /* Hero background container */
@@ -208,16 +205,15 @@ body, .page, article.content, .features-section, .hero-inner {
 .hero-bg::after {
     content: "";
     position: absolute;
-    /* Fallback for Safari iOS 15 */
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     background: linear-gradient(
         to bottom,
-        rgba(0, 0, 0, 0.4) 0%,
-        rgba(0, 0, 0, 0.5) 50%,
-        rgba(0, 0, 0, 0.7) 100%
+        rgba(0, 0, 0, 0.2) 0%,
+        rgba(0, 0, 0, 0.3) 50%,
+        rgba(0, 0, 0, 0.5) 100%
     );
     z-index: 1;
     pointer-events: none;
@@ -226,41 +222,60 @@ body, .page, article.content, .features-section, .hero-inner {
 /* Background image layers */
 .hero-bg .bg-layer {
     position: absolute;
-    /* Fallback for Safari iOS 15 */
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    background-size: cover;
-    background-position: center;
+    background-size: auto 100%;
+    background-position: center top;
     background-repeat: no-repeat;
     opacity: 0;
     z-index: 0;
-    -webkit-animation: heroBgFade var(--hero-bg-duration) infinite;
-    animation: heroBgFade var(--hero-bg-duration) infinite;
+    -webkit-animation: heroBgFade 15s infinite;
+    animation: heroBgFade 15s infinite;
 }
 
-/* Stagger animation for 5 images */
-.hero-bg .bg-layer:nth-child(1) { animation-delay: 0s; }
-.hero-bg .bg-layer:nth-child(2) { animation-delay: 5s; }
-.hero-bg .bg-layer:nth-child(3) { animation-delay: 10s; }
-.hero-bg .bg-layer:nth-child(4) { animation-delay: 15s; }
-.hero-bg .bg-layer:nth-child(5) { animation-delay: 20s; }
+/* Stagger animation for 5 images - each shows for 3s out of 15s total */
+.hero-bg .bg-layer:nth-child(1) {
+    -webkit-animation-delay: 0s;
+    animation-delay: 0s;
+    -webkit-animation-name: heroBgFadeFirst;
+    animation-name: heroBgFadeFirst;
+}
+.hero-bg .bg-layer:nth-child(2) { -webkit-animation-delay: 3s; animation-delay: 3s; }
+.hero-bg .bg-layer:nth-child(3) { -webkit-animation-delay: 6s; animation-delay: 6s; }
+.hero-bg .bg-layer:nth-child(4) { -webkit-animation-delay: 9s; animation-delay: 9s; }
+.hero-bg .bg-layer:nth-child(5) { -webkit-animation-delay: 12s; animation-delay: 12s; }
 
-/* Keyframes for crossfade animation */
-@keyframes heroBgFade {
-    0% { opacity: 0; }
-    4% { opacity: 1; }
-    20% { opacity: 1; }
-    24% { opacity: 0; }
+/* First image starts visible, then follows normal cycle */
+@-webkit-keyframes heroBgFadeFirst {
+    0% { opacity: 1; }
+    16% { opacity: 1; }
+    20% { opacity: 0; }
     100% { opacity: 0; }
 }
 
+@keyframes heroBgFadeFirst {
+    0% { opacity: 1; }
+    16% { opacity: 1; }
+    20% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+/* Other images fade in then out */
 @-webkit-keyframes heroBgFade {
     0% { opacity: 0; }
     4% { opacity: 1; }
-    20% { opacity: 1; }
-    24% { opacity: 0; }
+    16% { opacity: 1; }
+    20% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+@keyframes heroBgFade {
+    0% { opacity: 0; }
+    4% { opacity: 1; }
+    16% { opacity: 1; }
+    20% { opacity: 0; }
     100% { opacity: 0; }
 }
 
@@ -285,20 +300,6 @@ body, .page, article.content, .features-section, .hero-inner {
     color: rgba(255,255,255,0.9);
     font-size: 1.1rem;
     text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-}
-
-/* Wave decoration */
-.hero-wave {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -1px;
-    z-index: 3;
-    height: 80px;
-}
-
-.wave-path {
-    fill: var(--bg-primary);
 }
 
 /* =============================================
@@ -477,14 +478,22 @@ body, .page, article.content, .features-section, .hero-inner {
     display: -webkit-box;
     display: -webkit-flex;
     display: flex;
+    -webkit-box-align: start;
+    -webkit-align-items: flex-start;
+    align-items: flex-start;
     background: var(--bg-secondary);
     min-height: calc(100vh - var(--header-height) - 45px);
+    /* Ensure no overflow constraint breaks sticky */
+    overflow: visible;
 }
 
 .sakura-page {
     display: -webkit-box;
     display: -webkit-flex;
     display: flex;
+    -webkit-box-align: start;
+    -webkit-align-items: flex-start;
+    align-items: flex-start;
     max-width: var(--max-site-width);
     margin: 0 auto;
     width: 100%;
@@ -512,9 +521,11 @@ body, .page, article.content, .features-section, .hero-inner {
     -webkit-flex-shrink: 0;
     flex-shrink: 0;
     background: var(--sidebar-bg);
+    position: -webkit-sticky;
     position: sticky;
     align-self: flex-start;
     top: calc(var(--header-height) + 20px);
+    height: fit-content;
     max-height: calc(100vh - var(--header-height) - 40px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -529,6 +540,8 @@ body, .page, article.content, .features-section, .hero-inner {
 
 /* Doc main content */
 .doc-main {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
     flex: 1;
     min-width: 0;
     padding: 2rem 3rem;
@@ -536,6 +549,8 @@ body, .page, article.content, .features-section, .hero-inner {
     margin-right: 0;
     background: var(--content-bg);
     min-height: calc(100vh - var(--header-height));
+    /* Ensure content is tall enough for sticky to work */
+    align-self: stretch;
 }
 
 /* Ensure main content doesn't overlap sidebars on large screens */
@@ -581,9 +596,11 @@ body, .page, article.content, .features-section, .hero-inner {
     padding: 1.5rem 1rem;
     -webkit-flex-shrink: 0;
     flex-shrink: 0;
+    position: -webkit-sticky;
     position: sticky;
     align-self: flex-start;
     top: calc(var(--header-height) + 20px);
+    height: fit-content;
     max-height: calc(100vh - var(--header-height) - 40px);
     overflow-y: auto;
     overflow-x: hidden;
@@ -909,10 +926,6 @@ td {
 
     .hero-inner {
         padding: 1.5rem;
-    }
-
-    .hero-wave {
-        height: 50px;
     }
 
     /* Quote section */

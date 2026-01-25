@@ -42,10 +42,10 @@ Việc xem vectơ như các phần tử của $\mathbb{R}^n$ còn có một lợ
 Đại số tuyến tính tập trung vào những điểm tương đồng giữa các khái niệm vectơ này: ta có thể cộng chúng và nhân chúng với các số vô hướng. Trong cuốn sách này, chúng tôi chủ yếu tập trung vào các vectơ trong $\mathbb{R}^n$, vì hầu hết các thuật toán trong đại số tuyến tính đều được xây dựng trong $\mathbb{R}^n$.
 
 Ở Chương 8, ta sẽ thấy rằng dữ liệu thường được biểu diễn dưới dạng các vectơ trong $\mathbb{R}^n$. Trong sách này, chúng tôi tập trung vào các không gian vectơ hữu hạn chiều (finite-dimensional vector spaces); trong trường hợp đó, tồn tại một sự tương ứng 1:1 giữa bất kỳ loại vectơ nào và $\mathbb{R}^n$. Khi thuận tiện, chúng tôi sẽ sử dụng trực giác về vectơ hình học và xem xét các thuật toán dựa trên mảng.
+vector
+Một khái niệm quan trọng là **tính đóng** (closure) của một tập: bắt đầu từ một tập **vectơ đơn vị** (unit vector) và thực hiện các phép cộng/tỉ lệ, tập các vectơ (set of vectors) có thể sinh ra là gì? Câu trả lời dẫn đến khái niệm không gian **vectơ** (vector space). Không gian **vectơ** và các tính chất của nó là nền tảng cho nhiều phép toán trong máy học.
 
-Một khái niệm quan trọng là **tính đóng** (closure) của một tập: bắt đầu từ một tập **vectơ** nhỏ và thực hiện các phép cộng/tỉ lệ, tập các vectơ (set of vectors) có thể sinh ra là gì? Câu trả lời dẫn đến khái niệm không gian **vectơ** (vector space). Không gian **vectơ** và các tính chất của nó là nền tảng cho nhiều phép toán trong máy học.
-
-Phần còn lại của chương bày các khái niệm cơ bản: **hệ phương trình tuyến tính** (system of linear equations), **ma trận** (matrix) và các phép toán trên **ma trận** (matrix), **không gian nghiệm** (solution space), **cơ sở** (basis) và các phép biến đổi cần thiết cho các ứng dụng máy học.
+Phần còn lại của chương bày các khái niệm cơ bản: **hệ phương trình tuyến tính** (system of linear equations), **ma trận** (matrix) và các phép toán trên **ma trận**, **không gian nghiệm** (solution space), **cơ sở** (basis) và các phép biến đổi cần thiết cho các ứng dụng máy học.
 
 ![Hình 2.2: Sơ đồ tư duy (mind map) về các khái niệm được giới thiệu trong chương này, cùng với vị trí mà chúng được sử dụng ở các phần khác của cuốn sách.](/images/Mathematics-for-Machine-Learning/_page_19_Figure_1.png)
 
@@ -56,7 +56,7 @@ Phần còn lại của chương bày các khái niệm cơ bản: **hệ phươ
 
 **Ví dụ 2.1 (Bài toán phân phối tài nguyên).**
 
-Giả sử một công ty sản xuất n sản phẩm $N^1, ..., N^n$ bằng cách sử dụng m loại tài nguyên $R^1, ..., R^m$. Để sản xuất một đơn vị sản phẩm $N^j$ cần $a_{ij}$ đơn vị tài nguyên $R^i$ $(i = 1,...,m; j = 1,...,n)$. Nếu có $$b^i$$ đơn vị tài nguyên $$R^i$$ sẵn có, ta muốn tìm số lượng $x^1,...,x^n$ sản phẩm để sử dụng tối ưu tài nguyên, lý tưởng là không dư thừa.
+Giả sử một công ty sản xuất n sản phẩm $N^1, ..., N^n$ bằng cách sử dụng m loại tài nguyên $R^1, ..., R^m$. Để sản xuất một đơn vị sản phẩm $N^j$ cần $a_{ij}$ đơn vị tài nguyên $R^i$ $(i = 1,...,m; j = 1,...,n)$. Nếu có $$b^i$$ đơn vị tài nguyên $$R^i$$ sẵn có, ta muốn tìm số lượng $x_1,...,x_n$ sản phẩm để sử dụng tối ưu tài nguyên, lý tưởng là không dư thừa.
 
 Việc tiêu thụ tài nguyên $R^i$ bởi kế hoạch sản xuất $x_1,...,x_n$ là:
 
@@ -169,7 +169,7 @@ $$
 
 trong đó không gian nghiệm là điểm $(x_1, x_2) = \left(1, \frac{1}{4}\right)$.
 
-![Hình 2.3: Không gian nghiệm của một hệ gồm hai phương trình tuyến tính với hai biến có thể được diễn giải theo hình học như **giao điểm của hai đường thẳng**. Mỗi phương trình tuyến tính tương ứng với một đường thẳng.](/images/Mathematics-for-Machine-Learning/_page_21_Figure_1.png)
+![Hình 2.3: Không gian nghiệm của một hệ gồm hai phương trình tuyến tính với hai biến có thể được diễn giải theo hình học như giao điểm của hai đường thẳng. Mỗi phương trình tuyến tính tương ứng với một đường thẳng.](/images/Mathematics-for-Machine-Learning/_page_21_Figure_1.png)
 
 Tương tự, với **ba biến**, mỗi phương trình tuyến tính xác định một **mặt phẳng** trong không gian ba chiều. Khi lấy giao của các mặt phẳng này, tức là thỏa mãn tất cả các phương trình cùng lúc, ta có thể thu được một tập nghiệm là:
 - một **mặt phẳng**,
@@ -244,7 +244,6 @@ Trong phần tiếp theo, chúng ta sẽ xem xét kỹ hơn các ma trận này 
 **Định nghĩa 2.1 Ma trận**
 
 Với m,n $$\in$$ $$\mathbb{N}$$, một **ma trận** thực kích thước $m \times n$ là một bảng số $a_{ij}$ sắp xếp thành m hàng và n cột:
-:::
 
 $$
 A =
@@ -256,6 +255,7 @@ a_{m1} & a_{m2} & \cdots & a_{mn}
 \end{bmatrix},
 \qquad a_{ij} \in \mathbb{R}.
 $$
+:::
 
 $\mathbb{R}^{m \times n}$ là tập hợp tất cả các ma trận kích thước $(m, n)$ với giá trị thực.  
 Một ma trận $A \in \mathbb{R}^{m \times n}$ cũng có thể được biểu diễn tương đương như một vectơ $a \in \mathbb{R}^{mn}$ bằng cách **xếp chồng tất cả $n$ cột của ma trận lại thành một vectơ dài**.
