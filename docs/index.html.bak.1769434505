@@ -3,7 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Code Magic</title>
     <base href="/"/>
-    <link href="_framework/dotnet.1bg1mqmnal.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-zaa6lXLSYKVLCwn8uY4ynm42KkRcs9NSnB58+rWJMOU="/>
+    <link href="_framework/dotnet.91cnmw2ejh.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-rZJlUOO2kO590t4O06O/pMIoqufDySVa2XsLm7ALaec="/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
@@ -16,7 +16,7 @@
     <script type="importmap">{
   "imports": {
     "./_framework/blazor.webassembly.js": "./_framework/blazor.webassembly.66stpp682q.js",
-    "./_framework/dotnet.js": "./_framework/dotnet.1bg1mqmnal.js",
+    "./_framework/dotnet.js": "./_framework/dotnet.91cnmw2ejh.js",
     "./_framework/dotnet.native.js": "./_framework/dotnet.native.wrr3s1u3jw.js",
     "./_framework/dotnet.runtime.js": "./_framework/dotnet.runtime.2tx45g8lli.js"
   },
@@ -24,8 +24,8 @@
   "integrity": {
     "./_framework/blazor.webassembly.66stpp682q.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
     "./_framework/blazor.webassembly.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
-    "./_framework/dotnet.1bg1mqmnal.js": "sha256-zaa6lXLSYKVLCwn8uY4ynm42KkRcs9NSnB58+rWJMOU=",
-    "./_framework/dotnet.js": "sha256-zaa6lXLSYKVLCwn8uY4ynm42KkRcs9NSnB58+rWJMOU=",
+    "./_framework/dotnet.91cnmw2ejh.js": "sha256-rZJlUOO2kO590t4O06O/pMIoqufDySVa2XsLm7ALaec=",
+    "./_framework/dotnet.js": "sha256-rZJlUOO2kO590t4O06O/pMIoqufDySVa2XsLm7ALaec=",
     "./_framework/dotnet.native.js": "sha256-pHATP1UYfVbgkubj/zSgOMTH5p50o8sWVxiheNxMVnA=",
     "./_framework/dotnet.native.wrr3s1u3jw.js": "sha256-pHATP1UYfVbgkubj/zSgOMTH5p50o8sWVxiheNxMVnA=",
     "./_framework/dotnet.runtime.2tx45g8lli.js": "sha256-2lZh9yO0fnzm3Xt7yV+Kox3DH3nK7L8hDhm84VT1xco=",
@@ -58,7 +58,13 @@
                 <span class="bg-layer" style="background-image: url('/images/Professor_Shinonome_Finds_SICP.jpg');" b-qjr5eoji3o></span></div>
             <div class="hero-inner" b-qjr5eoji3o><div class="hero-title" b-qjr5eoji3o>Code Magic</div></div></section><section class="quote-section" b-qjr5eoji3o><div class="featured-quote" b-qjr5eoji3o><p class="m-0" b-qjr5eoji3o>"Nothing is hidden that will not be revealed."</p></div></section><section class="posts-section" b-qjr5eoji3o><div class="posts-header" b-qjr5eoji3o><h2 b-qjr5eoji3o>Thư viện sách</h2>
                 <p b-qjr5eoji3o>Danh sách sách đã và đang dịch</p></div>
-            <div class="books-grid" b-qjr5eoji3o><a href="book/mathematics-for-machine-learning" class="book-card" b-qjr5eoji3o><div class="book-card-inner" b-qjr5eoji3o><div class="book-icon" b-qjr5eoji3o><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" b-qjr5eoji3o><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" b-qjr5eoji3o></path>
+            <div class="books-grid" b-qjr5eoji3o><a href="book/on-the-composition-of-images,-signs-&amp;-ideas" class="book-card" b-qjr5eoji3o><div class="book-card-inner" b-qjr5eoji3o><div class="book-icon" b-qjr5eoji3o><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" b-qjr5eoji3o><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" b-qjr5eoji3o></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" b-qjr5eoji3o></path></svg></div>
+                            <div class="book-card-body" b-qjr5eoji3o><h3 b-qjr5eoji3o>ON THE COMPOSITION OF IMAGES, SIGNS &amp; IDEAS</h3>
+                                <div class="book-meta" b-qjr5eoji3o><span class="chapter-count" b-qjr5eoji3o>1 chương</span>
+                                    <span class="latest-update" b-qjr5eoji3o>Cập nhật:
+                                        26/01/2025</span></div>
+                                <p class="latest-chapter" b-qjr5eoji3o>Chương mới nhất: L&#x1EDD;i n&#xF3;i &#x111;&#x1EA7;u</p></div></div></a><a href="book/mathematics-for-machine-learning" class="book-card" b-qjr5eoji3o><div class="book-card-inner" b-qjr5eoji3o><div class="book-icon" b-qjr5eoji3o><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" b-qjr5eoji3o><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" b-qjr5eoji3o></path>
                                     <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" b-qjr5eoji3o></path></svg></div>
                             <div class="book-card-body" b-qjr5eoji3o><h3 b-qjr5eoji3o>MATHEMATICS FOR MACHINE LEARNING</h3>
                                 <div class="book-meta" b-qjr5eoji3o><span class="chapter-count" b-qjr5eoji3o>3 chương</span>
@@ -79,7 +85,7 @@
             <button class="search-close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg></button></div>
 
         <div class="search-body"><div class="search-suggestions"><div class="suggestions-label">Sách phổ biến</div>
-                    <div class="tag-suggestions"><a href="book/mathematics-for-machine-learning" class="tag-suggestion">MATHEMATICS FOR MACHINE LEARNING</a></div></div></div>
+                    <div class="tag-suggestions"><a href="book/mathematics-for-machine-learning" class="tag-suggestion">MATHEMATICS FOR MACHINE LEARNING</a><a href="book/on-the-composition-of-images,-signs-&amp;-ideas" class="tag-suggestion">ON THE COMPOSITION OF IMAGES, SIGNS &amp; IDEAS</a></div></div></div>
 
         <div class="search-footer"><div class="search-tips"><span><kbd>Enter</kbd> để tìm</span>
                 <span><kbd>ESC</kbd> để thoát</span></div></div></div></div></div>

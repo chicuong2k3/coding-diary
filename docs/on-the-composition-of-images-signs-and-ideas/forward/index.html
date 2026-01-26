@@ -1,0 +1,669 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Code Magic</title>
+    <base href="/"/>
+    <link href="_framework/dotnet.91cnmw2ejh.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-rZJlUOO2kO590t4O06O/pMIoqufDySVa2XsLm7ALaec="/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/app.css"/>
+    <link rel="icon" type="image/png" href="favicon.png"/>
+    <link href="DocumentationWeb.styles.css" rel="stylesheet"/>
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+    <script type="importmap">{
+  "imports": {
+    "./_framework/blazor.webassembly.js": "./_framework/blazor.webassembly.66stpp682q.js",
+    "./_framework/dotnet.js": "./_framework/dotnet.91cnmw2ejh.js",
+    "./_framework/dotnet.native.js": "./_framework/dotnet.native.wrr3s1u3jw.js",
+    "./_framework/dotnet.runtime.js": "./_framework/dotnet.runtime.2tx45g8lli.js"
+  },
+  "scopes": {},
+  "integrity": {
+    "./_framework/blazor.webassembly.66stpp682q.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
+    "./_framework/blazor.webassembly.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
+    "./_framework/dotnet.91cnmw2ejh.js": "sha256-rZJlUOO2kO590t4O06O/pMIoqufDySVa2XsLm7ALaec=",
+    "./_framework/dotnet.js": "sha256-rZJlUOO2kO590t4O06O/pMIoqufDySVa2XsLm7ALaec=",
+    "./_framework/dotnet.native.js": "sha256-pHATP1UYfVbgkubj/zSgOMTH5p50o8sWVxiheNxMVnA=",
+    "./_framework/dotnet.native.wrr3s1u3jw.js": "sha256-pHATP1UYfVbgkubj/zSgOMTH5p50o8sWVxiheNxMVnA=",
+    "./_framework/dotnet.runtime.2tx45g8lli.js": "sha256-2lZh9yO0fnzm3Xt7yV+Kox3DH3nK7L8hDhm84VT1xco=",
+    "./_framework/dotnet.runtime.js": "sha256-2lZh9yO0fnzm3Xt7yV+Kox3DH3nK7L8hDhm84VT1xco="
+  }
+}</script>
+
+<!-- %%-PRERENDERING-HEADOUTLET-BEGIN-%% -->
+<title>Lời nói đầu</title>
+<!-- %%-PRERENDERING-HEADOUTLET-END-%% -->
+</head>
+
+<body>
+    <div id="app">
+<!-- %%-PRERENDERING-BEGIN-%% -->
+<div class="site-content" b-qjr5eoji3o><header class="sakura-header" b-qjr5eoji3o><div class="sakura-header-inner" b-qjr5eoji3o><div class="brand-wrap" b-qjr5eoji3o><a class="brand" href b-qjr5eoji3o>Code Magic</a></div>
+
+            <nav class="main-nav" aria-label="Primary" b-qjr5eoji3o><ul b-qjr5eoji3o><li b-qjr5eoji3o><a href b-qjr5eoji3o>Trang chủ</a></li>
+                    <li b-qjr5eoji3o><a href="book" b-qjr5eoji3o>Thư viện sách</a></li>
+                    <li b-qjr5eoji3o><a href="bookmarks" b-qjr5eoji3o>Đánh dấu</a></li>
+                    <li b-qjr5eoji3o><a href="about" b-qjr5eoji3o>Giới thiệu</a></li></ul></nav>
+
+            <div class="header-actions" b-qjr5eoji3o><div class="icon-row" b-qjr5eoji3o><button class="icon btn-ghost" title="Toggle theme" b-qjr5eoji3o><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" b-qjr5eoji3o><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" b-qjr5eoji3o></path></svg></button>
+                    <a class="icon btn-ghost" href="https://github.com/chicuong2k3" target="_blank" title="GitHub" b-qjr5eoji3o><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" b-qjr5eoji3o><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" b-qjr5eoji3o></path></svg></a>
+                    <button class="icon btn-ghost search-btn" title="Search" b-qjr5eoji3o><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" b-qjr5eoji3o><circle cx="11" cy="11" r="8" b-qjr5eoji3o></circle>
+                            <path d="m21 21-4.35-4.35" b-qjr5eoji3o></path></svg></button></div></div></div></header><div class="page sakura-page  " b-qjr5eoji3o><aside class="left-sidebar" b-qjr5eoji3o><div class="sidebar-tags" b-qjr5eoji3o><div class="book-chapters-container" b-nsp51uw5bw><h3 class="book-chapters-title" b-nsp51uw5bw><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" b-nsp51uw5bw><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" b-nsp51uw5bw></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" b-nsp51uw5bw></path></svg>
+            ON THE COMPOSITION OF IMAGES, SIGNS &amp; IDEAS</h3>
+        <a href="book/on-the-composition-of-images,-signs-&amp;-ideas" class="view-all-link" b-nsp51uw5bw>Xem tất cả chương →</a>
+        <div class="chapters-list" b-nsp51uw5bw><a href="on-the-composition-of-images-signs-and-ideas/forward" class="chapter-item active" b-nsp51uw5bw><span class="chapter-num" b-nsp51uw5bw>1</span>
+                    <span class="chapter-name" title="L&#x1EDD;i n&#xF3;i &#x111;&#x1EA7;u" b-nsp51uw5bw>L&#x1EDD;i n&#xF3;i &#x111;&#x1EA7;u</span></a></div><div class="bookmark-list-container" b-mtxm6u0zg7><div class="bookmark-header" b-mtxm6u0zg7><h3 class="bookmark-title" b-mtxm6u0zg7><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" b-mtxm6u0zg7><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" b-mtxm6u0zg7></path></svg>
+            Đánh dấu
+        </h3>
+        <a href="bookmarks" class="view-all-bookmarks" title="Xem tất cả" b-mtxm6u0zg7><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" b-mtxm6u0zg7><polyline points="9 18 15 12 9 6" b-mtxm6u0zg7></polyline></svg></a></div><p class="no-bookmarks" b-mtxm6u0zg7>Chưa có đánh dấu nào</p></div></div></div></aside><main class="doc-main" b-qjr5eoji3o><article class="content" b-qjr5eoji3o>
+
+<div class="content"><p>Không thể gò ép tác phẩm <em>De Imaginum, Signorum et Idearum Compositione</em> của Giordano Bruno vào chiếc 'khuôn áo' của bất kỳ một trong vô số các loại hình và thể loại luận thuyết, tiểu thuyết, thơ ca và các thể loại khác - những khuôn phân loại mà các nhà hùng biện thời Phục hưng có đầu óc minh mẫn (clear-minded) và các môn đồ của Aristotle và Cicero nghĩ rằng tất cả các hình thức tư duy suy biện và sáng tạo đều có thể được phân chia. Bản chất rất cá nhân và độc đáo của Giordano Bruno - bản chất phá cách (iconoclastic) và nổi loạn (rebellious) trong suốt cuộc đời ngắn ngủi và đầy biến động đã khiến ông trở nên khác biệt và chống lại các tôn giáo lớn vào thời đó, cũng như chống lại hầu hết các thể chế chính trị và văn hóa đã được thiết lập khác - nên ngăn cản ngay từ đầu bất kỳ nỗ lực nào nhằm “định nghĩa” <em>De Imaginum... Compositione</em> theo bất kỳ cách nào khác ngoài một tác phẩm đa phương tiện và liên ngành hấp dẫn (fascinating) và lôi cuốn (engrossing) mà biểu tượng của nó không được đọc bằng con mắt của cơ thể mà bằng con mắt của tâm trí. Nó phải được khám phá, tìm kiếm, nghiên cứu với cùng sự kinh ngạc (amazement) và thắc mắc ai sẽ đi lạc trong một mê cung (labyrinth) hay bên trong một kim tự tháp. Kết quả của trải nghiệm sẽ không phải là sự hiểu biết (understanding) sâu sắc hơn - nếu sự hiểu biết chúng ta muốn nói đến kiểu hiểu biết hợp lý, khoa học và thực dụng (pragmatic) mà chúng ta thường được dạy trong các khóa học triết học - mà là sự khởi đầu đi vào những bí ẩn huyền bí (arcane mystery).</p>
+<div class="alert alert-info" role="alert"><div class="d-flex align-items-center"><i class="bi-info-circle-fill flex-shrink-0 me-2" aria-label="Info:"></i>
+<h5>Info:</h5></div>
+<p>Con mắt của tâm trí (the eyes of the mind) là một khái niệm phổ biến trong truyền thống Plato và Tân Platon, chỉ khả năng trực giác nội tâm chứ không phải nhận thức giác quan.</p>
+<MindContainer><p>Trong khoảng thời gian đầu của thế kỷ này, một số học giả người Ý đã cố gắng “làm sáng tỏ” (clarify) Bruno. Bị ảnh hưởng bởi triết học duy tâm (idealistic philosophy) Đức của Kant và Hegel, các nhà phê bình và sử gia văn hóa như Croce, Gentile và Mondolfo, cũng như nhiều người theo họ, đã cố gắng biến Bruno thành một nhà nhận thức luận (epistemologist), người muốn giải thích cách người có tư duy hiểu thế giới vật chất và tâm linh. Do đó, tư duy kín đáo (hermetic thinking) của Bruno đã được dịch sang các thuật ngữ triết học cổ điển như chủ nghĩa duy tâm (idealism) so với chủ nghĩa duy vật (materialism), chủ nghĩa Pythagore, chủ nghĩa Aristoteles so với chủ nghĩa Platon và chủ nghĩa tân Platon, chủ nghĩa thần bí (mysticism) và các phạm trù kiến thức phổ quát. Khi điều gì đó kiểu này xảy ra với một trong những tác phẩm phức tạp nhất của Bruno như <em>De Imaginum... Compositione</em>, nó có thể trở nên dễ hiểu hơn nhưng chắc chắn sẽ mất đi sự hấp dẫn.</p>
+<div class="alert alert-info" role="alert"><div class="d-flex align-items-center"><i class="bi-info-circle-fill flex-shrink-0 me-2" aria-label="Info:"></i>
+<h5>Info:</h5></div>
+<p>Hermetic không mang nghĩa là ‘bí mật’ theo nghĩa che giấu, mà chỉ truyền thống tri thức huyền học Hy Lạp - Ai Cập, nơi tri thức chỉ mở ra cho người đã chuẩn bị tinh thần.</p></div></MindContainer></div>
+<p><em>De Imaginum... Compositione</em> rõ ràng không phải là một luận thuyết triết học (philosophical treatise) theo nghĩa hiện tại của từ này. Nó không phải là một tác phẩm nhằm giải thích quá trình tư duy của con người và sự hiểu biết của nó về thế giới bên ngoài. Bruno đã giải quyết vấn đề này ngay từ đầu tác phẩm, trong <em>Dedicatory Epistle</em>, nơi ông đặt ra vấn đề cơ bản của triết học như là giới hạn của suy đoán triết học:</p>
+<p>&quot;Bởi vì mắt nhìn thấy vật khác, nó không nhìn thấy chính mình. Tuy nhiên, bản chất của con mắt là nhìn sự vật khác như nhìn thấy chính nó là gì? Đó là loại mắt nhìn thấy vạn vật trong chính nó, và cũng giống như vậy trong vạn vật. Bằng phương pháp siêu phàm (sublime) này, chúng ta có thể giống như loại mắt đó, nếu chúng ta có thể phân biệt (discern) được bản chất của loài chúng ta để mắt chúng ta có thể nhận thức được chính nó, tâm trí chúng ta tự bao bọc (enfold) nó. Khi đó, việc hiểu được mọi sự sẽ dễ dàng chẳng kém gì việc làm được mọi sự. Tuy nhiên, bản chất của sự vật được cấu thành và có tính vật chất không cho phép điều này vì bản chất của nó tồn tại trong chuyển động và số lượng, ngay cả khi bản thân nó không vận động cũng không bị vận động.&quot;</p>
+<p>Bruno xác nhận giả định này trong tính biểu tượng phong phú của tác phẩm, và đặc biệt là trong hình ảnh nguyên mẫu (archetypal) cơ bản, “Atrium”, ở trung tâm mà ông đặt cả “trái đất và con mắt”. Rõ ràng ở đây Bruno sử dụng con mắt như một phép ẩn dụ (metaphor) cho tâm trí như thường thấy trong suy đoán của chủ nghĩa tân Platon thời Phục hưng. Ý định của ông là nói rằng tâm trí bản thân nó không thể tự phân tích: tính hợp lý (rationality) kết thúc ở nơi nó bắt đầu. Tuy nhiên, đồng thời, việc sử dụng con mắt như phép ẩn dụ của sự hiểu biết cho phép Bruno tập trung toàn bộ trọng tâm suy đoán của mình vào một cách tiếp cận trực giác và thị giác (intuitive and visual approach), trong đó con mắt và hình ảnh đóng vai trò quan trọng. Chắc chắn ông không tuân theo lối diễn ngôn văn học (literary discourse) hợp lý được tổ chức theo các quy luật logic về nhân quả (cause and effect).</p>
+<p>Cũng như mắt là cơ quan nhìn thấy thực tại, ánh sáng là yếu tố giúp mắt nhìn thấy. Nhưng ở Bruno ánh sáng không chỉ đơn thuần là những tia nắng chiếu sáng (illuminate) thế giới. Bruno khẳng định (maintain) có một loại ánh sáng khác &quot;vô hình và lan tỏa (diffuse) khắp vũ trụ (cosmos) và gieo mầm khắp nơi.&quot; &quot;Với ánh sáng đó, một loại chất tâm linh nào đó, không có mặt trời hay ngọn lửa cung cấp ánh sáng, không có vật thể nào không hướng dẫn khả năng giác quan của chúng ta, linh hồn được ban cho, không chỉ của chúng ta, mà là một linh hồn phổ quát lan tỏa khắp vũ trụ bao la (immense). Tôi nói, đây là ánh sáng có thể nhìn thấy được chiếu rọi lên các hình thái của các vật vô hình vắng mặt, và là ánh sáng mà nhờ đó, trong khi chúng ta ngủ, chúng ta nhìn và tìm hiểu về các hình thái có thể cảm nhận được.&quot;</p>
+<p>Tôi nghĩ rằng trong đoạn văn này và nói chung trong chương mười hai của Quyển Một, Phần Một, có tựa đề “Ánh sáng, Phương tiện của Hình ảnh” chứa đựng nhiều bí mật có thể giúp chúng ta hiểu ít nhất một số trong rất nhiều sự phức tạp của tác phẩm. Ở đây Bruno dường như phân biệt hai loại ánh sáng. Một bên là ánh sáng tự nhiên, ánh sáng mà mọi người đều nhìn thấy, ánh sáng phân biệt ngày và đêm và mang lại nhịp điệu cho cuộc sống của chúng ta. Một bên là &quot;chất tâm linh&quot; (spiritual substance), thay vào đó, chỉ một số người mới có thể nhìn thấy. Thật không may, Bruno không đi xa hơn trong việc định nghĩa ánh sáng này là “bẩm sinh (innate) và được gieo trồng cho tinh thần hưng phấn”, nhưng đối với tôi, dường như đây là ánh sáng của sự mặc khải (revelation) và giác ngộ (enlightenment), ánh sáng của sự thật mà chỉ có nhà thần bí mới sở hữu được. Đó là ánh sáng chỉ cho chúng ta thấy một thực tại sâu sắc hơn, hiển lộ hơn sau khi chúng ta đã khao khát, tìm kiếm nó một cách thành tâm trong một thời gian dài thiền định và cầu nguyện đơn độc. Như chúng ta biết, Bruno vô cùng quý trọng cuộc sống đơn độc và huyền bí và tin rằng nó có thể dẫn tới sự giác ngộ. Về mặt này, Bruno đang đề xuất một hình thức thiền định thần bí khiến ông, theo định nghĩa, trở thành một con người ngoài thời đại của mình, nhưng đồng thời lại khiến ông đồng điệu (in synchrony) với Công giáo của chính thời đại ấy. Bởi lẽ đối với Công giáo cũng như vậy - và đặc biệt là đối với Công giáo trong thế kỷ 16 và 17 - hính thức chuyên tâm cô độc (solitary dedication) hướng đến tư duy cao hơn là con đường dẫn đến sự thánh thiện (sainthood). Điều này có thể đáng ngạc nhiên, nhưng đoạn trích dẫn trên của Bruno có sự tương đồng đặc biệt với các tác phẩm của <em>Thánh Teresa de Avila</em> người Tây Ban Nha đương đại, người trong một đoạn của <em>Su Vida</em> (tự truyện của bà) đã viết như sau:</p>
+<p>&quot;Mọi thứ mà tôi nhìn thấy bằng đôi mắt của thân xác đối với tôi dường như là một giấc mơ và sự nhạo báng (mockery). Điều tôi đã nhìn thấy bằng đôi mắt của tâm hồn mới là điều mà linh hồn mong muốn, nhưng nó lại ở rất xa, đó là cái chết. Cuối cùng, thật là một ân huệ to lớn khi Chúa ban cho ai đó khi cho người đó được những thị kiến như vậy bởi vì nó giúp ích rất nhiều cho người đó nhưng đồng thời cũng đặt lên họ một cây thánh giá nặng nề, bởi vì không có gì làm thỏa mãn người đó và mọi sự đều như giáng thẳng vào người đó. Và nếu Chúa không cho phép chúng ta tạm thời quên những thị kiến ấy, dù rồi sau đó chúng ta lại nhớ đến chúng thì tôi không biết con người có thể sống tiếp bằng cách nào” (Chương XXXVIII).</p>
+<div class="alert alert-info" role="alert"><div class="d-flex align-items-center"><i class="bi-info-circle-fill flex-shrink-0 me-2" aria-label="Info:"></i>
+<h5>Info:</h5></div>
+<p><em>Và nếu Chúa không cho phép chúng ta tạm thời quên những thị kiến ấy...</em>
+-&gt; Thị kiến thiêng liêng quá mạnh khiến con người không thể sống đời thường nếu không có những khoảng quên lãng để quay lại trần thế.</p></div>
+<p>Một khía cạnh khác chung của Bruno và Thánh Teresa là cảm giác rằng sự giác ngộ mang theo sự xa lánh (estrangement) từ người khác. Đó là một sự giác ngộ nặng nề, một sự giác ngộ mà Thánh Teresa có thể chịu đựng được nhờ những khoảng thời gian quên lãng định kỳ. Thay vào đó, trong trường hợp của Bruno, khó khăn khi trở thành một người đàn ông giữa những người khác giúp chúng ta hiểu được tính cách nóng nảy và cuộc sống nổi loạn (tempestuous personality and rebellious life) của ông, trong khi ông liên tục xung đột với tất cả các tổ chức lâu đời mà ông xử lý. Nếu hiểu quá nhiều thì khó có thể tuân theo sự tầm thường (mediocrity) chung chung của nhân loại. Trong những phát biểu của Bruno về ánh sáng, dường như đã phảng phất một yếu tố của nỗi khắc khoải tiền Lãng mạn (pre-Romantic anguish), vì thế không có gì đáng ngạc nhiên khi ông thực sự được các nhà Lãng mạn thời kỳ đầu đặc biệt ngưỡng mộ.</p>
+<div class="alert alert-info" role="alert"><div class="d-flex align-items-center"><i class="bi-info-circle-fill flex-shrink-0 me-2" aria-label="Info:"></i>
+<h5>Info:</h5></div>
+<p><strong>pre-Romantic anguish</strong> chỉ trạng thái bất an tinh thần của cá nhân trước cái vô hạn, xuất hiện trước khi chủ nghĩa Lãng mạn chính thức hình thành.</p></div>
+<p>Khi chúng ta xem xét phản ứng của ông đối với nghệ thuật thị giác, có thể rút ra một so sánh khác giữa Bruno và một người cùng thời (contemporary) với ông, Caravaggio. Kể từ khi mối quan tâm đến Caravaggio quay trở lại vào đầu thế kỷ này, các nhà phê bình đã nỗ lực tìm hiểu và giải thích cách thức rất đặc biệt mà ánh sáng hoạt động trong các bức tranh của ông, một ánh sáng chiếu xuyên qua khung vẽ và chỉ bắt được một số phần nhất định
+của nó, khiến những phần khác chìm trong bóng và bóng tối. Caravaggio thường sử dụng tia sáng để ghi lại hành động chính của bức tranh và ghi lại khoảnh khắc điều gì đó sắp xảy ra hoặc một trải nghiệm thần bí đặc biệt diễn ra.</p>
+<p>Hầu hết các nhà phê bình hiện nay đều đồng ý rằng ánh sáng của Caravaggio là &quot;trong nhà&quot; (indoors), được điều khiển và kiểm soát, giống như trong rạp hát, và họa sĩ có thể thu được những hiệu ứng này bằng cách cẩn thận đặt những ngọn nến trước bức vẽ của mình một cách nào đó giống như cách đạo diễn thắp sáng sân khấu cho một vở kịch. Như vậy, ánh sáng không trải đều trên bức tranh như ánh sáng tự nhiên ngoài trời mà chiếu sáng có chọn lọc không gian bên trong và các nhân vật là nhân vật chính (protagonists) của hành động. Ý nghĩa của ánh sáng đặc biệt này rõ ràng là thần bí. Trên thực tế, ánh sáng này thường xuyên ghi lại khoảnh khắc diễn ra sự biến đổi đột ngột (abrupt metamorphosis) từ trạng thái tâm trí này sang trạng thái tâm trí khác, như trong bức <em>Calling of Saint Matthew</em> nổi tiếng của ông tại Nhà thờ San Luigi dei Francesi ở Rome. Ở đây một dải ánh sáng phát ra từ góc trên bên trái của bức tranh bao trùm khuôn mặt của Chúa Giêsu Kitô vừa xuất hiện chỉ vào Thánh Mátthêu, cũng đã giác ngộ. Hầu hết các nhân vật khác đều ở trong vùng ánh sáng mờ hơn và tiếp tục công việc thường ngày của mình như thể không thể nhìn thấy sự kiện thần kỳ (miraculous event) đang diễn ra trước mắt. Đối với Caravaggio, khả năng nhìn cũng là một món quà tinh thần đặc biệt. Sự hiện diện vật lý thôi là không đủ.</p>
+<p>Tuy nhiên, sự tương đồng với Bruno cũng phải nhấn mạnh đến một yếu tố khác mà sự giống nhau ở hai yếu tố kia không thể coi là ngẫu nhiên. Caravaggio cũng có một cuộc đời bi thảm, được đánh dấu bằng thiên tài đáng kinh ngạc và việc anh không sẵn sàng chấp nhận sự công nhận mà đồng nghiệp và những người bảo vệ thường dành cho anh. Giống như Bruno, anh ấy không bao giờ chấp nhận sự chấp thuận (approbation) như thể sự chấp thuận có nghĩa là hạ thấp tầm nhìn cao hơn của anh ấy đối với tâm trí của những người bình thường. Giống như Bruno, anh ấy là một <em>maudit</em>, nguyên mẫu của một nghệ sĩ và một kẻ nổi loạn.</p>
+<div class="alert alert-info" role="alert"><div class="d-flex align-items-center"><i class="bi-info-circle-fill flex-shrink-0 me-2" aria-label="Info:"></i>
+<h5>Info:</h5></div>
+<p>Maudit (tiếng Pháp): ‘kẻ bị nguyền rủa’, chỉ hình mẫu thiên tài bị xã hội ruồng bỏ.</p></div>
+<p>Giống như Thánh Teresa, Bruno và Caravaggio trau dồi cả đời sống hành động và trí tuệ, nhưng không giống như bà, họ không thể biến ngọn lửa đốt cháy bên trong mình thành những hành động được thế giới đương đại tán thành. Cả hai người, dù cố ý hay vô thức, có lẽ đã âm mưu với nhau để tìm kiếm cái kết bi thảm của mình, hy vọng bằng sự tử đạo (martyrdom) của mình sẽ thừa nhận giá trị của những tầm nhìn rất riêng và độc đáo của họ. Trong khi Teresa là một vị thánh, Bruno lại tiếp thu bản chất nghệ thuật của Caravaggio, và điều này có thể giải thích sự khác biệt. Theo một nghĩa nào đó, họ đều là những nghệ sĩ theo chủ nghĩa cá nhân (individualistic sense), hậu Phục hưng và có lẽ đã nghĩ rằng chỉ có cái chết bạo lực và sớm mới có thể mang lại cho tác phẩm của họ sự công nhận mà họ xứng đáng có được. Thánh Teresa hoạt động trong một cơ cấu, Giáo hội Công giáo, trong đó các tiêu chuẩn tử đạo đã được thiết lập. Thay vào đó, thông qua sự tử đạo của họ, Caravaggio và Bruno đã thiết lập vai trò mới của một nghệ sĩ và nhà tư tưởng hoàn toàn độc lập, nguyên bản và độc lập. Có rất ít nghi ngờ rằng Bruno tin vào sự vượt trội về trí tuệ và đạo đức của cá nhân có tầm nhìn triết học và nghệ thuật, cũng như không có nghi ngờ gì rằng triết học của Bruno là một triết lý đòi hỏi khắt khe, phản ứng với cả chủ nghĩa tối nghĩa về văn hóa (cultural obscurantism) của Giáo hội Công giáo trong thời kỳ Phản Cải cách và quá trình dân chủ hóa văn hóa ở các quốc gia được cải cách. Nếu thực sự nói bằng một từ, người ta sẽ phải nói rằng Bruno là một hiện tượng văn hóa kỳ quặc và khác thường khó có thể đặt vào thời đại của ông. Ông là người đi trước những điều sẽ xảy ra sau này và là người phục hồi những ý tưởng cổ xưa và bị lãng quên.</p>
+<p>Nhà sử học trí thức Frances A. Yates là sinh viên và nhà phê bình chính của Bruno trong thế kỷ 20, người có cách tiếp cận rõ ràng khiến bà khác biệt với cách tiếp cận của các nhà phê bình tân duy tâm Ý. Cách đọc <em>De Imaginum... Compositione</em> của bà hoàn toàn khác với cách đọc của các triết gia Ý. Trong cuốn sách nổi tiếng <em>The Art of Memory</em>, xuất bản lần đầu năm 1966, Yates mô tả <em>De Imaginum... Compositione</em> là &quot;một hệ thống trí nhớ kiến trúc cực kỳ phức tạp&quot; (1966;295), trong đó Bruno áp dụng &quot;ma thuật bùa chú Ficinian vào các hình ảnh trí nhớ, có lẽ với ý tưởng thu hút những ảnh hưởng đặc biệt mạnh mẽ của Solar, Jovial và Venereal vào tính cách của loại pháp sư mà anh ta khao khát trở thành.&quot; (1969;296). Yates thừa nhận rằng các đặc điểm của chuyên luận về trí nhớ hơi khó xác định: &quot;Những bí ẩn của Ai Cập và Chaldean được gợi ý, nhưng bên dưới tất cả những lời dài dòng, cấu trúc của chuyên luận về trí nhớ vẫn có thể nhìn thấy rõ ràng.&quot; (1969;294). Tuy nhiên, có thể cấu trúc mà bà tìm thấy này không được nhìn thấy rõ ràng và xét cho cùng, những bí ẩn của Ai Cập và Chaldean không chỉ là những câu nói dài dòng. Thực tế của vấn đề có vẻ là Frances Yates đang gặp phải
+khó khăn tương tự như những người tiền nhiệm của cô ấy đã gặp phải khi cố gắng định nghĩa Bruno theo một cách chính xác. Một lần nữa, Bruno lại thoát khỏi định nghĩa, một nhận thức đáng lo ngại đối với những người theo phương pháp lịch sử, những người tin rằng tính hợp lý hiện đại có thể được chuyển sang những thời điểm khác nhau và cho những cá nhân trí thức thường khinh miệt tính hợp lý! Phải chăng phương pháp lịch sử, đã đạt đến sự hoàn thiện tột cùng trong thế kỷ 19, là đối trọng tinh vi của chủ nghĩa đế quốc chính trị (political imperialism). Trên thực tế, ở đây cũng vậy, các học giả ở một số nơi và quốc gia nhất định không ngừng viết lại quá khứ phần nào giống như cách các tướng lĩnh và chính trị gia thay đổi diện mạo của bản đồ và xác định lại bản sắc của các quốc gia.</p>
+<div class="alert alert-info" role="alert"><div class="d-flex align-items-center"><i class="bi-info-circle-fill flex-shrink-0 me-2" aria-label="Info:"></i>
+<h5>Info:</h5></div>
+<p>Ficino (Marsilio Ficino): triết gia Tân Platon, chủ trương ma thuật tinh thần (astral/spiritual magic).</p></div>
+<p>Trong cuốn sách sau này, <em>The Rosicrucian Enlightenment</em> năm 1972, Yates dường như mở rộng sự đánh giá cao của mình đối với tính cách của Bruno và coi anh ta không chỉ là một nhà ảo thuật về nghệ thuật ghi nhớ phức tạp mà còn là một nhà cải cách tôn giáo với một chương trình nghị sự rộng rãi và có tầm nhìn:</p>
+<p>“Giordano Bruno khi ông lang thang khắp châu Âu đã thuyết giảng về một cuộc cải cách chung trên thế giới, dựa trên sự quay trở lại với tôn giáo 'Ai Cập' được dạy trong các luận thuyết Hermetic, một tôn giáo vượt qua sự khác biệt tôn giáo thông qua tình yêu và phép thuật, dựa trên một tầm nhìn mới về thiên nhiên đạt được thông qua các bài tập chiêm nghiệm Hermetic&quot; (1972;136).</p>
+<p>Tuyên bố này đưa Bruno ra khỏi nhóm khá hẹp và hạn chế nhưng hấp dẫn của các nhà ghi nhớ và các nhà hùng biện. Đúng hơn, anh ta xuất hiện như một người hành hương (pilgrim) đầy cảm hứng theo đuổi tầm nhìn của riêng mình trong thời điểm có nhiều tranh cãi và hỗn loạn (turbulence) về tôn giáo. Điều anh đang tìm kiếm không phải, hoặc không chỉ, bí mật của trí nhớ mà là sự đổi mới khả năng cảm nhận của thế giới. Cấu hình này đặt Bruno ngang hàng với những nhà cải cách tôn giáo vĩ đại của mọi thời đại, và đặc biệt là những người rao giảng những tín ngưỡng bí ẩn và kín đáo, những người coi trọng trình độ trí tuệ cao trong học thuyết của họ và không quan tâm liệu học thuyết này có thể hiểu được đối với tâm trí của những người đàn ông và phụ nữ ít học hay không. Trong phần giới thiệu cuốn *De Imaginum... Compositione *Bruno nói khá rõ ràng và đơn giản rằng cuốn sách của ông rất phức tạp, ý nghĩa của nó đôi khi không thể hiểu được (impenetrable) và khó hiểu nó một cách hoàn toàn: &quot;có lẽ không ai có thể hiểu được mọi thứ ở mọi khía cạnh, trừ khi có lẽ anh ta cũng tin như vậy.&quot; Việc sử dụng từ ngữ ở đây rất quan trọng: sự hiểu biết chiếm vị trí thứ hai sau niềm tin.</p>
+<p>Nó khó có thể khác được. Bruno đang cố gắng khôi phục sự quan tâm và thậm chí cả niềm tin vào những hình ảnh cổ xưa của các vị thần vào thời điểm mà cuộc Cải cách đang đấu tranh để thanh lọc ngay cả tôn giáo Cơ đốc khỏi tàn tích của chủ nghĩa ngoại giáo còn tồn tại trong việc sùng bái các Thánh. Tên của Julian the Apostate (331?-363), nhà văn, triết gia, nhà thần bí và Hoàng đế La Mã, cháu trai của Constantine, người tin vào sự hồi sinh của Đế chế thông qua một chủ nghĩa ngoại giáo mới, được hồi sinh, xuất hiện ngay trong tâm trí. Giống như Bruno, Julian tin rằng ánh sáng là yếu tố tâm linh cơ bản kết nối mọi thực tại (&quot;ánh sáng huy hoàng lan tỏa khắp nơi là sự hiện thực hóa của trí tuệ thuần khiết&quot;) và do đó tôn giáo thực sự là tôn giáo của những người cổ xưa tôn thờ mặt trời. Tất cả các vị thần khác đều là hệ quả của mặt trời, bao gồm cả thần Mercury mà Julian tôn thờ và là người mà anh ấy cầu nguyện hàng đêm trước khi tham gia vào các vấn đề quốc gia. Điều thú vị là Mercury nhận được sự tôn vinh lớn nhất trong số tất cả các vị thần trong Quyển Hai của <em>De Imaginum... Compositione</em> và tất nhiên là Thoth, tác giả của các văn bản Hermetic đã được đổi tên. Tôn giáo của Julian là một tôn giáo rất phức tạp và quý phái, dựa trên nền tảng triết học sâu rộng mà chỉ giai cấp thống trị La Mã mới có được. Về bản chất, nó đã loại trừ khối lượng lớn các nền văn hóa và dân tộc mà đế chế bao gồm trong biên giới của nó. Đó là một tôn giáo đã lỗi thời. Nó lỗi thời và đây là lý do tại sao nó thất bại. Chủ nghĩa lỗi thời (Anachronism) chắc chắn cũng là một thuộc tính cũng hoạt động tốt trong <em>De Imaginum... Compositione</em> của
+Bruno, vì rất khó để tưởng tượng làm thế nào mà bất cứ ai trong những năm hỗn loạn của cuộc Cải cách, khi vấn đề cốt yếu là tạo ra một Cơ đốc giáo trong sạch và hợp lý, lại muốn tiếp nhận những dấu ấn của các biểu tượng của tôn giáo cũ. Và trên thực tế, hầu như không có ai làm vậy, mặc dù thực tế là Bruno thường khoe rằng anh có nhiều giáo phái ở nhiều nơi khác nhau. Ảnh hưởng của Bruno - mặc dù có một số ngoại lệ quan trọng - thực sự không đáng kể cho đến thế kỷ của chúng ta.</p>
+<p>Một trong những lý do khiến ngày nay chúng ta có thể hiểu Giordano Bruno rõ hơn những người cùng thời với ông là vì chúng ta đã coi sự lỗi thời như một tài sản hơn là một khuyết điểm. Trong trường hợp của Bruno, chủ nghĩa lỗi thời bao gồm việc thúc đẩy các hệ thống tư duy ghét bỏ tính hợp lý vào thời điểm mà tính hợp lý đang phát huy tính ưu việt của nó trong đời sống phương Tây. Ngày nay, có lẽ, chúng ta biết rõ hơn. Chắc chắn đó chỉ là một sự tình cờ, nhưng việc Bruno có lẽ đã viết <em>De Imaginum... Compositione</em> gần Zurich khiến tôi cảm thấy như một trong những sự trùng hợp ngẫu nhiên phải có ý nghĩa nào đó. Zurich, thành phố của Carl Gustav Jung, một trong những kẻ thù hàng đầu của chủ nghĩa duy lý (rationalism) hiện đại, người tin rằng ý nghĩa thường nằm ở tâm lý và các hiệp hội tự do của nó. Có lẽ chúng ta cần phải lùi lại vài thế kỷ trước việc khám phá ra giá trị của sự liên tưởng tự do đối với đoạn văn này trong <em>De Imaginum... Compositione</em> của Bruno:</p>
+<p>“Vì thế, trong những năm trước đây, đến lượt tôi phải nhào nặn (knead) nghệ thuật này để tạo ra những dấu hiệu phân biệt cụ thể hơn, theo một cách không được tiết lộ trong các phương pháp của người xưa, mà dựa trên những phép tính được gợi ra từ sự tương đồng giữa đầu và đuôi của một từ. Chẳng hạn, nhờ sự giống nhau ở đầu từ, ‘con lừa’ (asinus) dẫn đến hình ảnh của ‘nơi nương náu’ (asylum); ‘kẻ sinh ra’ (generans) dẫn đến Genesis; và ‘người đàn bà sinh nở’ (parturiens) dẫn đến Paralipomena. Nhờ sự giống nhau ở đuôi từ, ‘đền thờ’ (templum) dẫn đến ‘sự chiêm niệm’ (contemplatio); và nhờ sự giống nhau của toàn thân từ, ‘tấm gương’ (speculum) dẫn đến ‘sự suy tư/biện giải’ (speculatio).” (i-1-10).</p>
+<p>Nhà văn người Ý Alberto Savinio, anh trai của họa sĩ Giorgio de Chirico, và giống như Bruno, một người tin vào những mối liên hệ bí mật và huyền bí, đã từng viết rằng bằng chứng rõ ràng rằng những tàn tích được Schliemann phát hiện ở châu Á chính là tàn tích của thành Troy của Homeric là những tàn tích tương tự đã bị một con tàu tên là Agamemnon đập nát trong Thế chiến thứ nhất! Có phải là quá đáng khi nói rằng mối quan tâm của Jung đối với sự tự do liên kết xuất phát từ việc anh ấy trò chuyện với linh hồn đã chết của Bruno, điều này đã đưa anh ấy tiếp xúc với những bí ẩn cổ xưa của Hermetic? Tuyên bố này chắc chắn mang tính bí truyền, nhưng chẳng phải việc sử dụng rộng rãi thần thoại cổ điển trong phân tâm học Jungian hiện đại là một sự hồi sinh, dưới một vỏ bọc đã được sửa đổi, của ngoại giáo, một nỗ lực tìm kiếm trong ngoại giáo những ý nghĩa và giá trị mà văn hóa hiện đại và các tôn giáo độc thần không mang lại cho chúng ta? Tôn giáo thực sự của Bruno là tôn giáo tương tự. Ông không tin rằng ý nghĩa của từ, hình ảnh, âm thanh và ký hiệu có thể được xác định theo ngữ nghĩa nhưng có thể được hiểu bằng trực giác và tương tự thông qua các từ, hình ảnh, âm thanh và ký hiệu khác. Thế giới của tâm trí là thế giới của ảo tưởng mà sự hiểu biết xảy ra - không phải thông qua tính hợp lý, vì tính hợp lý là không thể - mà thông qua việc chiêm ngưỡng các hình ảnh:</p>
+<p>“Đối với triết học chân chính, âm nhạc hay thơ ca cũng là hội họa, hội họa chân chính cũng là âm nhạc và triết học, còn thơ hay âm nhạc chân chính là một loại trí tuệ và hội họa thần thánh. “Ở chỗ khác, tôi đã thảo luận về việc bất kỳ họa sĩ nào cũng tự nhiên là người thiết lập những hình ảnh vô hạn, người mà bằng khả năng hình thành hình ảnh của mình, xây dựng từ hình ảnh và âm thanh bằng cách kết hợp theo nhiều cách” (i-1-20).</p>
+<p>Bruno đang nói người nghệ sĩ giống như nhà tiên tri (prophet). Ảo tưởng của anh ta dẫn đến sự thật hoặc ít nhất là ý nghĩa.</p>
+<p>Câu hỏi cuối cùng cần có câu trả lời là &quot;tại sao hôm nay Bruno?&quot; Dick Higgins và Charles Doria, người biên tập và dịch giả lần lượt của ấn bản tiếng Anh đầu tiên đẹp đẽ và cực kỳ chính xác này của <em>DeImagnum... Compositione</em> đều là những nghệ sĩ tiên phong. Higgins, một trong những người sáng lập ban đầu của phong trào Fluxus, là một nghệ sĩ thị giác đã làm việc nhiều năm với hình ảnh thời Phục hưng và Baroque, với nỗ lực thể hiện giá trị lâu dài của thông điệp của nó. Có chút nghi ngờ rằng ý định của ông khi đề xuất hình ảnh phức tạp của Bruno là khiến người đọc tham gia vào cảm giác ngạc nhiên kỳ thú của chính ông khi nghiên cứu những biểu tượng này, một bài tập trong việc liên kết các hình ảnh, ý tưởng và thần thoại hướng tâm trí ra khỏi diễn ngôn hợp lý vào thế giới sản xuất kỳ ảo. Một hình ảnh giống như một lăng kính pha lê, nó phản chiếu ánh sáng theo những hướng đa dạng và bất ngờ nhất, chiếu sáng và mang đến ý thức những hình ảnh và ý tưởng bất ngờ khác cho đến khi, giống như trong thiền định, bản thân suy nghĩ chìm đắm trong vẻ đẹp của trải nghiệm. Thực sự không có gì để học theo nghĩa truyền thống của việc học động từ, bằng cách theo dõi Bruno trong chuyến hành trình của anh ấy qua thế giới của những hình ảnh Hermetic.</p>
+<p>Về phần mình, Charles Doria với tư cách là một nhà thơ đã bị thu hút một cách không thể cứu vãn được bởi niềm tin chắc chắn của Bruno rằng thơ ca là nghệ thuật làm nền tảng cho tất cả các môn nghệ thuật khác, khoa mà, như Bruno nói, biết “cách biến đổi ngay cả những từ trống rỗng thành những ý tưởng có trật tự”.</p>
+<p>Tóm lại, trong văn bản của họ, Higgins và Doria đã cẩn thận tránh lặp lại sai lầm của các học giả tiền nhiệm Bruno khi giải thích tác phẩm của Bruno. <em>De Imaginum... Compositione</em> có lẽ sẽ có nhiều ý nghĩa như nó sẽ có đối với độc giả. Về mặt này, hai cộng tác viên vẫn trung thành với tư thế tiên phong của họ cũng như ý định của Giordano Bruno, người trong tác phẩm này đã viết để ca ngợi động lực sáng tạo và những tưởng tượng tuyệt vời đang hoặc nên hiện diện trong tất cả chúng ta.</p></div></article></main><aside class="toc-sidebar" b-qjr5eoji3o><div class="toc-wrapper"><h4 class="toc-title">Mục lục</h4></div></aside></div><footer class="home-footer site-footer" b-qjr5eoji3o><div class="footer-inner" b-qjr5eoji3o><div class="footer-left" b-qjr5eoji3o><p b-qjr5eoji3o>&#xA9; 2026 Code Magic. All rights reserved.</p></div>
+            <div class="footer-right" b-qjr5eoji3o><nav class="footer-nav" aria-label="Footer" b-qjr5eoji3o><a href="about" b-qjr5eoji3o>Giới thiệu</a>
+                    <span class="dot" b-qjr5eoji3o>·</span>
+                    <a href="sitemap" b-qjr5eoji3o>Sitemap</a>
+                    <span class="dot" b-qjr5eoji3o>·</span>
+                    <a href="https://github.com/chicuong2k3" target="_blank" rel="noopener" b-qjr5eoji3o>GitHub</a></nav></div></div></footer>
+
+    <div class="search-container "><div class="search-overlay"></div>
+    <div class="search-modal"><div class="search-header"><svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path></svg>
+            <input value="" class="search-input" placeholder="T&#xEC;m ch&#x1B0;&#x1A1;ng, s&#xE1;ch..." />
+            <div class="search-kbd"><kbd>ESC</kbd></div>
+            <button class="search-close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg></button></div>
+
+        <div class="search-body"><div class="search-suggestions"><div class="suggestions-label">Sách phổ biến</div>
+                    <div class="tag-suggestions"><a href="book/mathematics-for-machine-learning" class="tag-suggestion">MATHEMATICS FOR MACHINE LEARNING</a><a href="book/on-the-composition-of-images,-signs-&amp;-ideas" class="tag-suggestion">ON THE COMPOSITION OF IMAGES, SIGNS &amp; IDEAS</a></div></div></div>
+
+        <div class="search-footer"><div class="search-tips"><span><kbd>Enter</kbd> để tìm</span>
+                <span><kbd>ESC</kbd> để thoát</span></div></div></div></div></div>
+        <blazor-focus-on-navigate selector="h1"></blazor-focus-on-navigate>
+<!-- %%-PRERENDERING-END-%% -->
+</div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>
+
+    <script type="text/javascript">
+        // MathJax configuration - adjust delimiters as needed
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+
+    <script type="text/javascript" id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+        </script>
+
+    <!-- Polyfills + Mermaid dual-loader (module + nomodule fallback) -->
+    <script>
+        // Polyfills for older Safari (Element.matches / Element.closest)
+        if (!Element.prototype.matches) {
+            Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector || function (s) {
+                var matches = (this.document || this.ownerDocument).querySelectorAll(s), i = matches.length;
+                while (--i >= 0 && matches.item(i) !== this) { }
+                return i > -1;
+            };
+        }
+        if (!Element.prototype.closest) {
+            Element.prototype.closest = function (s) {
+                var el = this;
+                do {
+                    if (el.matches && el.matches(s)) return el;
+                    el = el.parentElement || el.parentNode;
+                } while (el !== null && el.nodeType === 1);
+                return null;
+            };
+        }
+
+        // Mermaid (ES module) for modern browsers
+    </script>
+
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        // Keep configuration minimal and safe for older engines
+        mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+
+        window._mermaid = mermaid;
+        window.renderMermaid = async function (srcId, containerId) {
+            const srcEl = document.getElementById(srcId);
+            const containerEl = document.getElementById(containerId);
+            if (!srcEl || !containerEl) return;
+
+            // Use textContent for maximum compatibility
+            const definition = srcEl.textContent.trim();
+            if (!definition) return;
+
+            try {
+                // mermaid.render may return { svg } or a string depending on build
+                const maybe = await mermaid.render('mermaid-' + Date.now(), definition);
+                if (maybe && maybe.svg) containerEl.innerHTML = maybe.svg;
+                else if (typeof maybe === 'string') containerEl.innerHTML = maybe;
+                else {
+                    containerEl.innerHTML = '<pre style="color:red;">Mermaid: unexpected render result</pre>';
+                    if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Mermaid unexpected render result', String(maybe));
+                }
+            } catch (e) {
+                containerEl.innerHTML = '<pre style="color:red;">Mermaid Error: ' + (e && e.message || e) + '</pre>';
+                if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Mermaid render failed', e && e.message ? e.message : String(e));
+            }
+        };
+    </script>
+
+    <!-- UMD/nombre module fallback for older Safari that doesn't fully support modules -->
+    <script nomodule="" src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <script nomodule="">
+        if (window.mermaid) {
+            window._mermaid = window.mermaid;
+            window._mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+
+            window.renderMermaid = function (srcId, containerId) {
+                const srcEl = document.getElementById(srcId);
+                const containerEl = document.getElementById(containerId);
+                if (!srcEl || !containerEl) return;
+                const definition = srcEl.textContent.trim();
+                if (!definition) return;
+
+                try {
+                    // Some UMD builds return svg string or { svg }, others use callback
+                    try {
+                        const result = window._mermaid.render('mermaid-' + Date.now(), definition);
+                        if (result && result.svg) containerEl.innerHTML = result.svg;
+                        else if (typeof result === 'string') containerEl.innerHTML = result;
+                        else {
+                            containerEl.innerHTML = '<pre style="color:red;">Mermaid: unexpected render result</pre>';
+                            if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Mermaid unexpected render result', String(result));
+                        }
+                    } catch (err) {
+                        // Try callback signature
+                        window._mermaid.render('mermaid-' + Date.now(), definition, function (svgCode) {
+                            containerEl.innerHTML = svgCode;
+                        });
+                    }
+                } catch (e) {
+                    containerEl.innerHTML = '<pre style="color:red;">Mermaid Error: ' + (e && e.message || e) + '</pre>';
+                    if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Mermaid render failed', e && e.message ? e.message : String(e));
+                }
+            };
+        }
+    </script>
+
+    <script src="_framework/blazor.webassembly.66stpp682q.js"></script>
+
+    <script>
+        // Small helper: detect old Safari / iOS (<=15)
+        window.isOldSafari = function () {
+            try {
+                var ua = navigator.userAgent || '';
+                // iOS Safari detection: look for 'OS 12_...' or similar
+                var iosMatch = ua.match(/OS (\d+)_/i);
+                if (iosMatch && iosMatch[1]) {
+                    var iosVer = parseInt(iosMatch[1], 10);
+                    return iosVer <= 15;
+                }
+
+                // Desktop Safari: contains 'Safari' and 'Version/X' and not Chrome/Chromium/Edge
+                if (/Safari/.test(ua) && !/Chrome|Chromium|CrMo|CriOS|Edg|OPR|Android/.test(ua)) {
+                    var verMatch = ua.match(/Version\/(\d+)\./i);
+                    if (verMatch && verMatch[1]) {
+                        var ver = parseInt(verMatch[1], 10);
+                        return ver <= 15;
+                    }
+                }
+            } catch (e) {
+                console.warn('isOldSafari detection failed', e);
+            }
+            return false;
+        };
+
+        // Display a friendly error UI for browser-caused problems (visible on the page)
+        window.showBrowserError = function (message, details) {
+            try {
+                var el = document.getElementById('blazor-error-ui');
+                if (!el) {
+                    el = document.createElement('div');
+                    el.id = 'blazor-error-ui';
+                    document.body.appendChild(el);
+                }
+
+                // Basic styling so it's visible even if site styles hide it
+                el.style.display = 'block';
+                el.style.position = 'fixed';
+                el.style.left = '8px';
+                el.style.right = '8px';
+                el.style.bottom = '8px';
+                el.style.zIndex = 99999;
+                el.style.background = '#fff6f6';
+                el.style.border = '1px solid #f5c2c2';
+                el.style.color = '#661414';
+                el.style.padding = '12px';
+                el.style.borderRadius = '8px';
+                el.style.boxShadow = '0 6px 18px rgba(0,0,0,0.08)';
+                el.style.maxHeight = '40vh';
+                el.style.overflow = 'auto';
+
+                var uaNote = window.isOldSafari && window.isOldSafari() ? '<div style="font-size:12px;color:#8a0000;margin-bottom:8px">Warning: Browser looks like an older Safari/iOS — some features may not work correctly.</div>' : '';
+
+                var detailsHtml = details ? ('<pre style="white-space:pre-wrap;margin:6px 0;padding:8px;background:#fff;border-radius:6px;border:1px solid #fee;max-height:200px;overflow:auto;">' + escapeHtml(details) + '</pre>') : '';
+
+                el.innerHTML = '<strong>Browser error detected</strong>' + uaNote + '<div style="margin-top:6px;word-break:break-word;">' + escapeHtml(message || 'Unknown browser error') + '</div>' + detailsHtml + '<div style="margin-top:8px;text-align:right;"><button id="blazor-error-dismiss" style="background:#fff;color:#661414;border:1px solid #f5c2c2;padding:6px 10px;border-radius:6px;cursor:pointer">Dismiss</button></div>';
+
+                var btn = document.getElementById('blazor-error-dismiss');
+                if (btn) btn.addEventListener('click', function () { el.style.display = 'none'; });
+
+                // helper to escape HTML to avoid breaking page
+                function escapeHtml(str) {
+                    if (!str) return '';
+                    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                }
+
+                // Also log to console for diagnostics
+                console.error('Browser error shown to user:', message, details);
+            } catch (e) {
+                console.error('showBrowserError failed', e);
+            }
+        };
+
+        // Global handlers: only surface UI error if we're on older Safari (user requested)
+        window.addEventListener('error', function (evt) {
+            try {
+                if (window.isOldSafari && window.isOldSafari()) {
+                    var details = (evt.filename ? evt.filename + ':' + evt.lineno + ':' + evt.colno + '\n' : '') + (evt.error && evt.error.stack ? evt.error.stack : '');
+                    window.showBrowserError(evt.message || 'Script error', details);
+                }
+            } catch (e) {
+                // ignore
+            }
+        });
+
+        window.addEventListener('unhandledrejection', function (evt) {
+            try {
+                if (window.isOldSafari && window.isOldSafari()) {
+                    var reason = evt.reason && (evt.reason.message || evt.reason) ? (evt.reason.message || String(evt.reason)) : 'Unhandled rejection';
+                    var stack = evt.reason && evt.reason.stack ? evt.reason.stack : '';
+                    window.showBrowserError('Unhandled promise rejection: ' + reason, stack);
+                }
+            } catch (e) {
+                // ignore
+            }
+        });
+
+        // Smooth scroll to heading
+        window.scrollToHeading = function (id) {
+            const element = document.getElementById(id);
+            if (element) {
+                const headerOffset = 100;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        };
+
+        // Table of Contents functionality
+        window.initToc = function (dotNetRef) {
+            let currentObserver = null;
+            let scrollHandler = null;
+
+            const updateToc = () => {
+                const content = document.querySelector('.content');
+                if (!content) return;
+
+                const headings = content.querySelectorAll('h1, h2, h3');
+                const items = [];
+
+                headings.forEach((heading, index) => {
+                    // Ensure heading has an ID
+                    if (!heading.id) {
+                        heading.id = 'heading-' + index;
+                    }
+                    items.push({
+                        id: heading.id,
+                        text: heading.textContent.trim(),
+                        level: parseInt(heading.tagName.charAt(1))
+                    });
+                });
+
+                dotNetRef.invokeMethodAsync('UpdateTocItems', items);
+            };
+
+            // Initial update
+            setTimeout(updateToc, 100);
+
+            // Update on navigation/content changes
+            currentObserver = new MutationObserver(() => {
+                setTimeout(updateToc, 100);
+            });
+            currentObserver.observe(document.body, { childList: true, subtree: true });
+
+            // Track active heading on scroll with improved detection
+            let ticking = false;
+            scrollHandler = () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        const headings = document.querySelectorAll('.content h1, .content h2, .content h3');
+                        let activeId = null;
+                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        const viewportHeight = window.innerHeight;
+
+                        // Find the heading that's currently in view
+                        for (const heading of headings) {
+                            const rect = heading.getBoundingClientRect();
+                            const headingTop = rect.top + scrollTop;
+
+                            // Consider a heading active if it's within the top portion of viewport
+                            if (rect.top <= 150) {
+                                activeId = heading.id;
+                            }
+                        }
+
+                        // If at the very top, select first heading
+                        if (scrollTop < 100 && headings.length > 0) {
+                            activeId = headings[0].id;
+                        }
+
+                        // If at the very bottom, select last heading
+                        if ((window.innerHeight + scrollTop) >= document.body.offsetHeight - 50) {
+                            if (headings.length > 0) {
+                                activeId = headings[headings.length - 1].id;
+                            }
+                        }
+
+                        if (activeId) {
+                            dotNetRef.invokeMethodAsync('SetActiveHeading', activeId);
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            };
+
+            window.addEventListener('scroll', scrollHandler, { passive: true });
+
+            // Trigger initial scroll check
+            setTimeout(scrollHandler, 200);
+        };
+
+        // Copy code to clipboard (with execCommand fallback for older Safari)
+        window.copyCode = async function (button) {
+            if (!button) return;
+            const codeBlock = button.closest && button.closest('.code-block');
+            if (!codeBlock) return;
+            const codeEl = codeBlock.querySelector('code');
+            const text = codeEl ? (codeEl.textContent || codeEl.innerText || '') : '';
+            if (!text) return;
+
+            // Try navigator.clipboard first
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    showCopied(button);
+                    return;
+                } catch (e) {
+                    // fall through to fallback
+                    if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Clipboard API failed', e && e.message ? e.message : String(e));
+                }
+            }
+
+            // Fallback using textarea + execCommand
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                // Make element readonly to avoid iOS virtual keyboard
+                ta.setAttribute('readonly', '');
+                ta.style.position = 'absolute';
+                ta.style.left = '-9999px';
+                // For iOS selection support
+                document.body.appendChild(ta);
+
+                const range = document.createRange();
+                range.selectNodeContents(ta);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+                ta.select();
+
+                const successful = document.execCommand('copy');
+                document.body.removeChild(ta);
+
+                if (successful) {
+                    showCopied(button);
+                } else {
+                    throw new Error('execCommand failed');
+                }
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                if (window.isOldSafari && window.isOldSafari()) window.showBrowserError('Copy to clipboard failed', err && err.message ? err.message : String(err));
+            }
+
+            function showCopied(btn) {
+                if (!btn) return;
+                btn.classList.add('copied');
+                const prev = btn.innerHTML;
+                btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = prev;
+                }, 2000);
+            }
+        };
+
+        // Initialize code blocks with copy button and syntax highlighting
+        window.initCodeBlocks = function () {
+            document.querySelectorAll('pre:not(.code-initialized)').forEach(pre => {
+                // Skip mermaid and special pre blocks
+                if (pre.closest('.mermaid-container') || pre.style.display === 'none') return;
+
+                pre.classList.add('code-initialized');
+
+                // Wrap in code-block container
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-block';
+
+                // Get language from code element class
+                const code = pre.querySelector('code');
+                let language = 'text';
+                if (code) {
+                    const langClass = Array.from(code.classList).find(c => c.startsWith('language-'));
+                    if (langClass) {
+                        language = langClass.replace('language-', '');
+                    }
+                }
+
+                // Create header with language label and copy button
+                const header = document.createElement('div');
+                header.className = 'code-header';
+                header.innerHTML = `
+                    <span class="code-lang">${language}</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                        </svg>
+                        Copy
+                    </button>
+                `;
+
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(header);
+                wrapper.appendChild(pre);
+            });
+
+            // Apply Prism highlighting
+            if (window.Prism) {
+                Prism.highlightAll();
+            }
+        };
+
+        // Run on page load and after Blazor navigation
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(initCodeBlocks, 500);
+        });
+
+        // Observe DOM changes for Blazor navigation
+        const codeObserver = new MutationObserver(() => {
+            setTimeout(initCodeBlocks, 100);
+        });
+        codeObserver.observe(document.body, { childList: true, subtree: true });
+
+        // Load chapter content for printing via iframe
+        window.loadChapterContent = function (url) {
+            return new Promise((resolve, reject) => {
+                const iframe = document.getElementById('content-loader');
+                if (!iframe) {
+                    // Create iframe if not exists
+                    const newIframe = document.createElement('iframe');
+                    newIframe.id = 'content-loader';
+                    newIframe.style.cssText = 'display:none; position:absolute; left:-9999px; width:1024px; height:768px;';
+                    document.body.appendChild(newIframe);
+                }
+
+                const loader = document.getElementById('content-loader');
+                let timeoutId = null;
+                let checkInterval = null;
+
+                const cleanup = () => {
+                    if (timeoutId) clearTimeout(timeoutId);
+                    if (checkInterval) clearInterval(checkInterval);
+                    loader.onload = null;
+                    loader.onerror = null;
+                };
+
+                loader.onload = () => {
+                    // Wait for Blazor to render content
+                    let attempts = 0;
+                    const maxAttempts = 50; // 5 seconds max
+
+                    checkInterval = setInterval(() => {
+                        attempts++;
+                        try {
+                            const iframeDoc = loader.contentDocument || loader.contentWindow.document;
+                            const content = iframeDoc.querySelector('.content');
+
+                            if (content && content.innerHTML.trim().length > 100) {
+                                cleanup();
+                                // Clone and clean content
+                                let html = content.innerHTML;
+                                // Remove navigation elements that might be inside content
+                                const tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = html;
+                                // Remove any nested scripts
+                                tempDiv.querySelectorAll('script').forEach(s => s.remove());
+                                // Remove chapter navigation
+                                tempDiv.querySelectorAll('.chapter-navigation, .ChapterNavigation').forEach(n => n.remove());
+                                resolve(tempDiv.innerHTML);
+                            } else if (attempts >= maxAttempts) {
+                                cleanup();
+                                resolve('<p>Timeout loading content.</p>');
+                            }
+                        } catch (e) {
+                            if (attempts >= maxAttempts) {
+                                cleanup();
+                                reject(e);
+                            }
+                        }
+                    }, 100);
+                };
+
+                loader.onerror = (e) => {
+                    cleanup();
+                    reject(new Error('Failed to load iframe'));
+                };
+
+                // Overall timeout
+                timeoutId = setTimeout(() => {
+                    cleanup();
+                    resolve('<p>Timeout loading content.</p>');
+                }, 10000);
+
+                loader.src = url;
+            });
+        };
+
+        // Helper to typeset MathJax for dynamically injected print content
+        window.printbookTypeset = function () {
+            try {
+                if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
+                    return MathJax.typesetPromise();
+                }
+            } catch (e) {
+                console.warn('printbookTypeset failed', e);
+            }
+            return Promise.resolve();
+        };
+    </script>
+
+    <!-- Prism.js -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-csharp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-razor.min.js"></script>
+
+
+</body></html>
