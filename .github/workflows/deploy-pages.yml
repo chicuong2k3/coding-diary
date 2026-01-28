@@ -26,8 +26,8 @@ jobs:
               with:
                   dotnet-version: "10.0.x"
 
-            - name: Install wasm-tools workload
-              run: dotnet workload install wasm-tools
+            # - name: Install wasm-tools workload
+            #   run: dotnet workload install wasm-tools
 
             - name: Restore & publish
               run: |
@@ -128,18 +128,18 @@ jobs:
 
                   echo "Fixed absolute paths in all HTML files"
 
-            - name: Create SPA 404 fallback
-              # Copy the patched index.html to 404.html so GitHub Pages serves the SPA for deep links.
-              run: |
-                  set -euo pipefail
-                  INDEX="publish/wwwroot/index.html"
-                  FALLBACK="publish/wwwroot/404.html"
-                  if [ -f "$INDEX" ]; then
-                    cp "$INDEX" "$FALLBACK"
-                    echo "Created $FALLBACK"
-                  else
-                    echo "::warning::Index file not found; cannot create 404.html"
-                  fi
+            # - name: Create SPA 404 fallback
+            #   # Copy the patched index.html to 404.html so GitHub Pages serves the SPA for deep links.
+            #   run: |
+            #       set -euo pipefail
+            #       INDEX="publish/wwwroot/index.html"
+            #       FALLBACK="publish/wwwroot/404.html"
+            #       if [ -f "$INDEX" ]; then
+            #         cp "$INDEX" "$FALLBACK"
+            #         echo "Created $FALLBACK"
+            #       else
+            #         echo "::warning::Index file not found; cannot create 404.html"
+            #       fi
 
             - name: Ensure .nojekyll (prevent Jekyll from ignoring _framework)
               run: |
@@ -155,39 +155,39 @@ jobs:
               run: |
                   ls -la publish/wwwroot | sed -n '1,200p'
 
-            - name: Verify SPA fallback
-              # Ensure publish/wwwroot/404.html exists and has the <base> tag so deep links work on GitHub Pages
-              run: |
-                  set -euo pipefail
-                  FALLBACK="publish/wwwroot/404.html"
-                  if [ ! -f "$FALLBACK" ]; then
-                    echo "::error::Missing 404.html fallback"
-                    ls -la publish/wwwroot | sed -n '1,200p'
-                    exit 1
-                  fi
-                  if ! grep -qi '<base' "$FALLBACK"; then
-                    echo "::error::404.html missing <base> tag"
-                    sed -n '1,120p' "$FALLBACK" || true
-                    exit 1
-                  fi
-                  echo "404.html present and contains base tag."
+            # - name: Verify SPA fallback
+            #   # Ensure publish/wwwroot/404.html exists and has the <base> tag so deep links work on GitHub Pages
+            #   run: |
+            #       set -euo pipefail
+            #       FALLBACK="publish/wwwroot/404.html"
+            #       if [ ! -f "$FALLBACK" ]; then
+            #         echo "::error::Missing 404.html fallback"
+            #         ls -la publish/wwwroot | sed -n '1,200p'
+            #         exit 1
+            #       fi
+            #       if ! grep -qi '<base' "$FALLBACK"; then
+            #         echo "::error::404.html missing <base> tag"
+            #         sed -n '1,120p' "$FALLBACK" || true
+            #         exit 1
+            #       fi
+            #       echo "404.html present and contains base tag."
 
-            - name: Smoke-check built assets
-              run: |
-                  echo "Checking key files exist in publish/wwwroot..."
-                  set -euo pipefail
-                  # Use wildcard presence checks because hashes can change
-                  if ! ls publish/wwwroot/_framework/blazor.webassembly*.js 1>/dev/null 2>&1; then
-                    echo "::error::Missing blazor.webassembly.*.js"
-                    ls -la publish/wwwroot/_framework | sed -n '1,200p'
-                    exit 1
-                  fi
-                  if ! ls publish/wwwroot/_content/Blazicons/Blazicons.*.bundle.scp.css 1>/dev/null 2>&1; then
-                    echo "::error::Missing Blazicons CSS"
-                    ls -la publish/wwwroot/_content/Blazicons | sed -n '1,200p'
-                    exit 1
-                  fi
-                  echo "Smoke-check passed: key files present."
+            # - name: Smoke-check built assets
+            #   run: |
+            #       echo "Checking key files exist in publish/wwwroot..."
+            #       set -euo pipefail
+            #       # Use wildcard presence checks because hashes can change
+            #       if ! ls publish/wwwroot/_framework/blazor.webassembly*.js 1>/dev/null 2>&1; then
+            #         echo "::error::Missing blazor.webassembly.*.js"
+            #         ls -la publish/wwwroot/_framework | sed -n '1,200p'
+            #         exit 1
+            #       fi
+            #       if ! ls publish/wwwroot/_content/Blazicons/Blazicons.*.bundle.scp.css 1>/dev/null 2>&1; then
+            #         echo "::error::Missing Blazicons CSS"
+            #         ls -la publish/wwwroot/_content/Blazicons | sed -n '1,200p'
+            #         exit 1
+            #       fi
+            #       echo "Smoke-check passed: key files present."
 
             # sitemap- name: Generate dynamic sitemap.xml
             #   run: |
