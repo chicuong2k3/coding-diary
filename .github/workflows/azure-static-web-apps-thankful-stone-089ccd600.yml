@@ -30,13 +30,15 @@ jobs:
 
       - name: Build and Bake
         run: |
-          dotnet restore DocumentationWeb.sln
-          dotnet build DocumentationWeb.csproj -c Release
           if ! command -v blake &> /dev/null; then
-            dotnet tool install -g Blake.CLI || echo "Blake CLI already installed or not found in nuget"
+            dotnet tool install -g Blake.CLI || echo "Blake CLI already installed"
           fi
           export PATH="$PATH:$HOME/.dotnet/tools"
           blake bake --clean
+          dotnet publish DocumentationWeb.csproj -c Release -o publish
+          mkdir -p docs
+          cp -r publish/wwwroot/* docs/
+          rm -rf publish
 
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
