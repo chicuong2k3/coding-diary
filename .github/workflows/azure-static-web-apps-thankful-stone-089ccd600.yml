@@ -15,13 +15,29 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     permissions:
-       id-token: write
-       contents: read
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
           lfs: false
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Build and Bake
+        run: |
+          dotnet restore DocumentationWeb.sln
+          dotnet build DocumentationWeb.csproj -c Release
+          if ! command -v blake &> /dev/null; then
+            dotnet tool install -g Blake.CLI || echo "Blake CLI already installed or not found in nuget"
+          fi
+          export PATH="$PATH:$HOME/.dotnet/tools"
+          blake bake --clean
+
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
       - name: Get Id Token
@@ -32,6 +48,7 @@ jobs:
                const coredemo = require('@actions/core')
                return await coredemo.getIDToken()
            result-encoding: string
+
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -42,7 +59,8 @@ jobs:
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "/" # App source code path
           api_location: "Api" # Api source code path - optional
-          output_location: "wwwroot" # Built app content directory - optional
+          output_location: "docs" # Built app content directory
+          skip_app_build: true
           github_id_token: ${{ steps.idtoken.outputs.result }}
           ###### End of Repository/Build Configurations ######
 
