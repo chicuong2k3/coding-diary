@@ -28,6 +28,15 @@
         <div class="loading-progress-text"></div>
     </div>
 
+    <!-- Browser compatibility warning for iOS < 15 -->
+    <div id="browser-compat-warning" style="display:none; position:fixed; bottom:0; left:0; right:0; z-index:9998; padding:12px 16px; background:linear-gradient(135deg, #fef3c7, #fde68a); border-top:2px solid #f59e0b; color:#92400e; font-size:14px; text-align:center;">
+        <span style="display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>Trình duyệt của bạn có thể không hỗ trợ đầy đủ. Vui lòng cập nhật lên iOS 15+ hoặc Safari 15+ để có trải nghiệm tốt nhất.</span>
+            <button onclick="this.parentElement.parentElement.style.display='none'" style="background:#92400e; color:white; border:none; padding:4px 12px; border-radius:4px; cursor:pointer; margin-left:8px;">Đóng</button>
+        </span>
+    </div>
+
     <div id="blazor-error-ui">
         An unhandled error has occurred.
         <a href="." class="reload">Reload</a>
@@ -219,6 +228,20 @@
                 console.error('showBrowserError failed', e);
             }
         };
+
+        // Show compatibility warning for old Safari/iOS on page load
+        (function() {
+            try {
+                if (window.isOldSafari && window.isOldSafari()) {
+                    var warning = document.getElementById('browser-compat-warning');
+                    if (warning) {
+                        warning.style.display = 'block';
+                    }
+                }
+            } catch (e) {
+                // ignore
+            }
+        })();
 
         // Global handlers: only surface UI error if we're on older Safari (user requested)
         window.addEventListener('error', function (evt) {

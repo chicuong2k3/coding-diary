@@ -111,9 +111,42 @@
     flex: 1;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+    .chapter-navigation {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+    }
+
+    .other-books {
+        margin-bottom: 1.5rem;
+    }
+
+    .other-books h3 {
+        font-size: 0.95rem;
+    }
+
+    .other-books-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .other-book-card {
+        padding: 0.875rem 1rem;
+    }
+
+    .other-book-card h4 {
+        font-size: 0.9rem;
+    }
+
     .prev-next-nav {
         flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .nav-link-prev,
+    .nav-link-next {
+        padding: 0.875rem 1rem;
+        gap: 0.35rem;
     }
 
     .nav-link-next {
@@ -121,7 +154,70 @@
         text-align: left;
     }
 
+    .nav-label {
+        font-size: 0.75rem;
+    }
+
+    .nav-title {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .chapter-navigation {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+    }
+
+    .other-books {
+        margin-bottom: 1rem;
+    }
+
+    .other-books h3 {
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+    }
+
     .other-books-grid {
-        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .other-book-card {
+        padding: 0.75rem;
+        border-radius: 6px;
+    }
+
+    .other-book-card h4 {
+        font-size: 0.85rem;
+    }
+
+    .other-book-card p {
+        font-size: 0.75rem;
+    }
+
+    .prev-next-nav {
+        gap: 0.5rem;
+    }
+
+    .nav-link-prev,
+    .nav-link-next {
+        padding: 0.75rem;
+        border-radius: 8px;
+        gap: 0.25rem;
+    }
+
+    .nav-label {
+        font-size: 0.7rem;
+        gap: 0.2rem;
+    }
+
+    .nav-label svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .nav-title {
+        font-size: 0.85rem;
+        line-height: 1.3;
     }
 }

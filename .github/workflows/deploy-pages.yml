@@ -48,19 +48,16 @@ jobs:
                     echo "BASE_HREF=${BASE}" >> $GITHUB_OUTPUT
                   fi
 
-            - name: Patch index.html base href
+            - name: Patch base href in ALL HTML files
               run: |
                   set -euo pipefail
                   export BASE_HREF="${{ steps.basehref.outputs.BASE_HREF }}"
-                  INDEX="publish/wwwroot/index.html"
 
-                  if [ -f "$INDEX" ]; then
-                    echo "=== index.html before patch (head snippet) ==="
-                    sed -n '1,120p' "$INDEX" || true
+                  echo "Patching all HTML files with base href: $BASE_HREF"
 
-                    # Backup for safety and investigation
-                    cp "$INDEX" "$INDEX.bak.$(date +%s)"
-                    ls -l "$INDEX" "$INDEX.bak."* || true
+                  # Find all HTML files and patch them
+                  find publish/wwwroot -name "*.html" -type f | while read -r HTML_FILE; do
+                    echo "Patching: $HTML_FILE"
 
                     # Robust perl: slurp file, remove any existing <base ...> tag (case-insensitive),
                     # then insert a single <base href="$BASE_HREF" /> immediately after the opening <head> tag.
@@ -69,20 +66,67 @@ jobs:
                         my $open=$1; my $inner=$2; my $close=$3;
                         $inner =~ s{<base\b[^>]*>}{}isi;
                         $open . "\n  <base href=\"$ENV{BASE_HREF}\" />" . $inner . $close
-                      }sgei' "$INDEX"
+                      }sgei' "$HTML_FILE"
+                  done
 
+                  # Verify index.html was patched
+                  INDEX="publish/wwwroot/index.html"
+                  if [ -f "$INDEX" ]; then
                     echo "=== index.html after patch (head snippet) ==="
-                    sed -n '1,120p' "$INDEX" || true
+                    sed -n '1,30p' "$INDEX" || true
 
-                    # Ensure the base tag is present; fail early if not
                     if ! grep -qi '<base' "$INDEX"; then
-                      echo "::error::Base tag missing after patch"
+                      echo "::error::Base tag missing in index.html after patch"
                       exit 1
                     fi
                   else
                     echo "::warning::Index file not found at $INDEX"
                     exit 1
                   fi
+
+                  # Count patched files
+                  PATCHED_COUNT=$(find publish/wwwroot -name "*.html" -type f | wc -l)
+                  echo "Patched $PATCHED_COUNT HTML files with base href: $BASE_HREF"
+
+            - name: Fix absolute image/asset paths for GitHub Pages
+              run: |
+                  set -euo pipefail
+                  export BASE_HREF="${{ steps.basehref.outputs.BASE_HREF }}"
+
+                  # Skip if base href is just "/" (user site, no subfolder)
+                  if [ "$BASE_HREF" = "/" ]; then
+                    echo "Base href is /, no path fixing needed"
+                    exit 0
+                  fi
+
+                  echo "Fixing absolute paths in HTML files for base href: $BASE_HREF"
+
+                  # Fix absolute paths in HTML files:
+                  # - /images/ -> ${BASE_HREF}images/
+                  # - /css/ -> ${BASE_HREF}css/
+                  # - /lib/ -> ${BASE_HREF}lib/
+                  # - /_framework/ -> ${BASE_HREF}_framework/
+                  # - /_content/ -> ${BASE_HREF}_content/
+                  find publish/wwwroot -name "*.html" -type f | while read -r HTML_FILE; do
+                    # Replace absolute paths with base-href-prefixed paths
+                    # Using sed to replace src="/path" and href="/path" and url('/path')
+                    sed -i \
+                      -e "s|src=\"/images/|src=\"${BASE_HREF}images/|g" \
+                      -e "s|src='/images/|src='${BASE_HREF}images/|g" \
+                      -e "s|href=\"/images/|href=\"${BASE_HREF}images/|g" \
+                      -e "s|href='/images/|href='${BASE_HREF}images/|g" \
+                      -e "s|url('/images/|url('${BASE_HREF}images/|g" \
+                      -e "s|url(\"/images/|url(\"${BASE_HREF}images/|g" \
+                      -e "s|src=\"/css/|src=\"${BASE_HREF}css/|g" \
+                      -e "s|href=\"/css/|href=\"${BASE_HREF}css/|g" \
+                      -e "s|src=\"/lib/|src=\"${BASE_HREF}lib/|g" \
+                      -e "s|href=\"/lib/|href=\"${BASE_HREF}lib/|g" \
+                      -e "s|src=\"/favicon|src=\"${BASE_HREF}favicon|g" \
+                      -e "s|href=\"/favicon|href=\"${BASE_HREF}favicon|g" \
+                      "$HTML_FILE"
+                  done
+
+                  echo "Fixed absolute paths in all HTML files"
 
             - name: Create SPA 404 fallback
               # Copy the patched index.html to 404.html so GitHub Pages serves the SPA for deep links.
