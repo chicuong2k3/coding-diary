@@ -882,15 +882,79 @@ td {
     }
 }
 
-/* Tablet - hide left sidebar */
+/* Tablet - show sidebars at top/bottom instead of hiding */
 @media (max-width: 1024px) {
+    .sakura-page {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        gap: 0;
+    }
+
     .left-sidebar {
-        display: none;
+        position: relative;
+        top: 0;
+        width: 100%;
+        max-height: none;
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-color);
+        background: var(--sidebar-bg);
+        order: -1; /* Show at top */
+    }
+
+    .left-sidebar .sidebar-tags {
+        padding: 0;
+    }
+
+    .toc-sidebar {
+        display: block;
+        position: relative;
+        top: 0;
+        width: 100%;
+        max-height: none;
+        padding: 1rem;
+        border-top: 1px solid var(--border-color);
+        background: var(--sidebar-bg);
+        order: 1; /* Show at bottom */
     }
 
     .doc-main {
-        margin-left: 1.5rem;
-        margin-right: 1.5rem;
+        margin-left: 0;
+        margin-right: 0;
+        order: 0; /* Main content in middle */
+    }
+
+    .sakura-page.no-left-sidebar .doc-main,
+    .sakura-page.no-right-sidebar .doc-main {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    /* TOC horizontal layout at bottom */
+    .toc-wrapper {
+        width: 100%;
+    }
+
+    .toc-title {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .toc-nav {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -webkit-flex-direction: row;
+        flex-direction: row;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .toc-link {
+        padding: 0.35rem 0.75rem;
+        font-size: 0.8rem;
+        white-space: nowrap;
     }
 }
 
@@ -978,6 +1042,24 @@ td {
 
     .content h2 {
         font-size: 1.25rem;
+    }
+
+    /* Sidebars on mobile - more compact */
+    .left-sidebar {
+        padding: 0.75rem;
+    }
+
+    .toc-sidebar {
+        padding: 0.75rem;
+    }
+
+    .toc-title {
+        font-size: 0.85rem;
+    }
+
+    .toc-link {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
     }
 
     /* Footer */
