@@ -1,6 +1,220 @@
-﻿<Router AppAssembly="@typeof(App).Assembly" NotFoundPage="typeof(Pages.NotFound)">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-</Router>
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code Magic</title>
+    <base href="/" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/app.css?v=3" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="DocumentationWeb.styles.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <HeadOutlet />
+    <style>
+        /* NUCLEAR UI FIXES PROJECT-WIDE */
+        
+        /* 1. Sidebar Bullet Removal */
+        .bookmark-list-small, .bookmark-item-small, .bookmark-list-small *, .bookmark-item-small * {
+            list-style: none !important;
+            list-style-type: none !important;
+            background-image: none !important;
+        }
+        .bookmark-item-small::before, .bookmark-item-small::after {
+            display: none !important;
+            content: none !important;
+        }
+
+        /* 2. Print Page Vertical Alignment */
+        .print-actions-flex {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 16px !important;
+            margin: 24px 0 !important;
+        }
+        .btn-print-styled, .btn-back-styled {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            height: 48px !important;
+            padding: 0 24px !important;
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+            font-size: 1rem !important;
+            text-decoration: none !important;
+            box-sizing: border-box !important;
+            border: none !important;
+            margin: 0 !important;
+        }
+        .btn-print-styled { background: var(--accent-primary) !important; color: white !important; }
+        .btn-back-styled { background: var(--bg-secondary) !important; color: var(--text-primary) !important; border: 1px solid var(--border-color) !important; }
+
+        /* 3. Modern Bookmark Buttons */
+        .btn-remove-modern, .btn-remove-small {
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            background: #fee2e2 !important;
+            color: #ef4444 !important;
+            border: none !important;
+            border-radius: 8px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            padding: 0 !important;
+            transition: transform 0.2s !important;
+        }
+        .btn-remove-modern { width: 32px !important; height: 32px !important; }
+        .btn-remove-small { width: 28px !important; height: 28px !important; margin-left: auto !important; }
+        .btn-remove-modern:hover { transform: scale(1.1) !important; background: #fecaca !important; }
+
+        /* 4. Metadata Spacing Gap */
+        .meta-label { 
+            display: inline-block !important;
+            min-width: 95px !important; 
+            margin-right: 8px !important; 
+            font-weight: 600 !important;
+        }
+        .bookmark-meta-wrap { display: flex !important; flex-direction: column !important; gap: 6px !important; }
+    </style>
+</head>
+
+<body>
+    <Routes />
+
+    <!-- Browser compatibility warning for iOS < 15 -->
+    <div id="browser-compat-warning" style="display:none; position:fixed; bottom:0; left:0; right:0; z-index:9998; padding:12px 16px; background:linear-gradient(135deg, #fef3c7, #fde68a); border-top:2px solid #f59e0b; color:#92400e; font-size:14px; text-align:center;">
+        <span style="display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>Trình duyệt của bạn có thể chưa được hỗ trợ đầy đủ. Vui lòng cập nhật lên iOS 15+ hoặc Safari 15+ để có trải nghiệm tốt nhất.</span>
+            <button onclick="this.parentElement.parentElement.style.display='none'" style="background:#92400e; color:white; border:none; padding:4px 12px; border-radius:4px; cursor:pointer; margin-left:8px;">Dong</button>
+        </span>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">X</span>
+    </div>
+
+    <!-- MathJax configuration -->
+    <script type="text/javascript">
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+
+    <!-- Polyfills for older Safari -->
+    <script>
+        if (!Element.prototype.matches) {
+            Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector || function (s) {
+                var matches = (this.document || this.ownerDocument).querySelectorAll(s), i = matches.length;
+                while (--i >= 0 && matches.item(i) !== this) { }
+                return i > -1;
+            };
+        }
+        if (!Element.prototype.closest) {
+            Element.prototype.closest = function (s) {
+                var el = this;
+                do {
+                    if (el.matches && el.matches(s)) return el;
+                    el = el.parentElement || el.parentNode;
+                } while (el !== null && el.nodeType === 1);
+                return null;
+            };
+        }
+    </script>
+
+    <!-- Mermaid (ES module) for modern browsers -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+
+        window._mermaid = mermaid;
+        window.renderMermaid = async function (srcId, containerId) {
+            const srcEl = document.getElementById(srcId);
+            const containerEl = document.getElementById(containerId);
+            if (!srcEl || !containerEl) return;
+
+            const definition = srcEl.textContent.trim();
+            if (!definition) return;
+
+            try {
+                const maybe = await mermaid.render('mermaid-' + Date.now(), definition);
+                if (maybe && maybe.svg) containerEl.innerHTML = maybe.svg;
+                else if (typeof maybe === 'string') containerEl.innerHTML = maybe;
+                else {
+                    containerEl.innerHTML = '<pre style="color:red;">Mermaid: unexpected render result</pre>';
+                }
+            } catch (e) {
+                containerEl.innerHTML = '<pre style="color:red;">Mermaid Error: ' + (e && e.message || e) + '</pre>';
+            }
+        };
+    </script>
+
+    <!-- UMD/nomodule fallback for older Safari -->
+    <script nomodule src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <script nomodule>
+        if (window.mermaid) {
+            window._mermaid = window.mermaid;
+            window._mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+
+            window.renderMermaid = function (srcId, containerId) {
+                const srcEl = document.getElementById(srcId);
+                const containerEl = document.getElementById(containerId);
+                if (!srcEl || !containerEl) return;
+                const definition = srcEl.textContent.trim();
+                if (!definition) return;
+
+                try {
+                    try {
+                        const result = window._mermaid.render('mermaid-' + Date.now(), definition);
+                        if (result && result.svg) containerEl.innerHTML = result.svg;
+                        else if (typeof result === 'string') containerEl.innerHTML = result;
+                    } catch (err) {
+                        window._mermaid.render('mermaid-' + Date.now(), definition, function (svgCode) {
+                            containerEl.innerHTML = svgCode;
+                        });
+                    }
+                } catch (e) {
+                    containerEl.innerHTML = '<pre style="color:red;">Mermaid Error: ' + (e && e.message || e) + '</pre>';
+                }
+            };
+        }
+    </script>
+
+    <!-- Site JavaScript -->
+    <script src="js/site.js?v=3"></script>
+
+    <!-- Prism.js -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-csharp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-razor.min.js"></script>
+</body>
+
+</html>

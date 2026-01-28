@@ -1,21 +1,24 @@
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using DocumentationWeb;
-using DocumentationWeb.Services;
-using Microsoft.Extensions.DependencyInjection;
+using DocumentationWeb.Components;
 
-var builder = WebAssemblyHostBuilder.CreateDefault(args);
+var builder = WebApplication.CreateBuilder(args);
 
-// Configure services in a static method so pre-rendering tooling can discover them.
-ConfigureServices(builder.Services, builder.HostEnvironment);
+// Add services
+builder.Services.AddRazorComponents();
+builder.Services.AddHttpContextAccessor();
 
-builder.RootComponents.Add<App>("#app");
-builder.RootComponents.Add<HeadOutlet>("head::after");
+var app = builder.Build();
 
-await builder.Build().RunAsync();
-
-static void ConfigureServices(IServiceCollection services, IWebAssemblyHostEnvironment hostEnv)
+if (!app.Environment.IsDevelopment())
 {
-    services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(hostEnv.BaseAddress) });
-    services.AddScoped<BookmarkService>();
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
 }
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseAntiforgery();
+
+app.MapRazorComponents<App>();
+
+app.Run();

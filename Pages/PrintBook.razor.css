@@ -25,7 +25,9 @@
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .loading-progress {
@@ -55,19 +57,25 @@
     display: flex;
     gap: 1rem;
     justify-content: center;
+    align-items: center;
 }
 
 .btn-print,
 .btn-back {
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
+    padding: 0 1.5rem;
+    height: 48px;
+    box-sizing: border-box;
     border-radius: 8px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
     text-decoration: none;
+    line-height: 1;
+    /* Ensure text is centered */
 }
 
 .btn-print {
@@ -252,6 +260,7 @@
    PRINT STYLES
    =========================================== */
 @media print {
+
     /* Reset page */
     * {
         -webkit-print-color-adjust: exact !important;

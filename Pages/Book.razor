@@ -3,8 +3,6 @@
 @using Blake.Types
 @using Blake.Generated
 @inject NavigationManager Navigation
-@inject IJSRuntime JS
-@inject BookmarkService BookmarkService
 
 <PageTitle>@GetTitle()</PageTitle>
 
@@ -21,7 +19,7 @@
         </h1>
         @if (!string.IsNullOrEmpty(BookSlug))
         {
-            <p class="chapters-count">@chapterPages.Length chương</p>
+            <p class="chapters-count">@chaptersArray.Length chương</p>
         }
         else
         {
@@ -36,36 +34,28 @@
             <div class="book-actions">
                 <div class="reading-progress">
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: @(GetReadingProgress())%"></div>
+                        <div class="progress-fill" id="reading-progress-fill" style="width: 0%"></div>
                     </div>
-                    <span class="progress-text">Đã đọc @readChaptersCount/@chapterPages.Length chương
-                        (@(GetReadingProgress())%)</span>
+                    <span class="progress-text" id="reading-progress-text">Đang tải...</span>
                 </div>
                 <div class="action-buttons">
-                    @if (lastReadChapter != null)
-                    {
-                        <a href="@lastReadChapter.Slug.TrimStart('/')" class="btn-action btn-continue">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polygon points="5 3 19 12 5 21 5 3" />
-                            </svg>
-                            Tiếp tục đọc
-                        </a>
-                    }
-                    <button class="btn-action btn-bookmark" @onclick="ToggleBookBookmark"
-                        title="@(isBookBookmarked ? "Bỏ đánh dấu sách" : "Đánh dấu sách")">
-                        @if (isBookBookmarked)
-                        {
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                            </svg>
-                        }
-                        else
-                        {
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                            </svg>
-                        }
+                    <a id="continue-reading-btn" href="@(chapterPages.FirstOrDefault()?.Slug.TrimStart('/') ?? "")" class="btn-action btn-continue" style="display: none;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3" />
+                        </svg>
+                        Tiếp tục đọc
+                    </a>
+                    <button class="btn-action btn-bookmark" 
+                        id="book-bookmark-btn"
+                        data-bookmark-slug="@GetBookBookmarkSlug()"
+                        onclick="toggleBookBookmark('@EscapeJs(GetBookBookmarkSlug())', '@EscapeJs(GetTitle())')"
+                        title="Đánh dấu sách">
+                        <svg class="bookmark-icon-empty" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                        </svg>
+                        <svg class="bookmark-icon-filled" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" style="display: none;">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                        </svg>
                     </button>
                     <a href="print-book/@BookSlug" class="btn-action btn-print" title="In toàn bộ sách">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -73,7 +63,7 @@
                             <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
                             <rect x="6" y="14" width="12" height="8" />
                         </svg>
-                        In sách
+                        <span>In sách</span>
                     </a>
                 </div>
             </div>
@@ -144,6 +134,104 @@
     }
 </div>
 
+@if (!string.IsNullOrEmpty(BookSlug))
+{
+    <!-- Chapter data for JavaScript -->
+    <script id="book-chapters-data" type="application/json">
+    @(new MarkupString(System.Text.Json.JsonSerializer.Serialize(chaptersArray.Select(c => c.Slug))))
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initBookPage('@BookSlug');
+        });
+
+        function initBookPage(bookSlug) {
+            var chaptersData = JSON.parse(document.getElementById('book-chapters-data').textContent || '[]');
+            var totalChapters = chaptersData.length;
+            
+            // Load reading progress
+            var readChapters = [];
+            try {
+                var data = localStorage.getItem('reading_progress_' + bookSlug);
+                if (data) {
+                    readChapters = JSON.parse(data) || [];
+                }
+            } catch (e) {}
+
+            var readCount = chaptersData.filter(function(slug) {
+                return readChapters.indexOf(slug) !== -1;
+            }).length;
+
+            var progressPercent = totalChapters > 0 ? Math.round((readCount / totalChapters) * 100) : 0;
+
+            var progressFill = document.getElementById('reading-progress-fill');
+            var progressText = document.getElementById('reading-progress-text');
+            
+            if (progressFill) progressFill.style.width = progressPercent + '%';
+            if (progressText) progressText.textContent = 'Đã đọc ' + readCount + '/' + totalChapters + ' chương (' + progressPercent + '%)';
+
+            // Find last read chapter from bookmarks
+            var bookmarks = [];
+            try {
+                var bmData = localStorage.getItem('bookmarks');
+                if (bmData) bookmarks = JSON.parse(bmData) || [];
+            } catch (e) {}
+
+            var lastReadSlug = null;
+            var lastReadTime = null;
+            bookmarks.forEach(function(b) {
+                if (chaptersData.indexOf(b.slug) !== -1) {
+                    var readAt = b.lastReadAt || b.addedAt;
+                    if (!lastReadTime || readAt > lastReadTime) {
+                        lastReadTime = readAt;
+                        lastReadSlug = b.slug;
+                    }
+                }
+            });
+
+            // If no bookmark, find first unread chapter
+            if (!lastReadSlug && chaptersData.length > 0) {
+                for (var i = 0; i < chaptersData.length; i++) {
+                    if (readChapters.indexOf(chaptersData[i]) === -1) {
+                        lastReadSlug = chaptersData[i];
+                        break;
+                    }
+                }
+                if (!lastReadSlug) lastReadSlug = chaptersData[0];
+            }
+
+            var continueBtn = document.getElementById('continue-reading-btn');
+            if (continueBtn && lastReadSlug) {
+                continueBtn.href = lastReadSlug.replace(/^\//, '');
+                continueBtn.style.display = 'inline-flex';
+            }
+
+            // Update bookmark button state
+            updateBookBookmarkState();
+        }
+
+        function updateBookBookmarkState() {
+            var btn = document.getElementById('book-bookmark-btn');
+            if (!btn) return;
+            var slug = btn.dataset.bookmarkSlug;
+            var isBookmarked = BookmarkManager.isBookmarked(slug);
+            
+            var emptyIcon = btn.querySelector('.bookmark-icon-empty');
+            var filledIcon = btn.querySelector('.bookmark-icon-filled');
+            
+            if (emptyIcon) emptyIcon.style.display = isBookmarked ? 'none' : 'block';
+            if (filledIcon) filledIcon.style.display = isBookmarked ? 'block' : 'none';
+            btn.title = isBookmarked ? 'Bỏ đánh dấu sách' : 'Đánh dấu sách';
+        }
+
+        function toggleBookBookmark(slug, title) {
+            BookmarkManager.toggle(slug, title, title);
+            updateBookBookmarkState();
+        }
+    </script>
+}
+
 @code {
     [Parameter]
     public string? BookSlug { get; set; }
@@ -153,10 +241,6 @@
     private PageModel[] chapterPages = Array.Empty<PageModel>();
     private PageModel[] otherPages = Array.Empty<PageModel>();
     private List<BookSummary> allBooks = new();
-    private bool isBookBookmarked = false;
-    private HashSet<string> readChapters = new();
-    private int readChaptersCount = 0;
-    private PageModel? lastReadChapter;
 
     private record BookSummary(string Name, string Slug, int Count);
 
@@ -167,35 +251,29 @@
         if (!string.IsNullOrEmpty(BookSlug))
         {
             chapters = allPages
-            .Where(p => p.Tags.Any(t =>
-            t.ToLower().Replace(" ", "-").Equals(BookSlug, StringComparison.OrdinalIgnoreCase) ||
-            t.Equals(BookSlug, StringComparison.OrdinalIgnoreCase)))
-            .OrderBy(p => p.Date);
+                .Where(p => p.Tags.Any(t =>
+                    t.ToLower().Replace(" ", "-").Equals(BookSlug, StringComparison.OrdinalIgnoreCase) ||
+                    t.Equals(BookSlug, StringComparison.OrdinalIgnoreCase)))
+                .OrderBy(p => p.Date);
             chaptersArray = chapters.ToArray();
 
             // Separate actual chapter pages (slug contains '/chapter-') from other pages like forward/preface
             chapterPages = chaptersArray.Where(c => c.Slug.Contains("/chapter-", StringComparison.OrdinalIgnoreCase))
-            .OrderBy(c => c.Slug) // ensure chapter order by slug (chapter-1, chapter-2...)
-            .ToArray();
+                .OrderBy(c => c.Slug) // ensure chapter order by slug (chapter-1, chapter-2...)
+                .ToArray();
 
             otherPages = chaptersArray.Except(chapterPages).ToArray();
         }
 
         allBooks = allPages
-        .Where(p => p.Tags.Any())
-        .GroupBy(p => p.Tags.First(), StringComparer.OrdinalIgnoreCase)
-        .Select(g => new BookSummary(
-        g.Key,
-        g.Key.ToLower().Replace(" ", "-"),
-        g.Count()))
-        .OrderBy(b => b.Name)
-        .ToList();
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        await BookmarkService.InitializeAsync();
-        CheckBookBookmarkStatus();
+            .Where(p => p.Tags.Any())
+            .GroupBy(p => p.Tags.First(), StringComparer.OrdinalIgnoreCase)
+            .Select(g => new BookSummary(
+                g.Key,
+                g.Key.ToLower().Replace(" ", "-"),
+                g.Count()))
+            .OrderBy(b => b.Name)
+            .ToList();
     }
 
     private string GetBookBookmarkSlug()
@@ -203,80 +281,19 @@
         return string.IsNullOrEmpty(BookSlug) ? "/book" : $"/book/{BookSlug}";
     }
 
-    private void CheckBookBookmarkStatus()
-    {
-        var slug = GetBookBookmarkSlug();
-        isBookBookmarked = BookmarkService.IsBookmarked(slug);
-    }
-
-    private async Task ToggleBookBookmark()
-    {
-        var slug = GetBookBookmarkSlug();
-        var title = GetTitle();
-        await BookmarkService.ToggleBookmarkAsync(slug, title, title, 0);
-        CheckBookBookmarkStatus();
-        StateHasChanged();
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender && !string.IsNullOrEmpty(BookSlug))
-        {
-            await LoadReadingProgress();
-            StateHasChanged();
-        }
-    }
-
-    private async Task LoadReadingProgress()
-    {
-        try
-        {
-            var data = await JS.InvokeAsync<string>("localStorage.getItem", $"reading_progress_{BookSlug}");
-            if (!string.IsNullOrEmpty(data))
-            {
-                readChapters = System.Text.Json.JsonSerializer.Deserialize<HashSet<string>>(data) ?? new();
-                readChaptersCount = chapterPages.Count(c => readChapters.Contains(c.Slug));
-            }
-
-            // Find last read chapter from bookmarks
-            await BookmarkService.InitializeAsync();
-            var bookBookmarks = BookmarkService.Bookmarks
-            .Where(b => chapterPages.Any(c => c.Slug.Equals(b.Slug, StringComparison.OrdinalIgnoreCase)))
-            .OrderByDescending(b => b.LastReadAt ?? b.AddedAt)
-            .FirstOrDefault();
-
-            if (bookBookmarks != null)
-            {
-                lastReadChapter = chapterPages.FirstOrDefault(c =>
-                c.Slug.Equals(bookBookmarks.Slug, StringComparison.OrdinalIgnoreCase));
-            }
-
-            // If no bookmark, get first unread chapter
-            if (lastReadChapter == null && chapterPages.Any())
-            {
-                lastReadChapter = chapterPages.FirstOrDefault(c => !readChapters.Contains(c.Slug))
-                ?? chapterPages.First();
-            }
-        }
-        catch
-        {
-            readChapters = new();
-        }
-    }
-
-    private int GetReadingProgress()
-    {
-        if (chapterPages.Length == 0) return 0;
-        return (int)Math.Round((double)readChaptersCount / chapterPages.Length * 100);
-    }
-
     private string GetTitle()
     {
         if (string.IsNullOrEmpty(BookSlug)) return "Thư viện sách";
 
         var matchingBook = allBooks.FirstOrDefault(b =>
-        b.Slug.Equals(BookSlug, StringComparison.OrdinalIgnoreCase));
+            b.Slug.Equals(BookSlug, StringComparison.OrdinalIgnoreCase));
 
         return matchingBook?.Name ?? BookSlug;
+    }
+
+    private string EscapeJs(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return "";
+        return input.Replace("\\", "\\\\").Replace("'", "\\'").Replace("\n", "\\n").Replace("\r", "");
     }
 }

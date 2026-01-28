@@ -1,8 +1,3 @@
-@inject IJSRuntime JS
-@inject NavigationManager Navigation
-@inject BookmarkService BookmarkService
-@implements IDisposable
-
 <div class="bookmark-list-container">
     <div class="bookmark-header">
         <h3 class="bookmark-title">
@@ -18,80 +13,7 @@
         </a>
     </div>
 
-    @if (_bookmarks.Any())
-    {
-        <div class="bookmark-items">
-            @foreach (var bookmark in _bookmarks.OrderByDescending(b => b.AddedAt).Take(5))
-            {
-                <a href="@bookmark.Slug.TrimStart('/')" class="bookmark-item" @onclick="() => NavigateToBookmark(bookmark)" @onclick:preventDefault>
-                    <div class="bookmark-info">
-                        <span class="bookmark-chapter-title">@TruncateText(bookmark.Title, 30)</span>
-                        <span class="bookmark-book-name">@bookmark.BookName</span>
-                    </div>
-                    <button class="bookmark-remove" @onclick:stopPropagation="true" @onclick="() => RemoveBookmark(bookmark.Slug)" title="Xóa">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 6L6 18M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </a>
-            }
-        </div>
-        @if (_bookmarks.Count > 5)
-        {
-            <a href="bookmarks" class="view-more-link">Xem thêm @(_bookmarks.Count - 5) đánh dấu khác...</a>
-        }
-    }
-    else
-    {
-        <p class="no-bookmarks">Chưa có đánh dấu nào</p>
-    }
+    <div id="bookmark-list-container">
+        <p class="no-bookmarks text-muted small">Chưa có đánh dấu nào</p>
+    </div>
 </div>
-
-@code {
-    private List<BookmarkItem> _bookmarks = new();
-
-    protected override void OnInitialized()
-    {
-        BookmarkService.OnBookmarksChanged += OnBookmarksChanged;
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await BookmarkService.InitializeAsync();
-            _bookmarks = BookmarkService.Bookmarks.ToList();
-            StateHasChanged();
-        }
-    }
-
-    private void OnBookmarksChanged()
-    {
-        _bookmarks = BookmarkService.Bookmarks.ToList();
-        InvokeAsync(StateHasChanged);
-    }
-
-    private void NavigateToBookmark(BookmarkItem bookmark)
-    {
-        var url = bookmark.Slug.TrimStart('/');
-        // Navigate to the page - scroll position will be restored by FloatingBookmark component
-        Navigation.NavigateTo(url, forceLoad: true);
-    }
-
-    private async Task RemoveBookmark(string slug)
-    {
-        await BookmarkService.RemoveBookmarkAsync(slug);
-    }
-
-    private string TruncateText(string text, int maxLength)
-    {
-        if (string.IsNullOrEmpty(text) || text.Length <= maxLength)
-            return text;
-        return text.Substring(0, maxLength).TrimEnd() + "...";
-    }
-
-    public void Dispose()
-    {
-        BookmarkService.OnBookmarksChanged -= OnBookmarksChanged;
-    }
-}

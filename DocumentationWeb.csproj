@@ -1,33 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
-    <BlazorWasmPrerenderingDeleteLoadingContents>true</BlazorWasmPrerenderingDeleteLoadingContents>
-    <!-- Safari compatibility settings -->
-    <WasmEnableSIMD>false</WasmEnableSIMD>
-    <WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>
-    <RunAOTCompilation>false</RunAOTCompilation>
-    <!-- Additional compatibility for older browsers -->
-    <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
-    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="BlakePlugin.DocsRenderer" Version="1.0.15" />
     <PackageReference Include="BlakePlugin.ReadTime" Version="1.0.1" />
-    <PackageReference Include="BlazorWasmPreRendering.Build" Version="7.0.0" />
     <PackageReference Include="MathJaxBlazor" Version="2.0.1" />
     <PackageReference Include="MermaidJS.Blazor" Version="2.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.1" PrivateAssets="all" />
-
     <PackageReference Include="Blake.Types" Version="*" />
-</ItemGroup>
-
+  </ItemGroup>
 
   <ItemGroup>
     <!-- Explicitly include generated .razor files -->
@@ -37,55 +23,8 @@
     <!-- Remove template.razor files -->
     <Content Remove="**/template.razor" />
     <Compile Remove="**/template.razor" />
-    <!-- Tools projects shouldn't be included as content; removed to avoid duplicate assembly attributes -->
-    <None Include="**/template.razor" />
     <Content Remove="**/cascading-template.razor" />
     <Compile Remove="**/cascading-template.razor" />
-    <None Include="**/cascading-template.razor" />
-    <None Remove="scripts\rewrite_base_href.py" />
-    <Content Update="wwwroot\images\Felix_Argyle_Scared_By_JavaScript_The_Good_Parts.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\images\Kaguya_Shinomiya_Exceptional_C.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\images\Kobayashi_Holds_9_Algorithms_That_Changed_The_World.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\images\Minori_Hanasato_Programming_Rust.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\images\Professor_Shinonome_Finds_SICP.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json" />
-    <_ContentIncludedByDefault Remove="publish\web.config" />
-    <_ContentIncludedByDefault Remove="publish\DocumentationWeb.runtimeconfig.json" />
-    <_ContentIncludedByDefault Remove="publish\DocumentationWeb.staticwebassets.endpoints.json" />
-    <_ContentIncludedByDefault Remove="publish\publish\DocumentationWeb.runtimeconfig.json" />
-    <_ContentIncludedByDefault Remove="publish\publish\DocumentationWeb.staticwebassets.endpoints.json" />
-    <_ContentIncludedByDefault Remove="publish\publish\publish\DocumentationWeb.runtimeconfig.json" />
-    <_ContentIncludedByDefault Remove="publish\publish\publish\DocumentationWeb.staticwebassets.endpoints.json" />
-    <_ContentIncludedByDefault Remove="publish\publish\publish\publish\DocumentationWeb.runtimeconfig.json" />
-    <_ContentIncludedByDefault Remove="publish\publish\publish\publish\DocumentationWeb.staticwebassets.endpoints.json" />
-    <_ContentIncludedByDefault Remove="publish\publish\publish\publish\publish\DocumentationWeb.runtimeconfig.json" />
-    <_ContentIncludedByDefault Remove="publish\publish\publish\publish\publish\DocumentationWeb.staticwebassets.endpoints.json" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove=".generated\pages\blog\BlazorAuthPhan1.razor" />
-    <UpToDateCheckInput Remove=".generated\pages\blog\BlazorAuthPhan2.razor" />
-    <UpToDateCheckInput Remove=".generated\pages\blog\BlazorAuthPhan3.razor" />
-    <UpToDateCheckInput Remove=".generated\pages\blog\BlazorAuthPhan4.razor" />
-    <UpToDateCheckInput Remove=".generated\pages\blog\LapTrinhMangPhan1.razor" />
-    <UpToDateCheckInput Remove=".generated\pages\blog\MathForMachineLearning.razor" />
-    <UpToDateCheckInput Remove=".generated\pages\blog\Sample2.razor" />
-    <UpToDateCheckInput Remove=".generated\pages\blog\SamplePost.razor" />
-    <UpToDateCheckInput Remove=".generated\pages\blog\Webhook.razor" />
-  </ItemGroup>
 </Project>

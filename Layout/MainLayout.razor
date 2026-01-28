@@ -1,6 +1,5 @@
 @inherits LayoutComponentBase
 @inject NavigationManager Navigation
-@inject IJSRuntime JS
 
 @code {
     private string CurrentPath => Navigation.ToBaseRelativePath(Navigation.Uri).Trim('/');
@@ -12,20 +11,6 @@
     p.Slug.Equals("/" + CurrentPath, StringComparison.OrdinalIgnoreCase) ||
     p.Slug.StartsWith("/" + CurrentPath + "/", StringComparison.OrdinalIgnoreCase));
     private bool ShowBookChapters => IsBlogPost || ShowToc;
-
-    private bool _isDarkTheme = true;
-    private bool _isSearchOpen = false;
-    private bool _isTocOpen = false;
-
-    private void ToggleToc()
-    {
-        _isTocOpen = !_isTocOpen;
-    }
-
-    private void CloseToc()
-    {
-        _isTocOpen = false;
-    }
 
     private record BookInfo(string Name, string Slug, int ChapterCount, PageModel LatestChapter);
 
@@ -39,45 +24,7 @@
     g.OrderByDescending(p => p.Date).First()
     ))
     .OrderByDescending(b => b.LatestChapter.Date);
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            var savedTheme = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
-            _isDarkTheme = savedTheme != "light";
-            await ApplyTheme();
-            StateHasChanged();
-        }
-    }
-
-    private async Task ToggleTheme()
-    {
-        _isDarkTheme = !_isDarkTheme;
-        await ApplyTheme();
-        await JS.InvokeVoidAsync("localStorage.setItem", "theme", _isDarkTheme ? "dark" : "light");
-    }
-
-    private async Task ApplyTheme()
-    {
-        var theme = _isDarkTheme ? "dark" : "light";
-        await JS.InvokeVoidAsync("eval", $"document.documentElement.setAttribute('data-theme', '{theme}')");
-    }
-
-    private void OpenSearch()
-    {
-        _isSearchOpen = true;
-    }
 }
-
-<!-- CSS-driven site background layer -->
-<!-- <div class="site-bg" aria-hidden="true">
-    <span style="background-image: url('/images/Felix_Argyle_Scared_By_JavaScript_The_Good_Parts.png')"></span>
-    <span style="background-image: url('/images/Kaguya_Shinomiya_Exceptional_C++.png')"></span>
-    <span style="background-image: url('/images/Kobayashi_Holds_9_Algorithms_That_Changed_The_World.png')"></span>
-    <span style="background-image: url('/images/Minori_Hanasato_Programming_Rust.png')"></span>
-    <span style="background-image: url('/images/Professor_Shinonome_Finds_SICP.jpg')"></span>
-</div> -->
 
 <div class="site-content">
 
@@ -98,17 +45,15 @@
 
             <div class="header-actions">
                 <div class="icon-row">
-                    <button class="icon btn-ghost" title="Toggle theme" @onclick="ToggleTheme">
-                        @if (_isDarkTheme)
-                        {
+                    <button class="icon btn-ghost" title="Toggle theme" onclick="ThemeManager.toggle()">
+                        <span id="theme-icon-dark" style="display: block;">
                             <!-- Moon icon for dark mode -->
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
                                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                             </svg>
-                        }
-                        else
-                        {
+                        </span>
+                        <span id="theme-icon-light" style="display: none;">
                             <!-- Sun icon for light mode -->
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
@@ -122,7 +67,7 @@
                                 <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
                                 <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
                             </svg>
-                        }
+                        </span>
                     </button>
                     <a class="icon btn-ghost" href="https://github.com/chicuong2k3" target="_blank" title="GitHub">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -130,7 +75,14 @@
                                 d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                         </svg>
                     </a>
-                    <button class="icon btn-ghost search-btn" title="Search" @onclick="OpenSearch">
+                    <button class="icon btn-ghost mobile-menu-btn" title="Menu" onclick="MobileMenuManager.toggle()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                    <button class="icon btn-ghost search-btn" title="Search" onclick="openSearch()">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2">
                             <circle cx="11" cy="11" r="8" />
@@ -231,24 +183,24 @@
                 </aside>
 
                 <!-- Mobile TOC drawer -->
-                <div class="toc-mobile-overlay @(_isTocOpen ? "open" : "")" @onclick="CloseToc"></div>
-                <aside class="toc-mobile-drawer @(_isTocOpen ? "open" : "")">
+                <div class="toc-mobile-overlay" onclick="closeToc()"></div>
+                <aside class="toc-mobile-drawer" id="toc-drawer">
                     <div class="toc-mobile-header">
                         <h4>Mục lục</h4>
-                        <button class="toc-close-btn" @onclick="CloseToc" title="Đóng">
+                        <button class="toc-close-btn" onclick="closeToc()" title="Đóng">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <line x1="18" y1="6" x2="6" y2="18"/>
                                 <line x1="6" y1="6" x2="18" y2="18"/>
                             </svg>
                         </button>
                     </div>
-                    <div class="toc-mobile-content" @onclick="CloseToc">
+                    <div class="toc-mobile-content" onclick="closeToc()">
                         <TableOfContents />
                     </div>
                 </aside>
 
                 <!-- Floating TOC toggle button -->
-                <button class="toc-fab @(_isTocOpen ? "hidden" : "")" @onclick="ToggleToc" title="Mục lục">
+                <button class="toc-fab" onclick="toggleToc()" title="Mục lục">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="3" y1="6" x2="21" y2="6"/>
                         <line x1="3" y1="12" x2="15" y2="12"/>
@@ -258,8 +210,6 @@
             }
         </div>
     }
-
-
 
     <!-- Footer section -->
     <footer class="home-footer site-footer">
@@ -279,11 +229,33 @@
         </div>
     </footer>
 
-    <SiteSearch @bind-IsOpen="_isSearchOpen" />
+    <SiteSearch />
 
-    @if (IsBlogPost)
+    @if (ShowToc)
     {
         <FloatingBookmark />
     }
+
+    <!-- Mobile Navigation Drawer -->
+    <div class="mobile-nav-overlay" onclick="MobileMenuManager.close()"></div>
+    <aside class="mobile-nav-drawer" id="mobile-nav-drawer">
+        <div class="mobile-nav-header">
+            <div class="brand">Code Magic</div>
+            <button class="btn-close" onclick="MobileMenuManager.close()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <nav class="mobile-nav-content">
+            <ul>
+                <li><a href="" onclick="MobileMenuManager.close()">Trang chủ</a></li>
+                <li><a href="book" onclick="MobileMenuManager.close()">Thư viện sách</a></li>
+                <li><a href="bookmarks" onclick="MobileMenuManager.close()">Đánh dấu</a></li>
+                <li><a href="about" onclick="MobileMenuManager.close()">Giới thiệu</a></li>
+            </ul>
+        </nav>
+    </aside>
 
 </div>

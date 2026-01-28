@@ -1,24 +1,23 @@
 @using Blake.Types
 @using Blake.Generated
 
-<div class="search-container @(IsOpen ? "open" : "")">
-    <div class="search-overlay" @onclick="Close"></div>
+<div class="search-container" id="search-modal">
+    <div class="search-overlay" onclick="closeSearch()"></div>
     <div class="search-modal">
         <div class="search-header">
             <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"/>
                 <path d="m21 21-4.35-4.35"/>
             </svg>
-            <input @ref="_inputRef"
-                   value="@searchTerm"
-                   @oninput="OnSearchInput"
-                   @onkeydown="OnKeyDown"
+            <input id="search-input"
                    class="search-input"
-                   placeholder="Tìm chương, sách..." />
+                   placeholder="Tìm chương, sách..."
+                   oninput="handleSearchInput(this.value)"
+                   onkeydown="handleSearchKeyDown(event)" />
             <div class="search-kbd">
                 <kbd>ESC</kbd>
             </div>
-            <button class="search-close" @onclick="Close">
+            <button class="search-close" onclick="closeSearch()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M18 6L6 18M6 6l12 12"/>
                 </svg>
@@ -26,66 +25,20 @@
         </div>
 
         <div class="search-body">
-            @if (!string.IsNullOrWhiteSpace(searchTerm))
-            {
-                @if (searchResults.Any())
-                {
-                    <div class="search-results">
-                        <div class="results-label">Chương tìm thấy</div>
-                        @foreach (var result in searchResults.Take(8))
-                        {
-                            <a href="@result.Url" class="search-result" @onclick="Close">
-                                <div class="result-icon">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                                    </svg>
-                                </div>
-                                <div class="result-content">
-                                    <div class="result-title">@result.Title</div>
-                                    @if (result.Tags.Any())
-                                    {
-                                        <div class="result-book">@result.Tags.First()</div>
-                                    }
-                                </div>
-                                <div class="result-arrow">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="9 18 15 12 9 6"/>
-                                    </svg>
-                                </div>
-                            </a>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <div class="no-results">
-                        <div class="no-results-icon">
-                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <circle cx="11" cy="11" r="8"/>
-                                <path d="m21 21-4.35-4.35"/>
-                                <line x1="8" y1="11" x2="14" y2="11"/>
-                            </svg>
-                        </div>
-                        <p>Không có kết quả cho "<strong>@searchTerm</strong>"</p>
-                        <span>Thử từ khóa khác</span>
-                    </div>
-                }
-            }
-            else
-            {
+            <div id="search-results-container">
+                <!-- Default: show popular books -->
                 <div class="search-suggestions">
                     <div class="suggestions-label">Sách phổ biến</div>
                     <div class="tag-suggestions">
                         @foreach (var book in PopularBooks.Take(6))
                         {
-                            <a href="book/@book.Slug" class="tag-suggestion" @onclick="Close">
+                            <a href="book/@book.Slug" class="tag-suggestion" onclick="closeSearch()">
                                 @book.Name
                             </a>
                         }
                     </div>
                 </div>
-            }
+            </div>
         </div>
 
         <div class="search-footer">
@@ -97,15 +50,33 @@
     </div>
 </div>
 
+<!-- Search data for JavaScript -->
+<script id="search-data" type="application/json">
+@(new MarkupString(System.Text.Json.JsonSerializer.Serialize(SearchData)))
+</script>
+
+<script>
+    // Site Search Bridge to site.js
+    document.addEventListener('DOMContentLoaded', function() {
+        var modal = document.getElementById('search-modal');
+        if (!modal) return;
+
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    if (modal.classList.contains('open')) {
+                        // site.js handles the rest
+                    }
+                }
+            });
+        });
+        observer.observe(modal, { attributes: true });
+    });
+</script>
+
 @code {
-    [Parameter] public bool IsOpen { get; set; }
-    [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
-
-    private ElementReference _inputRef;
-    private string searchTerm = string.Empty;
-    private List<SearchResult> searchResults = new();
-
     private record BookItem(string Name, string Slug, int Count);
+    private record SearchItem(string title, string url, string description, List<string> tags);
 
     private IEnumerable<BookItem> PopularBooks => GeneratedContentIndex.GetPages()
         .Where(p => !p.Draft && p.Tags.Any())
@@ -113,97 +84,12 @@
         .OrderByDescending(g => g.Count())
         .Select(g => new BookItem(g.Key, g.Key.ToLower().Replace(" ", "-"), g.Count()));
 
-    protected override async Task OnParametersSetAsync()
-    {
-        if (IsOpen)
-        {
-            searchTerm = string.Empty;
-            searchResults.Clear();
-        }
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (IsOpen)
-        {
-            try
-            {
-                await _inputRef.FocusAsync();
-            }
-            catch { }
-        }
-    }
-
-    private void OnSearchInput(ChangeEventArgs e)
-    {
-        searchTerm = e.Value?.ToString() ?? string.Empty;
-
-        if (string.IsNullOrWhiteSpace(searchTerm))
-        {
-            searchResults.Clear();
-            return;
-        }
-
-        searchResults = SearchPages(searchTerm);
-    }
-
-    private async Task OnKeyDown(KeyboardEventArgs e)
-    {
-        if (e.Key == "Escape")
-        {
-            await Close();
-        }
-    }
-
-    private async Task Close()
-    {
-        searchTerm = string.Empty;
-        searchResults.Clear();
-        await IsOpenChanged.InvokeAsync(false);
-    }
-
-    private List<SearchResult> SearchPages(string term)
-    {
-        return GeneratedContentIndex.GetPages()
-            .Where(p => !p.Draft)
-            .Where(p => p.Title.Contains(term, StringComparison.OrdinalIgnoreCase) ||
-                       p.Description.Contains(term, StringComparison.OrdinalIgnoreCase) ||
-                       p.Tags.Any(t => t.Contains(term, StringComparison.OrdinalIgnoreCase)))
-            .Select(p => new SearchResult
-            {
-                Title = p.Title,
-                Url = p.Slug.TrimStart('/'),
-                Excerpt = p.Description,
-                Tags = p.Tags.ToList()
-            })
-            .OrderByDescending(r => CalculateRelevance(r, term))
-            .ToList();
-    }
-
-    private double CalculateRelevance(SearchResult result, string term)
-    {
-        double score = 0;
-
-        if (result.Title.Contains(term, StringComparison.OrdinalIgnoreCase))
-            score += 10;
-
-        if (result.Title.Equals(term, StringComparison.OrdinalIgnoreCase))
-            score += 20;
-
-        if (result.Tags.Any(t => t.Equals(term, StringComparison.OrdinalIgnoreCase)))
-            score += 15;
-
-        if (result.Tags.Any(t => t.Contains(term, StringComparison.OrdinalIgnoreCase)))
-            score += 5;
-
-        return score;
-    }
-
-    private class SearchResult
-    {
-        public string Title { get; set; } = string.Empty;
-        public string Url { get; set; } = string.Empty;
-        public string Excerpt { get; set; } = string.Empty;
-        public List<string> Tags { get; set; } = new();
-    }
+    private IEnumerable<SearchItem> SearchData => GeneratedContentIndex.GetPages()
+        .Where(p => !p.Draft)
+        .Select(p => new SearchItem(
+            p.Title,
+            p.Slug.TrimStart('/'),
+            p.Description,
+            p.Tags.ToList()
+        ));
 }

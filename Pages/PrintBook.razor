@@ -2,67 +2,61 @@
 @using Blake.Types
 @using Blake.Generated
 @inject NavigationManager Navigation
-@inject IJSRuntime JS
 
 <PageTitle>In sách - @bookName</PageTitle>
 
 <div class="print-book-page">
-    @if (isLoading)
-    {
-        <div class="loading-container">
-            <div class="loading-spinner"></div>
-            <p>Đang tải nội dung sách...</p>
-            <p class="loading-progress">@loadedCount / @totalCount chương</p>
-        </div>
-    }
-    else if (!contentLoaded)
-    {
-        <div class="print-header">
-            <h1>@bookName</h1>
-            <p>@chapters.Length chương</p>
-            <div class="print-actions">
-                <button class="btn-print" @onclick="LoadAndPrint">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="6 9 6 2 18 2 18 9" />
-                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                        <rect x="6" y="14" width="12" height="8" />
-                    </svg>
-                    Tải và in sách
-                </button>
-                <a href="book/@BookSlug" class="btn-back">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M19 12H5M12 19l-7-7 7-7" />
-                    </svg>
-                    Quay lại
-                </a>
-            </div>
-        </div>
+    <div id="print-loading" class="loading-container" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Đang tải nội dung sách...</p>
+        <p class="loading-progress" id="loading-progress">0 / @chapters.Length chương</p>
+    </div>
 
-        <div class="print-preview">
-            <h2>Nội dung sẽ in</h2>
-            <div class="chapters-preview">
-                @for (int i = 0; i < chapters.Length; i++)
-                {
-                    var chapter = chapters[i];
-                    var isNumberedChapter = chapter.Slug.Contains("/chapter-", StringComparison.OrdinalIgnoreCase);
-                    <div class="preview-item">
-                        @if (isNumberedChapter)
-                        {
-                            <span class="preview-number">Chương @(GetChapterNumber(chapter))</span>
-                        }
-                        <span class="preview-title">@chapter.Title</span>
-                    </div>
-                }
-            </div>
+    <div id="print-header-initial" class="print-header">
+        <h1>@bookName</h1>
+        <p>@chapters.Length chương</p>
+        <div class="print-actions-flex">
+            <button class="btn-print-styled" onclick="loadAndPrint()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 6 2 18 2 18 9" />
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                    <rect x="6" y="14" width="12" height="8" />
+                </svg>
+                Tải và in sách
+            </button>
+            <a href="book/@BookSlug" class="btn-back-styled">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+                Quay lại
+            </a>
         </div>
-    }
-    else
-    {
+    </div>
+
+    <div id="print-preview" class="print-preview">
+        <h2>Nội dung sẽ in</h2>
+        <div class="chapters-preview">
+            @for (int i = 0; i < chapters.Length; i++)
+            {
+                var chapter = chapters[i];
+                var isNumberedChapter = chapter.Slug.Contains("/chapter-", StringComparison.OrdinalIgnoreCase);
+                <div class="preview-item">
+                    @if (isNumberedChapter)
+                    {
+                        <span class="preview-number">Chương @(GetChapterNumber(chapter))</span>
+                    }
+                    <span class="preview-title">@chapter.Title</span>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div id="print-ready" style="display: none;">
         <div class="print-header no-print">
             <h1>@bookName</h1>
             <p>@chapters.Length chương - Sẵn sàng in</p>
-            <div class="print-actions">
-                <button class="btn-print" @onclick="ExecutePrint">
+            <div class="print-actions-flex">
+                <button class="btn-print-styled" onclick="window.print()">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 6 2 18 2 18 9" />
                         <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
@@ -70,7 +64,7 @@
                     </svg>
                     In ngay
                 </button>
-                <a href="book/@BookSlug" class="btn-back">
+                <a href="book/@BookSlug" class="btn-back-styled">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M19 12H5M12 19l-7-7 7-7" />
                     </svg>
@@ -105,36 +99,124 @@
                 </ul>
             </div>
 
-            <!-- Chapter contents -->
-            @foreach (var chapter in chapters)
-            {
-                var isNumberedChapter = chapter.Slug.Contains("/chapter-", StringComparison.OrdinalIgnoreCase);
-                <div class="print-chapter">
-                    <div class="chapter-header">
-                        @if (isNumberedChapter)
-                        {
-                            <span class="chapter-label">Chương @(GetChapterNumber(chapter))</span>
-                        }
-                        <h1 class="chapter-title">@chapter.Title</h1>
+            <!-- Chapter contents will be filled by JavaScript -->
+            <div id="chapters-container">
+                @foreach (var chapter in chapters)
+                {
+                    var isNumberedChapter = chapter.Slug.Contains("/chapter-", StringComparison.OrdinalIgnoreCase);
+                    <div class="print-chapter" id="print-chapter-@chapter.Slug.Replace("/", "-").TrimStart('-')">
+                        <div class="chapter-header">
+                            @if (isNumberedChapter)
+                            {
+                                <span class="chapter-label">Chương @(GetChapterNumber(chapter))</span>
+                            }
+                            <h1 class="chapter-title">@chapter.Title</h1>
+                        </div>
+                        <div class="chapter-content">
+                            <p class="content-placeholder">Đang tải nội dung...</p>
+                        </div>
+                        <div class="chapter-status" id="status-@chapter.Slug.Replace("/", "-").TrimStart('-')"></div>
                     </div>
-                    <div class="chapter-content" id="chapter-@chapter.Slug.Replace("/", "-").TrimStart('-')">
-                        @if (chapterContents.TryGetValue(chapter.Slug, out var content))
-                        {
-                            @((MarkupString)content)
-                        }
-                        else
-                        {
-                            <p class="content-error">Đang tải nội dung...</p>
-                        }
-                    </div>
-                </div>
-            }
+                }
+            </div>
         </div>
-    }
+    </div>
 </div>
 
 <!-- Hidden iframe for loading content -->
 <iframe id="content-loader" style="display:none; position:absolute; left:-9999px;"></iframe>
+
+<!-- Chapter data for JavaScript -->
+<script id="chapters-data" type="application/json">
+@(System.Text.Json.JsonSerializer.Serialize(chapters.Select(c => new { slug = c.Slug, title = c.Title })))
+</script>
+
+<script>
+    var printBookBaseUrl = '@Navigation.BaseUri.TrimEnd('/')';
+
+    window.loadAndPrint = async function() {
+        try {
+            console.log('loadAndPrint called');
+            
+            var chaptersDataEl = document.getElementById('chapters-data');
+            if (!chaptersDataEl) {
+                console.error('chapters-data element not found');
+                return;
+            }
+            console.log('chapters-data element found');
+            
+            var chaptersData = JSON.parse(chaptersDataEl.textContent);
+            console.log('Parsed chapters:', chaptersData);
+            
+            var totalCount = chaptersData.length;
+            var loadedCount = 0;
+            console.log('Loading ' + totalCount + ' chapters...');
+
+            // Show loading, hide preview
+            var loadingEl = document.getElementById('print-loading');
+            var headerEl = document.getElementById('print-header-initial');
+            var previewEl = document.getElementById('print-preview');
+            
+            console.log('Elements found:', { loading: !!loadingEl, header: !!headerEl, preview: !!previewEl });
+            
+            if (loadingEl) loadingEl.style.display = 'block';
+            if (headerEl) headerEl.style.display = 'none';
+            if (previewEl) previewEl.style.display = 'none';
+            
+            console.log('UI updated to show loading');
+
+            for (var i = 0; i < chaptersData.length; i++) {
+                var chapter = chaptersData[i];
+                console.log('Loading chapter ' + (i+1) + ': ' + chapter.title);
+                try {
+                    var url = printBookBaseUrl + chapter.slug;
+                    console.log('Fetching URL: ' + url);
+                    var content = await window.loadChapterContent(url);
+                    console.log('Chapter loaded, content length: ' + (content ? content.length : 0));
+
+                    var chapterId = 'print-chapter-' + chapter.slug.replace(/\//g, '-').replace(/^-/, '');
+                    var chapterEl = document.getElementById(chapterId);
+                    if (chapterEl) {
+                        var contentDiv = chapterEl.querySelector('.chapter-content');
+                        if (contentDiv) {
+                            contentDiv.innerHTML = content || '<p class="content-error">Không thể tải nội dung chương này.</p>';
+                            var statusEl = document.getElementById('status-' + chapter.slug.replace(/\//g, '-').replace(/^-/, ''));
+                            if (statusEl) statusEl.innerHTML = '<span class="status-success">✓ Đã tải</span>';
+                        }
+                    }
+
+                    loadedCount++;
+                    var progressEl = document.getElementById('loading-progress');
+                    if (progressEl) progressEl.textContent = loadedCount + ' / ' + totalCount + ' chương';
+                } catch (e) {
+                    console.error('Error loading chapter:', chapter.slug, e);
+                    loadedCount++;
+                    var progressEl = document.getElementById('loading-progress');
+                    if (progressEl) progressEl.textContent = loadedCount + ' / ' + totalCount + ' chương';
+                }
+            }
+
+            // Hide loading, show ready
+            if (loadingEl) loadingEl.style.display = 'none';
+            var readyEl = document.getElementById('print-ready');
+            if (readyEl) readyEl.style.display = 'block';
+            
+            console.log('Print preparation complete. Total loaded: ' + loadedCount + '/' + totalCount);
+
+            // Typeset MathJax
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                try {
+                    await window.MathJax.typesetPromise();
+                } catch (e) {
+                    console.warn('MathJax typeset failed:', e);
+                }
+            }
+        } catch (e) {
+            console.error('loadAndPrint error:', e);
+            alert('Có lỗi xảy ra: ' + e.message);
+        }
+    }
+</script>
 
 @code {
     [Parameter]
@@ -142,11 +224,6 @@
 
     private string bookName = "";
     private PageModel[] chapters = Array.Empty<PageModel>();
-    private Dictionary<string, string> chapterContents = new();
-    private bool isLoading = false;
-    private bool contentLoaded = false;
-    private int loadedCount = 0;
-    private int totalCount = 0;
 
     protected override void OnParametersSet()
     {
@@ -159,71 +236,15 @@
         var allPages = GeneratedContentIndex.GetPages().Where(p => !p.Draft);
 
         chapters = allPages
-        .Where(p => p.Tags.Any(t =>
-        t.ToLower().Replace(" ", "-").Equals(BookSlug, StringComparison.OrdinalIgnoreCase) ||
-        t.Equals(BookSlug, StringComparison.OrdinalIgnoreCase)))
-        .OrderBy(p => p.Date)
-        .ToArray();
+            .Where(p => p.Tags.Any(t =>
+                t.ToLower().Replace(" ", "-").Equals(BookSlug, StringComparison.OrdinalIgnoreCase) ||
+                t.Equals(BookSlug, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(p => p.Date)
+            .ToArray();
 
         if (chapters.Any())
         {
             bookName = chapters.First().Tags.First();
-        }
-
-        totalCount = chapters.Length;
-    }
-
-    private async Task LoadAndPrint()
-    {
-        isLoading = true;
-        loadedCount = 0;
-        StateHasChanged();
-
-        try
-        {
-            var baseUri = Navigation.BaseUri.TrimEnd('/');
-
-            foreach (var chapter in chapters)
-            {
-                try
-                {
-                    var url = $"{baseUri}{chapter.Slug}";
-                    var content = await JS.InvokeAsync<string>("loadChapterContent", url);
-
-                    if (!string.IsNullOrEmpty(content))
-                    {
-                        chapterContents[chapter.Slug] = content;
-                    }
-                    else
-                    {
-                        chapterContents[chapter.Slug] = "<p class='content-error'>Không thể tải nội dung chương này.</p>";
-                    }
-
-                    loadedCount++;
-                    StateHasChanged();
-                }
-                catch (Exception ex)
-                {
-                    chapterContents[chapter.Slug] = $"<p class='content-error'>Lỗi: {ex.Message}</p>";
-                    loadedCount++;
-                    StateHasChanged();
-                }
-            }
-
-            contentLoaded = true;
-            // Let Blazor render the injected content, then trigger MathJax typesetting
-            StateHasChanged();
-            await Task.Yield();
-            try
-            {
-                await JS.InvokeVoidAsync("printbookTypeset");
-            }
-            catch { }
-        }
-        finally
-        {
-            isLoading = false;
-            StateHasChanged();
         }
     }
 
@@ -236,10 +257,5 @@
             return num;
         }
         return 0;
-    }
-
-    private async Task ExecutePrint()
-    {
-        await JS.InvokeVoidAsync("window.print");
     }
 }
