@@ -1,9 +1,10 @@
 <!DOCTYPE html><html lang="en"><head>
+  <base href="/coding-diary/" />
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Code Magic</title>
-    <base href="/"/>
-    <link href="_framework/dotnet.91cnmw2ejh.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-rZJlUOO2kO590t4O06O/pMIoqufDySVa2XsLm7ALaec="/>
+    
+    <link href="_framework/dotnet.tbd77kjr03.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-x5l3PT6D6JX8Rd5vPXm9Of4It1lTCUvqWtBzrronCI0="/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
@@ -16,20 +17,20 @@
     <script type="importmap">{
   "imports": {
     "./_framework/blazor.webassembly.js": "./_framework/blazor.webassembly.66stpp682q.js",
-    "./_framework/dotnet.js": "./_framework/dotnet.91cnmw2ejh.js",
     "./_framework/dotnet.native.js": "./_framework/dotnet.native.wrr3s1u3jw.js",
-    "./_framework/dotnet.runtime.js": "./_framework/dotnet.runtime.2tx45g8lli.js"
+    "./_framework/dotnet.runtime.js": "./_framework/dotnet.runtime.2tx45g8lli.js",
+    "./_framework/dotnet.js": "./_framework/dotnet.tbd77kjr03.js"
   },
   "scopes": {},
   "integrity": {
     "./_framework/blazor.webassembly.66stpp682q.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
     "./_framework/blazor.webassembly.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
-    "./_framework/dotnet.91cnmw2ejh.js": "sha256-rZJlUOO2kO590t4O06O/pMIoqufDySVa2XsLm7ALaec=",
-    "./_framework/dotnet.js": "sha256-rZJlUOO2kO590t4O06O/pMIoqufDySVa2XsLm7ALaec=",
+    "./_framework/dotnet.js": "sha256-x5l3PT6D6JX8Rd5vPXm9Of4It1lTCUvqWtBzrronCI0=",
     "./_framework/dotnet.native.js": "sha256-pHATP1UYfVbgkubj/zSgOMTH5p50o8sWVxiheNxMVnA=",
     "./_framework/dotnet.native.wrr3s1u3jw.js": "sha256-pHATP1UYfVbgkubj/zSgOMTH5p50o8sWVxiheNxMVnA=",
     "./_framework/dotnet.runtime.2tx45g8lli.js": "sha256-2lZh9yO0fnzm3Xt7yV+Kox3DH3nK7L8hDhm84VT1xco=",
-    "./_framework/dotnet.runtime.js": "sha256-2lZh9yO0fnzm3Xt7yV+Kox3DH3nK7L8hDhm84VT1xco="
+    "./_framework/dotnet.runtime.js": "sha256-2lZh9yO0fnzm3Xt7yV+Kox3DH3nK7L8hDhm84VT1xco=",
+    "./_framework/dotnet.tbd77kjr03.js": "sha256-x5l3PT6D6JX8Rd5vPXm9Of4It1lTCUvqWtBzrronCI0="
   }
 }</script>
 
@@ -96,6 +97,15 @@
         <blazor-focus-on-navigate selector="h1"></blazor-focus-on-navigate>
 <!-- %%-PRERENDERING-END-%% -->
 </div>
+
+    <!-- Browser compatibility warning for iOS < 15 -->
+    <div id="browser-compat-warning" style="display:none; position:fixed; bottom:0; left:0; right:0; z-index:9998; padding:12px 16px; background:linear-gradient(135deg, #fef3c7, #fde68a); border-top:2px solid #f59e0b; color:#92400e; font-size:14px; text-align:center;">
+        <span style="display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <span>Trình duyệt của bạn có thể không hỗ trợ đầy đủ. Vui lòng cập nhật lên iOS 15+ hoặc Safari 15+ để có trải nghiệm tốt nhất.</span>
+            <button onclick="this.parentElement.parentElement.style.display='none'" style="background:#92400e; color:white; border:none; padding:4px 12px; border-radius:4px; cursor:pointer; margin-left:8px;">Đóng</button>
+        </span>
+    </div>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
@@ -287,6 +297,20 @@
                 console.error('showBrowserError failed', e);
             }
         };
+
+        // Show compatibility warning for old Safari/iOS on page load
+        (function() {
+            try {
+                if (window.isOldSafari && window.isOldSafari()) {
+                    var warning = document.getElementById('browser-compat-warning');
+                    if (warning) {
+                        warning.style.display = 'block';
+                    }
+                }
+            } catch (e) {
+                // ignore
+            }
+        })();
 
         // Global handlers: only surface UI error if we're on older Safari (user requested)
         window.addEventListener('error', function (evt) {
