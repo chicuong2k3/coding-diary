@@ -1,24 +1,11 @@
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using DocumentationWeb;
-using DocumentationWeb.Components;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Add services
-builder.Services.AddRazorComponents();
-builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-var app = builder.Build();
-
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseAntiforgery();
-
-app.MapRazorComponents<App>();
-
-app.Run();
+await builder.Build().RunAsync();

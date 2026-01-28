@@ -243,7 +243,8 @@ const BookmarkManager = {
 
         let html = '<div class="bookmark-list-small">';
         recentBookmarks.forEach(b => {
-            const truncatedTitle = b.title.length > 28 ? b.title.substring(0, 28) + '...' : b.title;
+            const title = b.title || 'Chương không tên';
+            const truncatedTitle = title.length > 28 ? title.substring(0, 28) + '...' : title;
             html += `
                 <div class="bookmark-item-small">
                     <a href="${b.slug}" class="bookmark-link-small" onclick="BookmarkManager.navigateTo('${b.slug}'); return false;">

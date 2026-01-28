@@ -6,7 +6,7 @@ public static partial class GeneratedContentIndex
     {
         new PageModel
         {
-            Id = @"71538a8e-b598-4d8f-8c28-e9db8dbf25f0",
+            Id = @"744e6831-3914-4482-8fc3-d09665ea6c2c",
             Title = @"Lời nói đầu",
             Slug = @"/on-the-composition-of-images-signs-and-ideas/foreword",
             Description = @"",
@@ -21,7 +21,7 @@ public static partial class GeneratedContentIndex
         },
         new PageModel
         {
-            Id = @"c3b1b512-38ee-4d8b-8a6b-77d238a80e86",
+            Id = @"389f8c12-624a-41e5-be3a-57d30bc96b22",
             Title = @"Chương 2: Đại số tuyến tính (Linear algebra)",
             Slug = @"/mathematics-for-machine-learning/chapter-2",
             Description = @"",
@@ -36,7 +36,7 @@ public static partial class GeneratedContentIndex
         },
         new PageModel
         {
-            Id = @"eb8e33ac-f43b-45d0-9b4c-129824404e64",
+            Id = @"47fdd180-7c4f-4c9c-a434-5f7fb16043b3",
             Title = @"Lời tựa",
             Slug = @"/mathematics-for-machine-learning/foreword",
             Description = @"Vai trò của toán học, tư duy nền tảng, và con đường tiếp cận machine learning một cách bài bản.",
@@ -51,7 +51,7 @@ public static partial class GeneratedContentIndex
         },
         new PageModel
         {
-            Id = @"69c01d11-0107-4eb5-a27f-40fb288d797f",
+            Id = @"31fccb68-b4a5-48a2-8925-b547462f165a",
             Title = @"Chương 1: Giới thiệu",
             Slug = @"/mathematics-for-machine-learning/chapter-1",
             Description = @"",
