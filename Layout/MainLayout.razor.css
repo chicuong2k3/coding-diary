@@ -907,16 +907,9 @@ td {
         padding: 0;
     }
 
-    .toc-sidebar {
-        display: block;
-        position: relative;
-        top: 0;
-        width: 100%;
-        max-height: none;
-        padding: 1rem;
-        border-top: 1px solid var(--border-color);
-        background: var(--sidebar-bg);
-        order: 1; /* Show at bottom */
+    /* Hide desktop TOC on tablet, use mobile drawer instead */
+    .toc-sidebar.toc-desktop {
+        display: none;
     }
 
     .doc-main {
@@ -931,30 +924,187 @@ td {
         margin-right: 0;
     }
 
-    /* TOC horizontal layout at bottom */
-    .toc-wrapper {
-        width: 100%;
+}
+
+/* =============================================
+   MOBILE TOC DRAWER & FAB
+   ============================================= */
+
+/* Floating Action Button for TOC */
+.toc-fab {
+    display: none; /* Hidden on desktop */
+    position: fixed;
+    bottom: 80px;
+    right: 16px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    z-index: 90;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
+}
+
+.toc-fab:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.toc-fab:active {
+    transform: scale(0.95);
+}
+
+.toc-fab.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8);
+}
+
+.toc-fab svg {
+    display: block;
+}
+
+/* Mobile TOC Overlay */
+.toc-mobile-overlay {
+    display: none; /* Hidden on desktop */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.toc-mobile-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Mobile TOC Drawer */
+.toc-mobile-drawer {
+    display: none; /* Hidden on desktop */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 60vh;
+    background: var(--bg-card);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    z-index: 999;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-out;
+    overflow: hidden;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.toc-mobile-drawer.open {
+    transform: translateY(0);
+}
+
+.toc-mobile-header {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+}
+
+.toc-mobile-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.toc-close-btn {
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: inline-flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.toc-close-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.toc-mobile-content {
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: calc(60vh - 60px);
+    -webkit-overflow-scrolling: touch;
+}
+
+.toc-mobile-content .toc-wrapper {
+    width: 100%;
+}
+
+.toc-mobile-content .toc-title {
+    display: none; /* Already shown in header */
+}
+
+.toc-mobile-content .toc-nav {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.toc-mobile-content .toc-link {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
+}
+
+/* Show mobile TOC elements on tablet and below */
+@media (max-width: 1024px) {
+    .toc-fab {
+        display: -webkit-inline-box;
+        display: -webkit-inline-flex;
+        display: inline-flex;
     }
 
-    .toc-title {
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
+    .toc-mobile-overlay {
+        display: block;
     }
 
-    .toc-nav {
-        -webkit-box-orient: horizontal;
-        -webkit-box-direction: normal;
-        -webkit-flex-direction: row;
-        flex-direction: row;
-        -webkit-flex-wrap: wrap;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .toc-link {
-        padding: 0.35rem 0.75rem;
-        font-size: 0.8rem;
-        white-space: nowrap;
+    .toc-mobile-drawer {
+        display: block;
     }
 }
 
@@ -1044,22 +1194,22 @@ td {
         font-size: 1.25rem;
     }
 
-    /* Sidebars on mobile - more compact */
+    /* Left sidebar on mobile - more compact */
     .left-sidebar {
         padding: 0.75rem;
     }
 
-    .toc-sidebar {
-        padding: 0.75rem;
+    /* Adjust FAB position on smaller screens */
+    .toc-fab {
+        bottom: 70px;
+        right: 12px;
+        width: 44px;
+        height: 44px;
     }
 
-    .toc-title {
-        font-size: 0.85rem;
-    }
-
-    .toc-link {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.75rem;
+    .toc-fab svg {
+        width: 18px;
+        height: 18px;
     }
 
     /* Footer */

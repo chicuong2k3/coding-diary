@@ -15,6 +15,17 @@
 
     private bool _isDarkTheme = true;
     private bool _isSearchOpen = false;
+    private bool _isTocOpen = false;
+
+    private void ToggleToc()
+    {
+        _isTocOpen = !_isTocOpen;
+    }
+
+    private void CloseToc()
+    {
+        _isTocOpen = false;
+    }
 
     private record BookInfo(string Name, string Slug, int ChapterCount, PageModel LatestChapter);
 
@@ -214,9 +225,36 @@
 
             @if (ShowToc)
             {
-                <aside class="toc-sidebar">
+                <!-- Desktop TOC sidebar -->
+                <aside class="toc-sidebar toc-desktop">
                     <TableOfContents />
                 </aside>
+
+                <!-- Mobile TOC drawer -->
+                <div class="toc-mobile-overlay @(_isTocOpen ? "open" : "")" @onclick="CloseToc"></div>
+                <aside class="toc-mobile-drawer @(_isTocOpen ? "open" : "")">
+                    <div class="toc-mobile-header">
+                        <h4>Mục lục</h4>
+                        <button class="toc-close-btn" @onclick="CloseToc" title="Đóng">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"/>
+                                <line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="toc-mobile-content" @onclick="CloseToc">
+                        <TableOfContents />
+                    </div>
+                </aside>
+
+                <!-- Floating TOC toggle button -->
+                <button class="toc-fab @(_isTocOpen ? "hidden" : "")" @onclick="ToggleToc" title="Mục lục">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <line x1="3" y1="12" x2="15" y2="12"/>
+                        <line x1="3" y1="18" x2="18" y2="18"/>
+                    </svg>
+                </button>
             }
         </div>
     }
