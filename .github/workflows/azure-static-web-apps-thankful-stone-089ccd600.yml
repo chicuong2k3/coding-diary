@@ -34,8 +34,13 @@ jobs:
             dotnet tool install -g Blake.CLI || echo "Blake CLI already installed"
           fi
           export PATH="$PATH:$HOME/.dotnet/tools"
+          # 1. Generate Razor components from Markdown
           blake bake --clean
+          # 2. Build and publish the app
           dotnet publish DocumentationWeb.csproj -c Release -o publish
+          # 3. Pre-render (bake) the static pages into the publish output
+          blake bake --clean
+          # 4. Prepare the final docs folder for Azure SWA
           mkdir -p docs
           cp -r publish/wwwroot/* docs/
           rm -rf publish
