@@ -35,6 +35,7 @@ jobs:
           fi
           export PATH="$PATH:$HOME/.dotnet/tools"
           # 1. Generate Razor components from Markdown
+          rm -f wwwroot/index.html
           blake bake --clean
           # 2. Build and publish the app
           dotnet publish DocumentationWeb.csproj -c Release -o publish
